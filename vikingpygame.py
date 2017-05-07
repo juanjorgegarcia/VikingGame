@@ -11,7 +11,7 @@ class Player:
         self.rect=pygame.Surface.get_size(self.sprite)
         self.speed_x = 0
         self.speed_y = 0
-        self.aceleration = + 2
+        self.aceleration = + 0.2
 
     def move(self,direction):
         if direction == "right":
@@ -23,13 +23,16 @@ class Player:
         if direction == 0:
             self.speed_x = 0
         if direction == "up":
-            self.speed_y = -14 + self.aceleration
-            #self.updatepos()
+            self.speed_y = -10 + self.aceleration
 
     def updatepos(self):
-        #if self.y >300:
-            #self.speed_y = 0
+        self.speed_y+=self.aceleration
 
+        if self.y >400:
+            self.speed_y = 0
+            global jump
+            jump=0
+            self.y=399
         self.x += self.speed_x
         self.y += self.speed_y
 clock=pygame.time.Clock()
@@ -58,12 +61,9 @@ pwalkright3 = pygame.transform.scale(pwalkright3, (char1.rect))
 
 pygame.display.set_caption("RONALDO")
 izi=True
-#print(x,y)
 while izi:
     screen.blit(background, (0, 0))
-    #screen.blit(ground,(300,553))
     screen.blit(char1.sprite,(char1.x,char1.y))
-
     pygame.display.update()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -78,29 +78,18 @@ while izi:
             if event.key == pygame.K_LEFT:
                 char1.move("left")
             if event.key == pygame.K_UP and jump==0:
-                #char1.y=552
                 jump=1
                 char1.move("up")
-                #deltay=-10 +2
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_RIGHT:
                 char1.move(0)
             if event.key == pygame.K_LEFT:
                 char1.move(0)
 
-    char1.speed_y += 0.2
-    #print(backcoli)
-
-    #if pygame.Rect.colliderect(backcoli,char1.rect)==True:
-
-        #print("colidindo")
-    if char1.y>400:
-        char1.speed_y = 0
-        char1.y=399
-        jump=0
 
 
 
+    #jump=0
     char1.updatepos()
     screen.blit(char1.sprite,(char1.x,char1.y))
     clock.tick(60)
