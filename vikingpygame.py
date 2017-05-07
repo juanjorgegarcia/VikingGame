@@ -37,7 +37,8 @@ class Player:
             self.x += 10
 
         if self.walkL == True:
-            self.x -= 10
+            if self.x > 0:
+                self.x -= 10
 
 
 
