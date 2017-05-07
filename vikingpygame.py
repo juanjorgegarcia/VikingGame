@@ -7,7 +7,7 @@ class Player:
     def __init__(self,x,y,sprite,speed_):
         self.x = x #coordenada x do personagem
         self.y = y #coordenada y do personagem
-        self.sprite=pygame.image.load(sprite) # carregando o sprite parada do player
+        self.sprite=pygame.image.load(sprite).convert() # carregando o sprite parada do player
         self.speed_x = 0 #velocidade no eixo x
         self.speed_y = 0 #velocidade no eixo x
         self.aceleration = + 0.2 #gravidade
@@ -48,7 +48,7 @@ class Player:
             #  se a posicao y do player estiver abaixo Do chao a velocidade_y dele se torna 0
             self.speed_y = 0
             self.jump=False #impedindo o jump infinito
-            self.y=399 #%.99999999999999
+            self.y=399 #.99999999999999
         self.y += self.speed_y
 
         if self.walkR == True:
@@ -74,13 +74,13 @@ background = background.convert() #covertenod os pixels da imagem (a imagem é c
 ############ carregando as sprites do player
 player1="Images\\stand.png"
 char1=Player(400,400,player1,10)
-pwalkright0=pygame.image.load("Images\\walk right\\sprite_walkR0.png")#dando load
+pwalkright0 = pygame.image.load("Images\\walk right\\sprite_walkR0.png").convert() #dando load
 pwalkright0 = pygame.transform.scale(pwalkright0, (char1.rect))#escalano conforme o tamanho personagem
-pwalkright1=pygame.image.load("Images\\walk right\\sprite_walkR1.png")#dando load
+pwalkright1 = pygame.image.load("Images\\walk right\\sprite_walkR1.png").convert() #dando load
 pwalkright1 = pygame.transform.scale(pwalkright1, (char1.rect))#escalano conforme o tamanho personagem
-pwalkright2=pygame.image.load("Images\\walk right\\sprite_walkR2.png")#dando load
+pwalkright2 = pygame.image.load("Images\\walk right\\sprite_walkR2.png").convert() #dando load
 pwalkright2 = pygame.transform.scale(pwalkright2, (char1.rect))#escalano conforme o tamanho personagem
-pwalkright3=pygame.image.load("Images\\walk right\\sprite_walkR3.png")#dando load
+pwalkright3 = pygame.image.load("Images\\walk right\\sprite_walkR3.png").convert() #dando load
 pwalkright3 = pygame.transform.scale(pwalkright3, (char1.rect))#escalano conforme o tamanho personagem
 ############
 
