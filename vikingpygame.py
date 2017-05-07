@@ -14,6 +14,7 @@ class Player:
         self.walkR = False #status do player andando para direita
         self.walkL = False #status do player andando para esquerda
         self.jump = False #status do player pulando
+        self.right= True #sabaer pra onde o jogador esta olhando
         self.current_img = pygame.image.load(sprite) # sprite atual o player
         self.rect=pygame.Surface.get_size(self.current_img) #retangulo equivalente a sprite
     def move(self,direction):
@@ -21,9 +22,15 @@ class Player:
         if direction == "left":
             self.speed_x = 10
             self.walkL=True #player esta andando para esquerda
+            if self.right==True:
+                self.right=False
+                char1.current_img = pygame.transform.flip(char1.current_img, True, False)
         if direction == "right":
             self.speed_x = 10
             self.walkR=True #player esta andando para direita
+            if self.right==False:
+                self.right=True
+                char1.current_img = pygame.transform.flip(char1.current_img, True, False)
         if direction == 0:
             self.speed_x = 0
             #self.walkL=False
@@ -46,6 +53,7 @@ class Player:
 
         if self.walkR == True:
             self.x += self.speed_x
+
 
         if self.walkL == True:
             if self.x > 0:
