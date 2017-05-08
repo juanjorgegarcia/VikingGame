@@ -37,6 +37,7 @@ class Player:
             #self.walkR=False
 
         if direction == "up":
+            self.aceleration = 0.2 #se o personagem estiver no ar a aceleraçao esta valendo!
             self.speed_y = -10 + self.aceleration
             self.jump = True #player esta pulando!
 
@@ -45,10 +46,11 @@ class Player:
         self.speed_y+=self.aceleration
 
         if self.y >400:
-            #  se a posicao y do player estiver abaixo Do chao a velocidade_y dele se torna 0
-            self.speed_y = 0
+            #  se a posicao y do player estiver abaixo Do chao a velocidade_y e a gravidade dele se torna 0
+            self.speed_y = 0 #
+            self.aceleration = 0 #
             self.jump=False #impedindo o jump infinito
-            self.y=399 #.99999999999999
+            self.y=400 #.99999999999999
         self.y += self.speed_y
 
         if self.walkR == True:
