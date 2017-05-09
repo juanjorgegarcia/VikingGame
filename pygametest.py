@@ -15,7 +15,7 @@ lead_y=300
 lead_x_change = 0
 lead_y_change = 0
 clock = pygame.time.Clock()
-char=pygame.image.load("C:\\Users\\juanj\\OneDrive\\Documentos\\GitHub\\VikingGame\\Images\\`PARADO.png")
+char=pygame.image.load("C:\\Users\\juanj\\OneDrive\\Documentos\\GitHub\\VikingGame\\Images\\stand.png")
 crect=pygame.Surface.get_rect(char)
 while not game_exit:
     game_display.blit(background,brect)
@@ -47,7 +47,7 @@ while not game_exit:
     #pygame.draw.rect(game_display, black, [lead_x,lead_y,10,10])
     pygame.display.update()
 
-    clock.tick(15)
+    clock.tick(60)
 
 pygame.quit()
 quit()
