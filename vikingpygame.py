@@ -24,7 +24,7 @@ class Player:
         if direction == "left":
             self.speed_x = 10
             self.walkL=True #player esta andando para esquerda
-            if self.rightface==True:
+            if self.rightface==True and self.walkR==False:
                 self.rightface=False
                 self.leftface=True
                 char1.current_img = pygame.transform.flip(char1.current_img, True, False)
@@ -34,7 +34,7 @@ class Player:
         if direction == "right":
             self.speed_x = 10
             self.walkR=True #player esta andando para direita
-            if self.rightface==False:
+            if self.rightface==False and self.walkL==False:
                 self.leftface=False
                 self.rightface=True
                 char1.current_img = pygame.transform.flip(char1.current_img, True, False)
