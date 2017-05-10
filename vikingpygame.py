@@ -7,7 +7,11 @@ class Player:
     def __init__(self,x,y,sprite):
         self.x = x #coordenada x do personagem
         self.y = y #coordenada y do personagem
-        self.sprite=pygame.image.load(sprite).convert() # carregando o sprite parada do player
+        self.current_frame=0
+        self.last_update=0
+        self.load_images()
+        self.standimg=0
+        self.current_img=pygame.image.load("Images\\stand.png")
         self.speed_x = 0 #velocidade no eixo x
         self.speed_y = 0 #velocidade no eixo x
         self.aceleration = + 0.4 #gravidade
@@ -16,44 +20,88 @@ class Player:
         self.jump = False #status do player pulando
         self.rightface= True #sabaer pra onde o jogador esta olhando
         self.leftface = False
-        self.current_img = pygame.image.load(sprite).convert_alpha() # sprite atual o player
+        self.look_up=False
         self.size = pygame.Surface.get_size(self.current_img) #retangulo equivalente a sprite
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
         self.colision = False # personagem nao esta colidindo
         self.hitbox = pygame.Rect(self.x,self.y,self.x+self.size[0],self.size[1]) #hitbox do personagem
+
+    def load_images(self):
+
+
+        self.walkingR_frames=[pygame.image.load("Images\\walk_right\\sprite_walkR0.png"),pygame.image.load("Images\\walk_right\\sprite_walkR1.png"),pygame.image.load("Images\\walk_right\\sprite_walkR2.png"),pygame.image.load("Images\\walk_right\\sprite_walkR3.png")]
+
+        self.walkingl_frames=[]
+
+        for frame in self.walkingR_frames:
+            self.walkingl_frames.append(pygame.transform.flip(frame,True,False))
+
+    def animate(self):
+        now=pygame.time.get_ticks()
+
+        if self.look_up==True and self.walkR==False and self.walkL==False:
+            self.current_img=pygame.transform.scale(pygame.image.load("Images\\upright.png"),(200,200))
+
+        #if self.walkL==True and self.walkR==True:
+            #self.current_img==pygame.image.load("Images\\stand.png")
+
+        #elif self.walkL==False and self.walkR==False:
+            #self.current_img=pygame.transform.scale(pygame.image.load("Images\\stand.png"),(200,200))
+
+        elif self.walkR==True and self.jump==False:
+            if now - self.last_update>100:
+                self.last_update=now
+                self.current_frame=(self.current_frame+1)%len(self.walkingR_frames)
+                self.current_img=self.walkingR_frames[self.current_frame]
+                self.current_img=pygame.transform.scale(self.current_img,(200,200))
+
+        elif self.walkL==True and self.jump==False:
+            if now - self.last_update>100:
+                self.last_update=now
+                self.current_frame=(self.current_frame+1)%len(self.walkingl_frames)
+                self.current_img=self.walkingl_frames[self.current_frame]
+                self.current_img=pygame.transform.scale(self.current_img,(200,200))
+
+
     def move(self,direction):
         #movendo o player
         if direction == "left":
             self.speed_x = 10
             self.walkL=True #player esta andando para esquerda
-            if self.rightface==True and self.walkR==False:
-                self.rightface=False
-                self.leftface=True
-                char1.current_img = pygame.transform.flip(char1.current_img, True, False)
-                if self.leftface==False:
-                    char1.current_img = pygame.transform.flip(char1.current_img, True, False)
+            #if self.rightface==True and self.walkR==False:
+                #self.rightface=False
+                #self.leftface=True
+                #self.current_img = pygame.transform.flip(self.current_img, True, False)
+                #if self.leftface==False:
+                    #self.current_img = pygame.transform.flip(self.current_img, True, False)
 
         if direction == "right":
             self.speed_x = 10
             self.walkR=True #player esta andando para direita
-            if self.rightface==False and self.walkL==False:
-                self.leftface=False
-                self.rightface=True
-                char1.current_img = pygame.transform.flip(char1.current_img, True, False)
+            #if self.rightface==False and self.walkL==False:
+                #self.leftface=False
+                #self.rightface=True
+                #self.current_img = pygame.transform.flip(self.current_img, True, False)
 
         if direction=="stopright":
             self.walkR=False
-            if self.walkL==True and self.rightface==True:
-                char1.current_img = pygame.transform.flip(char1.current_img, True, False)
-                self.leftface=True
-                self.rightface=False
+            #if self.walkL==True and self.rightface==True:
+                #self.current_img = pygame.transform.flip(self.current_img, True, False)
+                #self.leftface=True
+                #self.rightface=False
 
         if direction=="stopleft":
             self.walkL=False
-            if self.walkR==True and self.leftface==True:
-                char1.current_img = pygame.transform.flip(char1.current_img, True, False)
-                self.leftface=False
-                self.rightface=True
+            #if self.walkR==True and self.leftface==True:
+                #self.current_img = pygame.transform.flip(self.current_img, True, False)
+                #self.leftface=False
+                #self.rightface=True
+
+        if direction=="look_up":
+            self.look_up=True
+
+        if direction=="stoplook_up":
+            self.look_up=False
 
         if direction == 0:
             self.speed_x = 0
@@ -67,6 +115,7 @@ class Player:
 
     def updatepos(self):
         #atualizando a posicao do player
+        self.animate()
         self.speed_y+=self.aceleration
 
         self.y += self.speed_y
@@ -159,19 +208,23 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False #saindo do jogo apertano esc
-            if event.key == pygame.K_UP and char1.jump==False:
+            if event.key == pygame.K_SPACE and char1.jump==False:
                 char1.move("up")
             if char1.walkR==True and char1.walkL==True:
                 print("teste")
-            if event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_w:
+                char1.move("look_up")
+            if event.key == pygame.K_d:
                 char1.move("right")
-            if event.key == pygame.K_LEFT:
+            if event.key == pygame.K_a:
                 char1.move("left")
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_d:
                 char1.move("stopright")
-            if event.key == pygame.K_LEFT:
+            if event.key == pygame.K_a:
                 char1.move("stopleft")
+            if event.key == pygame.K_w:
+                char1.move("stoplook_up")
 
     char1.updatepos() ## atualizando a posicao do personagem
     floor=[ground]
