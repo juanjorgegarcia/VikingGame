@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 import pygame, os
 from numpy import arange
 pygame.init()
