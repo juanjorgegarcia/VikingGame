@@ -65,7 +65,7 @@ class Player(pygame.sprite.Sprite):
                 self.current_img=pygame.transform.scale(self.current_img,(200,200))
         self.current_img=self.current_img.convert_alpha()
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
-        self.mask = pygame.mask.from_surface(self.current_img)
+
 
 
     def move(self,direction):
@@ -122,35 +122,27 @@ class Player(pygame.sprite.Sprite):
         #atualizando a posicao do player
         self.animate()
         self.speed_y+=self.aceleration
-        #x, y = pygame.mouse.get_pos()
-        #print(x,y)
         self.y += self.speed_y
         self.rect = self.current_img.get_rect(x=self.x,y=self.y)
         self.hitbox = pygame.Rect(self.x+70,self.y,60,192)
-        #print(self.hitbox)
-        #print(ground.top)
-        #hit=pygame.sprite.spritecollide(self.current_img,i.image,False,pygame.sprite.collide_mask)
-        for i in floor: #floor é a lista q contem todos os objetos da plataforma
-            if self.rect.colliderect(i.rect) == True: #se o retangulo do player colidir com o da plataforma
-                print("colisao retangulo")
-                #print(pygame.sprite.collide_mask(self, i))
-                #print(self)
-                print(pygame.sprite.collide_mask(self, i))
-                if pygame.sprite.collide_rect(self, i) == False:
-                    print("sem colisao mascara")
-                    self.colision=False
-                #print("colidindo")
-                else:
-                    if pygame.sprite.collide_rect(self, i) == True:
-                        print("colidindomascara")
+        self.mask = pygame.mask.from_surface(self.current_img)
+
+        for i in floor:
+            if self.rect.colliderect(i.rect) == True:
+                print("colidindo retangulo")
+                if not pygame.sprite.collide_mask(self,i) == None:
+                    self.colision = True
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
-                    self.colision = True
+                    print("colidindomascara")
                     break
+                else:
+                    self.colision = False
             else:
-                print("sem colisao retangulo")
-                self.colision=False
+                self.colision = False
+
+
 
         if self.colision == False:
             self.aceleration = 0.4
