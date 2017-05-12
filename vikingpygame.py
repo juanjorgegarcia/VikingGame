@@ -32,7 +32,7 @@ class Player:
 
 
         self.walkingR_frames=[pygame.image.load("Images\\walk_right\\sprite_walkR0.png"),pygame.image.load("Images\\walk_right\\sprite_walkR1.png"),pygame.image.load("Images\\walk_right\\sprite_walkR2.png"),pygame.image.load("Images\\walk_right\\sprite_walkR3.png")]
-        self.attacking_frames=[pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
+        self.attacking_frames=[pygame.image.load("Images\\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
         self.walkingl_frames=[]
         self.attackingl_frames=[]
 
@@ -88,8 +88,6 @@ class Player:
                 self.current_img=pygame.transform.scale(self.current_img,(200,200))
 
 
-
-
     def move(self,direction):
         #movendo o player
         if direction == "left":
@@ -132,6 +130,7 @@ class Player:
             self.speed_y = -15 #+ self.aceleration
             self.jump = True #player esta pulando!
 
+
     def updatepos(self):
         #atualizando a posicao do player
         self.animate()
@@ -166,6 +165,46 @@ class Player:
         if self.walkL == True:
             if self.x > 0:
                 self.x -= self.speed_x
+
+# class Enemy(pygame.sprite.Sprite):
+#     #classe para os minions/mobs
+#     def __init__(self,x,y,sprite):
+#         pygame.sprite.Sprite.__init__(self)
+#         self.x = x #coordenada x do personagem
+#         self.y = y #coordenada y do personagem
+#         self.current_frame=0
+#         self.last_update=0
+#         self.load_images()
+#         self.standimg=0
+#         self.current_img=sprite
+#         self.speed_x = 0 #velocidade no eixo x
+#         self.speed_y = 0 #velocidade no eixo x
+#         self.aceleration = + 0.4 #gravidade
+#         self.walkR = False #status do player andando para direita
+#         self.walkL = False #status do player andando para esquerda
+#         self.jump = False #status do player pulando
+#         self.rightface= True #sabaer pra onde o jogador esta olhando
+#         self.leftface = False
+#         self.look_up=False
+#         self.size = pygame.Surface.get_size(self.current_img) #retangulo equivalente a sprite
+#         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
+#         self.colision = False # personagem nao esta colidindo
+#         self.hitbox = pygame.Rect(self.x,self.y,self.x+self.size[0],self.size[1]) #hitbox do personagem
+#         self.mask = pygame.mask.from_surface(self.current_img)
+#
+#         def move(self,speed_x,speed_y,position):
+#             self.speed_x=-speed_x
+#             self.speed_y=speed_y
+#             if self.x == 0:
+#                 self.speed_x=+speed_x
+#
+#         def update(self):
+#             self.x+=self.speed_x
+#             self.y+=self.speed_y
+#             self.mask = pygame.mask.from_surface(self.current_img)
+#             self.rect = self.current_img.get_rect(x = self.x, y = self.y)
+
+
 
 
 
@@ -215,6 +254,9 @@ for i in range (3):
     char_spritedata[name] = pwalkright
 ############
 music1=pygame.mixer.music.load("Visager_-_02_-_Royal_Entrance.mp3")
+############
+#slime=pygame.image.load()
+#enemy=Enemy(450,400,)
 ############
 ground0 = pygame.image.load("Images\\chão\\ground_middle.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
