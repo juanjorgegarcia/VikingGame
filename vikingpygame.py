@@ -22,7 +22,7 @@ class Player:
         self.rightface= True #sabaer pra onde o jogador esta olhando
         self.leftface = False
         self.look_up=False
-        self.atake=False
+        self.attack=False
         self.size = pygame.Surface.get_size(self.current_img) #retangulo equivalente a sprite
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
         self.colision = False # personagem nao esta colidindo
@@ -58,7 +58,7 @@ class Player:
             elif self.rightface==True:
                 self.current_img=pygame.transform.scale(pygame.image.load("Images\\stand.png"),(200,200))
 
-        elif self.walkR==False and self.walkL==False and self.jump==False and self.atake==False:
+        elif self.walkR==False and self.walkL==False and self.jump==False and self.attack==False:
             if self.leftface==True:
                 self.current_img=pygame.transform.scale(pygame.image.load("Images\\stand.png"),(200,200))
                 self.current_img = pygame.transform.flip(self.current_img, True, False)
@@ -79,9 +79,9 @@ class Player:
                 self.current_img=self.walkingl_frames[self.current_frame]
                 self.current_img=pygame.transform.scale(self.current_img,(200,200))
 
-        if self.atake==True:
+        if self.attack==True:
             if now - self.last_update>80:
-                self.atake==False
+                self.attack==False
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.attacking_frames)
                 self.current_img=self.attacking_frames[self.current_frame]
@@ -111,8 +111,8 @@ class Player:
 
         if direction=="stopleft":
             self.walkL=False
-        if direction=="stop_atake":
-            self.atake=False
+        if direction=="stop_attack":
+            self.attack=False
 
         if direction=="look_up":
             self.look_up=True
@@ -120,8 +120,8 @@ class Player:
         if direction=="stoplook_up":
             self.look_up=False
 
-        if direction=="atake":
-            self.atake=True
+        if direction=="attack":
+            self.attack=True
 
         if direction == 0:
             self.speed_x = 0
@@ -214,6 +214,8 @@ for i in range (3):
     pwalkright = pygame.transform.scale(pwalkright, (char1.size))
     char_spritedata[name] = pwalkright
 ############
+music1=pygame.mixer.music.load("Visager_-_02_-_Royal_Entrance.mp3")
+############
 ground0 = pygame.image.load("Images\\chão\\ground_middle.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
 ground = Blocks(800,450,ground0)
@@ -236,6 +238,8 @@ while running:
         if event.type == pygame.QUIT:
             running=False #saindo do jogo fechando a janela
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_m:
+                pygame.mixer.music.play(loops=1)
             if event.key == pygame.K_ESCAPE:
                 running = False #saindo do jogo apertano esc
             if event.key == pygame.K_SPACE and char1.jump==False:
@@ -247,7 +251,7 @@ while running:
             if event.key == pygame.K_a:
                 char1.move("left")
             if event.key == pygame.K_j:
-                char1.move("atake")
+                char1.move("attack")
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_d:
                 char1.move("stopright")
@@ -256,7 +260,7 @@ while running:
             if event.key == pygame.K_w:
                 char1.move("stoplook_up")
             if event.key == pygame.K_j:
-                char1.move("stop_atake")
+                char1.move("stop_attack")
 
 
 
