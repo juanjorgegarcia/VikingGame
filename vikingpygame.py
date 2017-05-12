@@ -12,7 +12,7 @@ class Player:
         self.last_update=0
         self.load_images()
         self.standimg=0
-        self.current_img=pygame.image.load("Images\\stand.png")
+        self.current_img=pygame.image.load("Images\\Player\\STAND_RIGHT\\stand.png")
         self.speed_x = 0 #velocidade no eixo x
         self.speed_y = 0 #velocidade no eixo x
         self.aceleration = + 0.4 #gravidade
@@ -31,8 +31,8 @@ class Player:
     def load_images(self):
 
 
-        self.walkingR_frames=[pygame.image.load("Images\\walk_right\\sprite_walkR0.png"),pygame.image.load("Images\\walk_right\\sprite_walkR1.png"),pygame.image.load("Images\\walk_right\\sprite_walkR2.png"),pygame.image.load("Images\\walk_right\\sprite_walkR3.png")]
-        self.attacking_frames=[pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
+        self.walkingR_frames=[pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR0.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR1.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR2.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR3.png")]
+        self.attacking_frames=[pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
         self.walkingl_frames=[]
         self.attackingl_frames=[]
 
@@ -46,24 +46,24 @@ class Player:
 
         if self.look_up==True and self.walkR==False and self.walkL==False and self.jump==False:
             if self.rightface==True:
-                self.current_img=pygame.transform.scale(pygame.image.load("Images\\upright.png"),(200,200))
+                self.current_img=pygame.transform.scale(pygame.image.load("Images\\Player\\CIMA_RIGHT\\cima.png"),(200,200))
             if self.leftface==True:
-                self.current_img=pygame.transform.scale(pygame.image.load("Images\\upright.png"),(200,200))
+                self.current_img=pygame.transform.scale(pygame.image.load("Images\\Player\\CIMA_RIGHT\\cima.png"),(200,200))
                 self.current_img = pygame.transform.flip(self.current_img, True, False)
 
         elif self.walkR==True and self.walkL==True and self.jump==False:
             if self.leftface==True:
-                self.current_img=pygame.transform.scale(pygame.image.load("Images\\stand.png"),(200,200))
+                self.current_img=pygame.transform.scale(pygame.image.load("Images\\Player\\STAND_RIGHT\\stand.png"),(200,200))
                 self.current_img = pygame.transform.flip(self.current_img, True, False)
             elif self.rightface==True:
-                self.current_img=pygame.transform.scale(pygame.image.load("Images\\stand.png"),(200,200))
+                self.current_img=pygame.transform.scale(pygame.image.load("Images\\Player\\STAND_RIGHT\\stand.png"),(200,200))
 
         elif self.walkR==False and self.walkL==False and self.jump==False and self.attack==False:
             if self.leftface==True:
-                self.current_img=pygame.transform.scale(pygame.image.load("Images\\stand.png"),(200,200))
+                self.current_img=pygame.transform.scale(pygame.image.load("Images\\Player\\STAND_RIGHT\\stand.png"),(200,200))
                 self.current_img = pygame.transform.flip(self.current_img, True, False)
             if self.rightface==True:
-                self.current_img=pygame.transform.scale(pygame.image.load("Images\\stand.png"),(200,200))
+                self.current_img=pygame.transform.scale(pygame.image.load("Images\\Player\\STAND_RIGHT\\stand.png"),(200,200))
 
         elif self.walkR==True and self.jump==False:
             if now - self.last_update>80:
@@ -200,23 +200,23 @@ background = pygame.image.load("8bitvapor.png") #dando load
 background = pygame.transform.scale(background, (screen_x, screen_y))  #escalano conforme a tela
 background = background.convert() #covertenod os pixels da imagem (a imagem é carregada mais rapidamete)
 ######
-# ground0 = pygame.image.load("Images\\chão\\ground_middle.png").convert()
+# ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
 # ground0 = pygame.transform.scale(ground0,(100,100)).convert()
 # ground = Blocks(800,450,ground0)
 # groundRange =arange(0,screen_x,ground.width)
 ############ carregando as sprites do player
-player1="Images\\stand.png"
+player1="Images\\Player\\STAND_RIGHT\\stand.png"
 char1=Player(400,400,player1)
 char_spritedata = {}
 for i in range (3):
     name = "pwalkright{}".format(i)
-    pwalkright = pygame.image.load("Images\\walk_right\\sprite_walkR{}.png".format(i)).convert()
+    pwalkright = pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR{}.png".format(i)).convert()
     pwalkright = pygame.transform.scale(pwalkright, (char1.size))
     char_spritedata[name] = pwalkright
 ############
 music1=pygame.mixer.music.load("Visager_-_02_-_Royal_Entrance.mp3")
 ############
-ground0 = pygame.image.load("Images\\chão\\ground_middle.png").convert()
+ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
 ground = Blocks(800,450,ground0)
 groundRange =arange(0,screen_x,ground.width)
