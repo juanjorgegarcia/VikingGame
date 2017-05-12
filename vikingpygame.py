@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 import pygame, os
 from numpy import arange
 pygame.init()
@@ -117,11 +118,14 @@ class Player:
         #atualizando a posicao do player
         self.animate()
         self.speed_y+=self.aceleration
-
+        #x, y = pygame.mouse.get_pos()
+        #print(x,y)
         self.y += self.speed_y
         self.rect = self.current_img.get_rect(x=self.x,y=self.y)
         self.hitbox = pygame.Rect(self.x+70,self.y,60,192)
         #print(self.hitbox)
+        #%print("X={},Y={} ".format(self.x,self.y))
+        #print(ground.top)
         for i in floor: #floor é a lista q contem todos os objetos da plataforma
             if self.hitbox.colliderect(i.rect) == True: #se o retangulo do player colidir com o da plataforma
                 #print("colidindo")
@@ -154,6 +158,7 @@ class Blocks():
         self.image = sprite
         self.width,self.height = pygame.Surface.get_size(self.image)
         self.rect = self.image.get_rect(x = self.x, y = self.y)
+        #self.top = [[self.x,self.width + self.x],[self.y-char1.size[1],self.y-char1.size[1]]]
 
 class Menu():
     #classe para o menu o jogo
@@ -165,6 +170,7 @@ class Menu():
 clock=pygame.time.Clock() #importando o timer
 ######
 ######
+#char1=Player(400,400,player1)
 screen_x=1280
 screen_y=720
 screen=pygame.display.set_mode((screen_x,screen_y)) #criando o display do jogo
@@ -174,20 +180,24 @@ background = pygame.image.load("8bitvapor.png") #dando load
 background = pygame.transform.scale(background, (screen_x, screen_y))  #escalano conforme a tela
 background = background.convert() #covertenod os pixels da imagem (a imagem é carregada mais rapidamete)
 ######
-ground0 = pygame.image.load("Images\\chão\\ground_middle.png").convert()
-ground0 = pygame.transform.scale(ground0,(100,100)).convert()
-ground = Blocks(800,450,ground0)
-groundRange =arange(0,screen_x,ground.width)
+# ground0 = pygame.image.load("Images\\chão\\ground_middle.png").convert()
+# ground0 = pygame.transform.scale(ground0,(100,100)).convert()
+# ground = Blocks(800,450,ground0)
+# groundRange =arange(0,screen_x,ground.width)
 ############ carregando as sprites do player
 player1="Images\\stand.png"
 char1=Player(400,400,player1)
 char_spritedata = {}
 for i in range (3):
     name = "pwalkright{}".format(i)
-    pwalkright = pygame.image.load("Images\\walk right\\sprite_walkR{}.png".format(i)).convert()
+    pwalkright = pygame.image.load("Images\\walk_right\\sprite_walkR{}.png".format(i)).convert()
     pwalkright = pygame.transform.scale(pwalkright, (char1.size))
     char_spritedata[name] = pwalkright
 ############
+ground0 = pygame.image.load("Images\\chão\\ground_middle.png").convert()
+ground0 = pygame.transform.scale(ground0,(100,100)).convert()
+ground = Blocks(800,450,ground0)
+groundRange =arange(0,screen_x,ground.width)
 
 pygame.display.set_caption("A Tale of the Unworthy") #Titulo da janela do jogo
 running=True
@@ -225,6 +235,7 @@ while running:
                 char1.move("stopleft")
             if event.key == pygame.K_w:
                 char1.move("stoplook_up")
+
 
     char1.updatepos() ## atualizando a posicao do personagem
     floor=[ground]
