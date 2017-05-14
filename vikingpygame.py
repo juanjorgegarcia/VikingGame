@@ -29,21 +29,15 @@ class Player:
         self.hitbox = pygame.Rect(self.x,self.y,self.x+self.size[0],self.size[1]) #hitbox do personagem
 
     def load_images(self):
-
-
-<<<<<<< HEAD
-        self.walkingR_frames=[pygame.image.load("Images\\walk_right\\sprite_walkR0.png"),pygame.image.load("Images\\walk_right\\sprite_walkR1.png"),pygame.image.load("Images\\walk_right\\sprite_walkR2.png"),pygame.image.load("Images\\walk_right\\sprite_walkR3.png")]
+        self.walkingR_frames=[pygame.image.load("Images\\Player\\walk_right\\sprite_walkR0.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR1.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR2.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR3.png")]
         self.attacking_frames=[pygame.image.load("Images\\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
-=======
         self.walkingR_frames=[pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR0.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR1.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR2.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR3.png")]
         self.attacking_frames=[pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
->>>>>>> 32965117fe075557bc4beb7d84ea97387e690346
         self.walkingl_frames=[]
         self.attackingl_frames=[]
 
         for frame in self.walkingR_frames:
             self.walkingl_frames.append(pygame.transform.flip(frame,True,False))
-            self.attackingl_frames.append(pygame.transform.flip(frame,True,False))
 
 
     def animate(self):
@@ -171,43 +165,59 @@ class Player:
             if self.x > 0:
                 self.x -= self.speed_x
 
-# class Enemy(pygame.sprite.Sprite):
+class Enemy(pygame.sprite.Sprite):
 #     #classe para os minions/mobs
-#     def __init__(self,x,y,sprite):
-#         pygame.sprite.Sprite.__init__(self)
-#         self.x = x #coordenada x do personagem
-#         self.y = y #coordenada y do personagem
-#         self.current_frame=0
-#         self.last_update=0
-#         self.load_images()
-#         self.standimg=0
-#         self.current_img=sprite
-#         self.speed_x = 0 #velocidade no eixo x
-#         self.speed_y = 0 #velocidade no eixo x
-#         self.aceleration = + 0.4 #gravidade
-#         self.walkR = False #status do player andando para direita
-#         self.walkL = False #status do player andando para esquerda
-#         self.jump = False #status do player pulando
-#         self.rightface= True #sabaer pra onde o jogador esta olhando
-#         self.leftface = False
-#         self.look_up=False
-#         self.size = pygame.Surface.get_size(self.current_img) #retangulo equivalente a sprite
-#         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
-#         self.colision = False # personagem nao esta colidindo
-#         self.hitbox = pygame.Rect(self.x,self.y,self.x+self.size[0],self.size[1]) #hitbox do personagem
-#         self.mask = pygame.mask.from_surface(self.current_img)
-#
-#         def move(self,speed_x,speed_y,position):
-#             self.speed_x=-speed_x
-#             self.speed_y=speed_y
-#             if self.x == 0:
-#                 self.speed_x=+speed_x
-#
-#         def update(self):
-#             self.x+=self.speed_x
-#             self.y+=self.speed_y
-#             self.mask = pygame.mask.from_surface(self.current_img)
-#             self.rect = self.current_img.get_rect(x = self.x, y = self.y)
+    def __init__(self,x,y,sprite):
+        pygame.sprite.Sprite.__init__(self)
+        self.x=x #coordenada x do personagem
+        self.y=y #coordenada y do personagem
+        self.current_frame=0
+        self.last_update=0
+        self.load_images()
+        self.standimg=0
+        self.current_img=sprite
+        self.speed_x = 0 #velocidade no eixo x
+        self.speed_y = 0 #velocidade no eixo x
+        self.aceleration = + 0.4 #gravidade
+        self.walkR = False #status do player andando para direita
+        self.walkL = False #status do player andando para esquerda
+        self.jump = False #status do player pulando
+        self.rightface= True #sabaer pra onde o jogador esta olhando
+        self.leftface = False
+        self.look_up=False
+        self.size = pygame.Surface.get_size(self.current_img) #retangulo equivalente a sprite
+        self.rect = self.current_img.get_rect(x = self.x, y = self.y)
+        self.colision = False # personagem nao esta colidindo
+        self.hitbox = pygame.Rect(self.x,self.y,self.x+self.size[0],self.size[1]) #hitbox do personagem
+        self.mask = pygame.mask.from_surface(self.current_img)
+
+    def load_images(self):
+        self.slimeL=[pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_1.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_2.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_3.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_4.png")]
+
+    def animate(self):
+        now=pygame.time.get_ticks()
+
+        if now - self.last_update>80:
+            self.last_update=now
+            self.current_frame=(self.current_frame+1)%len(self.slimeL)
+            self.current_img=self.slimeL[self.current_frame]
+            self.current_img=pygame.transform.scale(self.current_img,(100,100))
+
+
+
+
+    def move(self,speed_x,speed_y,position):
+        self.speed_x=-speed_x
+        self.speed_y=speed_y
+        if self.x == 0:
+            self.speed_x=+speed_x
+
+    def update(self):
+        self.animate()
+        self.x+=self.speed_x
+        self.y+=self.speed_y
+        self.mask = pygame.mask.from_surface(self.current_img)
+        self.rect = self.current_img.get_rect(x = self.x, y = self.y)
 
 
 
@@ -250,7 +260,10 @@ background = background.convert() #covertenod os pixels da imagem (a imagem é c
 # groundRange =arange(0,screen_x,ground.width)
 ############ carregando as sprites do player
 player1="Images\\Player\\STAND_RIGHT\\stand.png"
+Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png")
+slime11=pygame.transform.scale(Slime1,(100,100))
 char1=Player(400,400,player1)
+slime1=Enemy(1100,500,slime11)
 char_spritedata = {}
 for i in range (3):
     name = "pwalkright{}".format(i)
@@ -260,14 +273,12 @@ for i in range (3):
 ############
 music1=pygame.mixer.music.load("Visager_-_02_-_Royal_Entrance.mp3")
 ############
-<<<<<<< HEAD
+
 #slime=pygame.image.load()
 #enemy=Enemy(450,400,)
 ############
-ground0 = pygame.image.load("Images\\chão\\ground_middle.png").convert()
-=======
+ground0 = pygame.image.load("Images\\Plataforma\\chão\\ground_middle.png").convert()
 ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
->>>>>>> 32965117fe075557bc4beb7d84ea97387e690346
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
 ground = Blocks(800,450,ground0)
 groundRange =arange(0,screen_x,ground.width)
@@ -284,6 +295,7 @@ while running:
         floor.append(chao)
         screen.blit(ground.image,(i,390+(char1.size[1])))
     screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
+    screen.blit(slime1.current_img,(slime1.x,slime1.y))
     pygame.display.update()### atualizando o display
     for event in pygame.event.get(): #pegando as açoes do usuario
         if event.type == pygame.QUIT:
@@ -314,10 +326,10 @@ while running:
                 char1.move("stop_attack")
 
 
-
+    slime1.update()
     char1.updatepos() ## atualizando a posicao do personagem
     floor=[ground]
-    screen.blit(char1.current_img,(char1.x,char1.y))### pintando o player
+    screen.blit(pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),(200,200))
     clock.tick(60) # ajustando o fps
 ############
 pygame.quit() #fechando o pygame
