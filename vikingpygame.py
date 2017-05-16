@@ -316,7 +316,7 @@ while running:
         screen.blit(ground.image,(i,390+(char1.size[1])))
     screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
     screen.blit(slime1.current_img,(slime1.x,slime1.y))
-    pygame.display.update()### atualizando o display
+
     for event in pygame.event.get(): #pegando as açoes do usuario
         if event.type == pygame.QUIT:
             running=False #saindo do jogo fechando a janela
@@ -356,6 +356,7 @@ while running:
     char1.updatepos() ## atualizando a posicao do personagem
     floor=[ground]
     clock.tick(60) # ajustando o fps
+    pygame.display.update()### atualizando o display
 ############
 pygame.quit() #fechando o pygame
 quit() # fechandoo python
