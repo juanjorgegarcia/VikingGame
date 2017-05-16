@@ -293,10 +293,10 @@ player1="Images\\Player\\STAND_RIGHT\\stand.png"
 char1=Player(400,400,player1)
 char_spritedata = {}
 for i in range (3):
-    name = "pwalkright{}".format(i)
-    pwalkright = pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR{}.png".format(i)).convert()
-    pwalkright = pygame.transform.scale(pwalkright, (char1.size))
-    char_spritedata[name] = pwalkright
+	name = "pwalkright{}".format(i)
+	pwalkright = pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR{}.png".format(i)).convert()
+	pwalkright = pygame.transform.scale(pwalkright, (char1.size))
+	char_spritedata[name] = pwalkright
 ####################
 enemies = []
 Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png").convert()
@@ -352,6 +352,9 @@ while running:
 				char1.move("left")
 			if event.key == pygame.K_j:
 				char1.move("attack")
+			if event.key == pygame.K_k:
+				background = kkkeae
+				background = pygame.transform.scale(background, (screen_x, screen_y))
 		if event.type == pygame.KEYUP:
 			if event.key == pygame.K_d:
 				char1.move("stopright")
