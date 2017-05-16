@@ -30,7 +30,7 @@ class Player:
 
     def load_images(self):
         self.walkingR_frames=[pygame.image.load("Images\\Player\\walk_right\\sprite_walkR0.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR1.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR2.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR3.png")]
-        self.attacking_frames=[pygame.image.load("Images\\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
+        #self.attacking_frames=[pygame.image.load("Images\\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
         self.walkingR_frames=[pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR0.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR1.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR2.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR3.png")]
         self.attacking_frames=[pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
         self.walkingl_frames=[]
@@ -206,7 +206,7 @@ class Enemy(pygame.sprite.Sprite):
 
 
 
-    def move(self,speed_x,speed_y,position):
+    def move(self,speed_x,speed_y):
         self.speed_x=-speed_x
         self.speed_y=speed_y
         if self.x == 0:
@@ -218,6 +218,9 @@ class Enemy(pygame.sprite.Sprite):
         self.y+=self.speed_y
         self.mask = pygame.mask.from_surface(self.current_img)
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
+        if self.x == 0:
+            self.speed_x=0
+            self.speed_x=+speed_x
 
 
 
@@ -325,7 +328,7 @@ while running:
             if event.key == pygame.K_j:
                 char1.move("stop_attack")
 
-
+    slime1.move(3,0)
     slime1.update()
     char1.updatepos() ## atualizando a posicao do personagem
     floor=[ground]
