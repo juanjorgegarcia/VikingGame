@@ -269,8 +269,8 @@ screen_y=720
 screen=pygame.display.set_mode((screen_x,screen_y)) #criando o display do jogo
 ######
 ###### carregando o background Do jogo
-oi = pygame.image.load("8bitvapor.png").convert()
-background = oi #dando load
+vapor = pygame.image.load("8bitvapor.png").convert()
+background = vapor #dando load
 background = pygame.transform.scale(background, (screen_x, screen_y))  #escalano conforme a tela
 #background = background.convert() #covertenod os pixels da imagem (a imagem é carregada mais rapidamete)
 ######
@@ -354,7 +354,7 @@ while running:
             if event.key == pygame.K_j:
                 char1.move("stop_attack")
             if event.key == pygame.K_k:
-                background = oi
+                background = vapor
                 background = pygame.transform.scale(background, (screen_x, screen_y))
 
     slime1.move(5,0)
