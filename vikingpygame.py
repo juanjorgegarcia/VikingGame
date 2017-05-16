@@ -272,12 +272,9 @@ screen=pygame.display.set_mode((screen_x,screen_y)) #criando o display do jogo
 vapor = pygame.image.load("8bitvapor.png").convert()
 background = vapor #dando load
 background = pygame.transform.scale(background, (screen_x, screen_y))  #escalano conforme a tela
-#background = background.convert() #covertenod os pixels da imagem (a imagem é carregada mais rapidamete)
+
 ######
-# ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
-# ground0 = pygame.transform.scale(ground0,(100,100)).convert()
-# ground = Blocks(800,450,ground0)
-# groundRange =arange(0,screen_x,ground.width)
+
 ############ carregando as sprites do player
 player1="Images\\Player\\STAND_RIGHT\\stand.png"
 char1=Player(400,400,player1)
@@ -299,9 +296,6 @@ enemies.append(slime1)
 music1=pygame.mixer.music.load("Visager_-_02_-_Royal_Entrance.mp3")
 ############
 kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
-
-#slime=pygame.image.load()
-#enemy=Enemy(450,400,)
 ############
 ground0 = pygame.image.load("Images\\Plataforma\\chão\\ground_middle.png").convert()
 ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
