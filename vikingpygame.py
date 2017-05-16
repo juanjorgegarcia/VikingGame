@@ -278,7 +278,8 @@ screen_y=720
 screen=pygame.display.set_mode((screen_x,screen_y)) #criando o display do jogo
 ######
 ###### carregando o background Do jogo
-background = pygame.image.load("8bitvapor.png") #dando load
+vapor = pygame.image.load("8bitvapor.png").convert()
+background = vapor #dando load
 background = pygame.transform.scale(background, (screen_x, screen_y))  #escalano conforme a tela
 background = background.convert() #covertenod os pixels da imagem (a imagem é carregada mais rapidamete)
 bgMoveRight = False
@@ -286,28 +287,28 @@ addBg = 0
 addBgRight = False
 addBgLeft = False
 ######
-# ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
-# ground0 = pygame.transform.scale(ground0,(100,100)).convert()
-# ground = Blocks(800,450,ground0)
-# groundRange =arange(0,screen_x,ground.width)
+
 ############ carregando as sprites do player
 player1="Images\\Player\\STAND_RIGHT\\stand.png"
-Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png")
-slime11=pygame.transform.scale(Slime1,(100,100))
 char1=Player(400,400,player1)
-slime1=Enemy(1100,500,slime11)
 char_spritedata = {}
 for i in range (3):
-	name = "pwalkright{}".format(i)
-	pwalkright = pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR{}.png".format(i)).convert()
-	pwalkright = pygame.transform.scale(pwalkright, (char1.size))
-	char_spritedata[name] = pwalkright
+    name = "pwalkright{}".format(i)
+    pwalkright = pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR{}.png".format(i)).convert()
+    pwalkright = pygame.transform.scale(pwalkright, (char1.size))
+    char_spritedata[name] = pwalkright
+####################
+enemies = []
+Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png").convert()
+slime11=pygame.transform.scale(Slime1,(100,100))
+
+slime1=Enemy(1100,500,slime11)
+enemies.append(slime1)
+#################################
 ############
 music1=pygame.mixer.music.load("Visager_-_02_-_Royal_Entrance.mp3")
 ############
-
-#slime=pygame.image.load()
-#enemy=Enemy(450,400,)
+kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 ############
 ground0 = pygame.image.load("Images\\Plataforma\\chão\\ground_middle.png").convert()
 ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
