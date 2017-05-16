@@ -1,4 +1,3 @@
-# -- coding: utf-8 --
 import pygame, os
 from numpy import arange
 pygame.init()
@@ -30,7 +29,7 @@ class Player:
 
     def load_images(self):
         self.walkingR_frames=[pygame.image.load("Images\\Player\\walk_right\\sprite_walkR0.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR1.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR2.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR3.png")]
-        #self.attacking_frames=[pygame.image.load("Images\\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
+        self.attacking_frames=[pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
         self.walkingR_frames=[pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR0.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR1.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR2.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR3.png")]
         self.attacking_frames=[pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
         self.walkingl_frames=[]
@@ -182,8 +181,8 @@ class Enemy(pygame.sprite.Sprite):
         self.walkR = False #status do player andando para direita
         self.walkL = False #status do player andando para esquerda
         self.jump = False #status do player pulando
-        self.rightface= True #sabaer pra onde o jogador esta olhando
-        self.leftface = False
+        self.rightface= False #sabaer pra onde o jogador esta olhando
+        self.leftface = True
         self.look_up=False
         self.size = pygame.Surface.get_size(self.current_img) #retangulo equivalente a sprite
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
@@ -193,24 +192,43 @@ class Enemy(pygame.sprite.Sprite):
 
     def load_images(self):
         self.slimeL=[pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_1.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_2.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_3.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_4.png")]
+        self.slimeR=[]
 
+        for frame in self.slimeL:
+            self.slimeR.append(pygame.transform.flip(frame,True,False))
     def animate(self):
         now=pygame.time.get_ticks()
 
-        if now - self.last_update>80:
-            self.last_update=now
-            self.current_frame=(self.current_frame+1)%len(self.slimeL)
-            self.current_img=self.slimeL[self.current_frame]
-            self.current_img=pygame.transform.scale(self.current_img,(100,100))
+        if self.leftface==True and self.rightface==False:
+            if now - self.last_update>120:
+                self.last_update=now
+                self.current_frame=(self.current_frame+1)%len(self.slimeL)
+                self.current_img=self.slimeL[self.current_frame]
+                self.current_img=pygame.transform.scale(self.current_img,(100,100))
+
+        elif self.rightface==True and self.leftface==False:
+            if now - self.last_update>120:
+                self.last_update=now
+                self.current_frame=(self.current_frame+1)%len(self.slimeR)
+                self.current_img=self.slimeR[self.current_frame]
+                self.current_img=pygame.transform.scale(self.current_img,(100,100))
+
 
 
 
 
     def move(self,speed_x,speed_y):
-        self.speed_x=-speed_x
-        self.speed_y=speed_y
-        if self.x == 0:
+        if self.x==1100:
+            self.speed_x=-speed_x
+            self.leftface=True
+            self.rightface=False
+
+
+
+        elif self.x == 0:
             self.speed_x=+speed_x
+            self.rightface=True
+            self.leftface=False
 
     def update(self):
         self.animate()
@@ -218,9 +236,6 @@ class Enemy(pygame.sprite.Sprite):
         self.y+=self.speed_y
         self.mask = pygame.mask.from_surface(self.current_img)
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
-        if self.x == 0:
-            self.speed_x=0
-            self.speed_x=+speed_x
 
 
 
@@ -327,8 +342,7 @@ while running:
                 char1.move("stoplook_up")
             if event.key == pygame.K_j:
                 char1.move("stop_attack")
-
-    slime1.move(3,0)
+    slime1.move(5,0)
     slime1.update()
     char1.updatepos() ## atualizando a posicao do personagem
     floor=[ground]
