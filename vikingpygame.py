@@ -228,15 +228,9 @@ class Enemy(pygame.sprite.Sprite):
                 self.current_img=self.slimeR[self.current_frame]
                 self.current_img=pygame.transform.scale(self.current_img,(100,100))
 
-<<<<<<< HEAD
-    def move(self,speed_x,speed_y):
-=======
-
-
 
 
     def move(self,speed_x,speed_y,):
->>>>>>> 44679ed28f97140d0c65b9be74b26fbccd617c3b
         if self.x==1100:
             self.speed_x=-speed_x
             self.leftface=True
