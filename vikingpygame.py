@@ -164,7 +164,7 @@ class Player(pygame.sprite.Sprite):
         if self.collision_enemies == True:
             self.x = 400
             self.y = 400
-            
+
         if self.walkR == True:
             self.x += self.speed_x
 
@@ -288,7 +288,7 @@ for i in range (3):
     char_spritedata[name] = pwalkright
 ####################
 enemies = []
-Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png")
+Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png").convert()
 slime11=pygame.transform.scale(Slime1,(100,100))
 
 slime1=Enemy(1100,500,slime11)
@@ -339,6 +339,9 @@ while running:
                 char1.move("left")
             if event.key == pygame.K_j:
                 char1.move("attack")
+            if event.key == pygame.K_k:
+                background = pygame.image.load("kkkeaeman.jpg").convert()
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_d:
                 char1.move("stopright")
@@ -348,11 +351,14 @@ while running:
                 char1.move("stoplook_up")
             if event.key == pygame.K_j:
                 char1.move("stop_attack")
+            if event.key==pygame.K_k:
+                background = pygame.image.load("8bitvapor.png").convert()
+                background = pygame.transform.scale(background, (screen_x, screen_y))
+
     slime1.move(5,0)
     slime1.update()
     char1.updatepos() ## atualizando a posicao do personagem
     floor=[ground]
-    screen.blit(pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),(200,200))
     clock.tick(60) # ajustando o fps
 ############
 pygame.quit() #fechando o pygame
