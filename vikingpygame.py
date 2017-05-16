@@ -136,14 +136,12 @@ class Player(pygame.sprite.Sprite):
         #atualizando a posicao do player
         self.animate()
         self.speed_y+=self.aceleration
-        #x, y = pygame.mous
         self.y += self.speed_y
         self.rect = self.current_img.get_rect(x=self.x,y=self.y)
         self.hitbox = pygame.Rect(self.x+70,self.y,60,192)
         self.mask = pygame.mask.from_surface(self.current_img)
         for i in floor: #floor é a lista q contem todos os objetos da plataforma
             if self.hitbox.colliderect(i.rect) == True: #se o retangulo do player colidir com o da plataforma
-                #print("colidindo")
                 self.speed_y = 0
                 self.aceleration = 0
                 self.jump = False
@@ -154,24 +152,19 @@ class Player(pygame.sprite.Sprite):
         for i in enemies:
             if self.rect.colliderect(i.rect) ==  True:
                 if not pygame.sprite.collide_mask(self,i) == None:
-                    self.collision_floor = True
-                    self.speed_y = 0
-                    self.aceleration = 0
-                    self.jump = False
-                    self.x = 400
-                    self.y = 400
-                    print("MORREEEUUU")
+                    self.collision_enemies= True
                     break
                 else:
                     self.collision_enemies = False
             else:
                 self.collision_enemies = False
-
         if self.collision_floor == False:
             self.aceleration = 0.4
+
         if self.collision_enemies == True:
             self.x = 400
             self.y = 400
+            
         if self.walkR == True:
             self.x += self.speed_x
 
@@ -228,15 +221,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.current_img=self.slimeR[self.current_frame]
                 self.current_img=pygame.transform.scale(self.current_img,(100,100))
 
-<<<<<<< HEAD
     def move(self,speed_x,speed_y):
-=======
-
-
-
-
-    def move(self,speed_x,speed_y,):
->>>>>>> 44679ed28f97140d0c65b9be74b26fbccd617c3b
         if self.x==1100:
             self.speed_x=-speed_x
             self.leftface=True
@@ -354,8 +339,6 @@ while running:
                 char1.move("left")
             if event.key == pygame.K_j:
                 char1.move("attack")
-            if event.key == pygame.K_k:
-                background=pygame.image.load("kkkeaeman.jpg").convert()
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_d:
                 char1.move("stopright")
@@ -365,10 +348,6 @@ while running:
                 char1.move("stoplook_up")
             if event.key == pygame.K_j:
                 char1.move("stop_attack")
-            if event.key==pygame.K_k:
-                background = pygame.image.load("8bitvapor.png")
-                background = pygame.transform.scale(background, (screen_x, screen_y))
-
     slime1.move(5,0)
     slime1.update()
     char1.updatepos() ## atualizando a posicao do personagem
