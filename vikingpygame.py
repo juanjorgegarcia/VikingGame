@@ -253,7 +253,7 @@ class Blocks(pygame.sprite.Sprite):
         #self.top = [[self.x,self.width + self.x],[self.y-char1.size[1],self.y-char1.size[1]]]
 
 
-class Menu():
+class Game():
     #classe para o menu o jogo
     #devera conter funções como, start, savegame, highscore, creditos e customizaçao (posivelmente)
     pass
@@ -269,9 +269,10 @@ screen_y=720
 screen=pygame.display.set_mode((screen_x,screen_y)) #criando o display do jogo
 ######
 ###### carregando o background Do jogo
-background = pygame.image.load("8bitvapor.png") #dando load
+oi = pygame.image.load("8bitvapor.png").convert()
+background = oi #dando load
 background = pygame.transform.scale(background, (screen_x, screen_y))  #escalano conforme a tela
-background = background.convert() #covertenod os pixels da imagem (a imagem é carregada mais rapidamete)
+#background = background.convert() #covertenod os pixels da imagem (a imagem é carregada mais rapidamete)
 ######
 # ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
 # ground0 = pygame.transform.scale(ground0,(100,100)).convert()
@@ -297,6 +298,7 @@ enemies.append(slime1)
 ############
 music1=pygame.mixer.music.load("Visager_-_02_-_Royal_Entrance.mp3")
 ############
+kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 
 #slime=pygame.image.load()
 #enemy=Enemy(450,400,)
@@ -340,8 +342,8 @@ while running:
             if event.key == pygame.K_j:
                 char1.move("attack")
             if event.key == pygame.K_k:
-                background = pygame.image.load("kkkeaeman.jpg").convert()
-
+                background = kkkeae
+                background = pygame.transform.scale(background, (screen_x, screen_y))
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_d:
                 char1.move("stopright")
@@ -351,8 +353,8 @@ while running:
                 char1.move("stoplook_up")
             if event.key == pygame.K_j:
                 char1.move("stop_attack")
-            if event.key==pygame.K_k:
-                background = pygame.image.load("8bitvapor.png").convert()
+            if event.key == pygame.K_k:
+                background = oi
                 background = pygame.transform.scale(background, (screen_x, screen_y))
 
     slime1.move(5,0)
