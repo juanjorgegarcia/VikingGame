@@ -1,11 +1,11 @@
-# -- coding: utf-8 --
 import pygame, os
 from numpy import arange
 pygame.init()
 
-class Player:
+class Player(pygame.sprite.Sprite):
     #classe para Player
     def __init__(self,x,y,sprite):
+        pygame.sprite.Sprite.__init__(self)
         self.x = x #coordenada x do personagem
         self.y = y #coordenada y do personagem
         self.current_frame=0
@@ -25,8 +25,10 @@ class Player:
         self.attack=False
         self.size = pygame.Surface.get_size(self.current_img) #retangulo equivalente a sprite
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
-        self.colision = False # personagem nao esta colidindo
+        self.collision_floor = False # personagem nao esta colidindo
         self.hitbox = pygame.Rect(self.x,self.y,self.x+self.size[0],self.size[1]) #hitbox do personagem
+        self.mask = pygame.mask.from_surface(self.current_img)
+        self.collision_enemies = False
 
     def load_images(self):
         self.walkingR_frames=[pygame.image.load("Images\\Player\\walk_right\\sprite_walkR0.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR1.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR2.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR3.png")]
@@ -134,39 +136,51 @@ class Player:
         #atualizando a posicao do player
         self.animate()
         self.speed_y+=self.aceleration
-        #x, y = pygame.mouse.get_pos()
-        #print(x,y)
+        #x, y = pygame.mous
         self.y += self.speed_y
         self.rect = self.current_img.get_rect(x=self.x,y=self.y)
         self.hitbox = pygame.Rect(self.x+70,self.y,60,192)
-        #print(self.hitbox)
-        #%print("X={},Y={} ".format(self.x,self.y))
-        #print(ground.top)
+        self.mask = pygame.mask.from_surface(self.current_img)
         for i in floor: #floor é a lista q contem todos os objetos da plataforma
             if self.hitbox.colliderect(i.rect) == True: #se o retangulo do player colidir com o da plataforma
                 #print("colidindo")
                 self.speed_y = 0
                 self.aceleration = 0
                 self.jump = False
-                self.colision = True
+                self.collision_floor = True
                 break
             else:
-                self.colision=False
+                self.collision_floor=False
+        for i in enemies:
+            if self.rect.colliderect(i.rect) ==  True:
+                if not pygame.sprite.collide_mask(self,i) == None:
+                    self.collision_floor = True
+                    self.speed_y = 0
+                    self.aceleration = 0
+                    self.jump = False
+                    self.x = 400
+                    self.y = 400
+                    print("MORREEEUUU")
+                    break
+                else:
+                    self.collision_enemies = False
+            else:
+                self.collision_enemies = False
 
-        if self.colision == False:
+        if self.collision_floor == False:
             self.aceleration = 0.4
-
+        if self.collision_enemies == True:
+            self.x = 400
+            self.y = 400
         if self.walkR == True:
             self.x += self.speed_x
-
-
 
         if self.walkL == True:
             if self.x > 0:
                 self.x -= self.speed_x
 
 class Enemy(pygame.sprite.Sprite):
-#     #classe para os minions/mobs
+ #     #classe para os minions/mobs
     def __init__(self,x,y,sprite):
         pygame.sprite.Sprite.__init__(self)
         self.x=x #coordenada x do personagem
@@ -187,7 +201,7 @@ class Enemy(pygame.sprite.Sprite):
         self.look_up=False
         self.size = pygame.Surface.get_size(self.current_img) #retangulo equivalente a sprite
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
-        self.colision = False # personagem nao esta colidindo
+        self.collision_floor = False # personagem nao esta colidindo
         self.hitbox = pygame.Rect(self.x,self.y,self.x+self.size[0],self.size[1]) #hitbox do personagem
         self.mask = pygame.mask.from_surface(self.current_img)
 
@@ -214,17 +228,19 @@ class Enemy(pygame.sprite.Sprite):
                 self.current_img=self.slimeR[self.current_frame]
                 self.current_img=pygame.transform.scale(self.current_img,(100,100))
 
-
-
-
-
+<<<<<<< HEAD
     def move(self,speed_x,speed_y):
+=======
+
+
+
+
+    def move(self,speed_x,speed_y,):
+>>>>>>> 44679ed28f97140d0c65b9be74b26fbccd617c3b
         if self.x==1100:
             self.speed_x=-speed_x
             self.leftface=True
             self.rightface=False
-
-
 
         elif self.x == 0:
             self.speed_x=+speed_x
@@ -239,19 +255,18 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
 
 
-
-
-
-class Blocks():
+class Blocks(pygame.sprite.Sprite):
     # classe para elementos estáticos do jogo
 
     def __init__(self,x,y,sprite):
+        pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
         self.image = sprite
         self.width,self.height = pygame.Surface.get_size(self.image)
         self.rect = self.image.get_rect(x = self.x, y = self.y)
         #self.top = [[self.x,self.width + self.x],[self.y-char1.size[1],self.y-char1.size[1]]]
+
 
 class Menu():
     #classe para o menu o jogo
@@ -279,16 +294,21 @@ background = background.convert() #covertenod os pixels da imagem (a imagem é c
 # groundRange =arange(0,screen_x,ground.width)
 ############ carregando as sprites do player
 player1="Images\\Player\\STAND_RIGHT\\stand.png"
-Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png")
-slime11=pygame.transform.scale(Slime1,(100,100))
 char1=Player(400,400,player1)
-slime1=Enemy(1100,500,slime11)
 char_spritedata = {}
 for i in range (3):
     name = "pwalkright{}".format(i)
     pwalkright = pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR{}.png".format(i)).convert()
     pwalkright = pygame.transform.scale(pwalkright, (char1.size))
     char_spritedata[name] = pwalkright
+####################
+enemies = []
+Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png")
+slime11=pygame.transform.scale(Slime1,(100,100))
+
+slime1=Enemy(1100,500,slime11)
+enemies.append(slime1)
+#################################
 ############
 music1=pygame.mixer.music.load("Visager_-_02_-_Royal_Entrance.mp3")
 ############
@@ -334,6 +354,8 @@ while running:
                 char1.move("left")
             if event.key == pygame.K_j:
                 char1.move("attack")
+            if event.key == pygame.K_k:
+                background=pygame.image.load("kkkeaeman.jpg").convert()
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_d:
                 char1.move("stopright")
@@ -343,6 +365,10 @@ while running:
                 char1.move("stoplook_up")
             if event.key == pygame.K_j:
                 char1.move("stop_attack")
+            if event.key==pygame.K_k:
+                background = pygame.image.load("8bitvapor.png")
+                background = pygame.transform.scale(background, (screen_x, screen_y))
+
     slime1.move(5,0)
     slime1.update()
     char1.updatepos() ## atualizando a posicao do personagem
