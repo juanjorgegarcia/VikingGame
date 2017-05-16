@@ -228,7 +228,15 @@ class Enemy(pygame.sprite.Sprite):
                 self.current_img=self.slimeR[self.current_frame]
                 self.current_img=pygame.transform.scale(self.current_img,(100,100))
 
+<<<<<<< HEAD
     def move(self,speed_x,speed_y):
+=======
+
+
+
+
+    def move(self,speed_x,speed_y,):
+>>>>>>> 44679ed28f97140d0c65b9be74b26fbccd617c3b
         if self.x==1100:
             self.speed_x=-speed_x
             self.leftface=True
@@ -346,6 +354,8 @@ while running:
                 char1.move("left")
             if event.key == pygame.K_j:
                 char1.move("attack")
+            if event.key == pygame.K_k:
+                background=pygame.image.load("kkkeaeman.jpg").convert()
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_d:
                 char1.move("stopright")
@@ -355,6 +365,10 @@ while running:
                 char1.move("stoplook_up")
             if event.key == pygame.K_j:
                 char1.move("stop_attack")
+            if event.key==pygame.K_k:
+                background = pygame.image.load("8bitvapor.png")
+                background = pygame.transform.scale(background, (screen_x, screen_y))
+
     slime1.move(5,0)
     slime1.update()
     char1.updatepos() ## atualizando a posicao do personagem
