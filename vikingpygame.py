@@ -345,7 +345,7 @@ while running:
             if event.key == pygame.K_j:
                 char1.move("stop_attack")
             if event.key==pygame.K_k:
-                background = pygame.image.load("8bitvapor.png")
+                background = pygame.image.load("8bitvapor.png").convert()
                 background = pygame.transform.scale(background, (screen_x, screen_y))
 
     slime1.move(5,0)
