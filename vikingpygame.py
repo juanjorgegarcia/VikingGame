@@ -288,7 +288,7 @@ for i in range (3):
     char_spritedata[name] = pwalkright
 ####################
 enemies = []
-Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png")
+Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png").convert()
 slime11=pygame.transform.scale(Slime1,(100,100))
 
 slime1=Enemy(1100,500,slime11)
@@ -359,7 +359,6 @@ while running:
     slime1.update()
     char1.updatepos() ## atualizando a posicao do personagem
     floor=[ground]
-    screen.blit(pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),(200,200))
     clock.tick(60) # ajustando o fps
 ############
 pygame.quit() #fechando o pygame
