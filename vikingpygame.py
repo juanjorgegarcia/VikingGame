@@ -285,6 +285,8 @@ cloud = pygame.transform.scale(cloud,(50,50))
 cloudi = Blocks(1280,150,cloud)
 
 cloud2 = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD_2.png")
+cloud2 = pygame.transform.scale(cloud2,(30,30))
+cloudi2 = Blocks(1280,200,cloud2)
 cloud3 = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD_3.png")
 
 clouds = [cloud,cloud2,cloud3]
@@ -324,8 +326,10 @@ running=True
 while running:
     screen.blit(background, (0, 0)) ### pintando o background
     screen.blit(ground.image,(ground.x,ground.y))
-    cloudi.move(5)
+    cloudi.move(2)
+    cloudi2.move(1.5)
     screen.blit(cloudi.image,(cloudi.x,cloudi.y))
+    screen.blit(cloudi2.image,(cloudi2.x,cloudi2.y))
     floor=[ground]
     for i in groundRange:
         chao = Blocks(i,390+char1.size[1],ground.image)
@@ -333,9 +337,6 @@ while running:
         screen.blit(ground.image,(i,390+(char1.size[1])))
     screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
     screen.blit(slime1.current_img,(slime1.x,slime1.y))
-    # for i in clouds:
-    #     x = randrange
-    #     nuvem = Blocks()
 
     for event in pygame.event.get(): #pegando as açoes do usuario
         if event.type == pygame.QUIT:
