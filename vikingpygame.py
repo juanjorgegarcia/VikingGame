@@ -1,4 +1,5 @@
 import pygame, os
+from random import randrange
 from numpy import arange
 pygame.init()
 
@@ -252,6 +253,11 @@ class Blocks(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(x = self.x, y = self.y)
         #self.top = [[self.x,self.width + self.x],[self.y-char1.size[1],self.y-char1.size[1]]]
 
+    def move(self,speed):
+        self.x+= -speed
+        if self.x<(0-self.width):
+            self.x = 1280
+            self.y = randrange(0,300)
 
 class Game():
     #classe para o menu o jogo
@@ -274,6 +280,15 @@ background = vapor #dando load
 background = pygame.transform.scale(background, (screen_x, screen_y))  #escalano conforme a tela
 
 ######
+cloud = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD.png")
+cloud = pygame.transform.scale(cloud,(50,50))
+cloudi = Blocks(1280,150,cloud)
+
+cloud2 = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD_2.png")
+cloud3 = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD_3.png")
+
+clouds = [cloud,cloud2,cloud3]
+
 
 ############ carregando as sprites do player
 player1="Images\\Player\\STAND_RIGHT\\stand.png"
@@ -309,6 +324,8 @@ running=True
 while running:
     screen.blit(background, (0, 0)) ### pintando o background
     screen.blit(ground.image,(ground.x,ground.y))
+    cloudi.move(5)
+    screen.blit(cloudi.image,(cloudi.x,cloudi.y))
     floor=[ground]
     for i in groundRange:
         chao = Blocks(i,390+char1.size[1],ground.image)
@@ -316,6 +333,9 @@ while running:
         screen.blit(ground.image,(i,390+(char1.size[1])))
     screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
     screen.blit(slime1.current_img,(slime1.x,slime1.y))
+    # for i in clouds:
+    #     x = randrange
+    #     nuvem = Blocks()
 
     for event in pygame.event.get(): #pegando as açoes do usuario
         if event.type == pygame.QUIT:
