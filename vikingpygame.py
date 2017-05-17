@@ -319,6 +319,7 @@ pygame.display.set_caption("A Tale of the Unworthy") #Titulo da janela do jogo
 running=True
 ############
 while running:
+<<<<<<< HEAD
 	screen.blit(background, (0, 0)) ### pintando o background
 	ground1 = Blocks(800-addBg,450,ground0)
 	ground2 = Blocks(800+ground1.width-addBg,450,ground0)
@@ -369,6 +370,57 @@ while running:
 	char1.updatepos() ## atualizando a posicao do personagem
 	screen.blit(pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),(200,200))
 	clock.tick(60) # ajustando o fps
+=======
+    screen.blit(background, (0, 0)) ### pintando o background
+    screen.blit(ground.image,(ground.x,ground.y))
+    floor=[ground]
+    for i in groundRange:
+        chao = Blocks(i,390+char1.size[1],ground.image)
+        floor.append(chao)
+        screen.blit(ground.image,(i,390+(char1.size[1])))
+    screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
+    screen.blit(slime1.current_img,(slime1.x,slime1.y))
+    pygame.display.update()### atualizando o display
+    for event in pygame.event.get(): #pegando as açoes do usuario
+        if event.type == pygame.QUIT:
+            running=False #saindo do jogo fechando a janela
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_m:
+                pygame.mixer.music.play(loops=1)
+            if event.key == pygame.K_ESCAPE:
+                running = False #saindo do jogo apertano esc
+            if event.key == pygame.K_SPACE and char1.jump==False:
+                char1.move("up")
+            if event.key == pygame.K_w:
+                char1.move("look_up")
+            if event.key == pygame.K_d:
+                char1.move("right")
+            if event.key == pygame.K_a:
+                char1.move("left")
+            if event.key == pygame.K_j:
+                char1.move("attack")
+            if event.key == pygame.K_k:
+                background = kkkeae
+                background = pygame.transform.scale(background, (screen_x, screen_y))
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_d:
+                char1.move("stopright")
+            if event.key == pygame.K_a:
+                char1.move("stopleft")
+            if event.key == pygame.K_w:
+                char1.move("stoplook_up")
+            if event.key == pygame.K_j:
+                char1.move("stop_attack")
+            if event.key == pygame.K_k:
+                background = vapor
+                background = pygame.transform.scale(background, (screen_x, screen_y))
+
+    slime1.move(5,0)
+    slime1.update()
+    char1.updatepos() ## atualizando a posicao do personagem
+    floor=[ground]
+    clock.tick(60) # ajustando o fps
+>>>>>>> parent of 2ec747c... Codigo mais limpo
 ############
 pygame.quit() #fechando o pygame
 quit() # fechandoo python
