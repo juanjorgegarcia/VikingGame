@@ -164,7 +164,7 @@ class Player(pygame.sprite.Sprite):
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
-                    self.y = i.rect.top - self.size[1]
+                    self.y = i.rect.top - self.size[1] 
                     ## player para e é mandado para o topo da plataforma
                     break
                 else:
@@ -303,14 +303,14 @@ background = vapor #dando load
 background = pygame.transform.scale(background, (screen_x, screen_y))  #escalano conforme a tela
 
 ######
-cloud = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD.png")
+cloud = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD.png").convert_alpha()
 cloud = pygame.transform.scale(cloud,(50,50))
 cloudi = Blocks(1280,150,cloud)
 
-cloud2 = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD_2.png")
+cloud2 = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD_2.png").convert_alpha()
 cloud2 = pygame.transform.scale(cloud2,(30,30))
 cloudi2 = Blocks(1280,200,cloud2)
-cloud3 = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD_3.png")
+cloud3 = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD_3.png").convert_alpha()
 
 clouds = [cloud,cloud2,cloud3]
 
