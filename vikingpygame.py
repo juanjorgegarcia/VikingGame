@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 import pygame, os
 from random import randrange
 from numpy import arange
