@@ -30,6 +30,7 @@ class Player(pygame.sprite.Sprite):
         self.hitbox = pygame.Rect(self.x,self.y,self.x+self.size[0],self.size[1]) #hitbox do personagem
         self.mask = pygame.mask.from_surface(self.current_img)
         self.collision_enemies = False
+        self.collision_plat = False
 
     def load_images(self):
         self.walkingR_frames=[pygame.image.load("Images\\Player\\walk_right\\sprite_walkR0.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR1.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR2.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR3.png")]
@@ -141,18 +142,35 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.current_img.get_rect(x=self.x,y=self.y)
         self.hitbox = pygame.Rect(self.x+70,self.y,60,192)
         self.mask = pygame.mask.from_surface(self.current_img)
-        for i in floor: #floor é a lista q contem todos os objetos da plataforma
+
+        for i in floor: #floor é a lista q contem todos os quadrados do chao do jogo
             if self.hitbox.colliderect(i.rect) == True: #se o retangulo do player colidir com o da plataforma
-                self.speed_y = 0
-                self.aceleration = 0
-                self.jump = False
-                self.collision_floor = True
-                break
+                    self.speed_y = 0
+                    self.aceleration = 0
+                    self.jump = False
+                    self.collision_floor = True
+                    break
             else:
                 self.collision_floor=False
 
+        for i in aero:
+            #aero é a lista que contem todas as plataformas aéreas do jogo
+            if self.speed_y > 0 :
+                ## se o player estiver caindo
+                if self.hitbox.colliderect(i.rect) == True and self.rect.midbottom[1] <= i.rect.center[1] - (i.height)/4 :
+                    ##  se o player colidir com a plataforma e seu pé estiver entre 1/4 da altura da plataforma
+                    self.collision_plat = True
+                    self.speed_y = 0
+                    self.aceleration = 0
+                    self.jump = False
+                    self.y = i.rect.top - self.size[1]
+                    ## player para e é mandado para o topo da plataforma
+                    break
+                else:
+                    self.collision_plat = False
 
         for i in enemies:
+            #enemies é uma lista que contem todos os inimigos do player
             if self.rect.colliderect(i.rect) ==  True:
                 if not pygame.sprite.collide_mask(self,i) == None:
                     self.collision_enemies= True
@@ -161,6 +179,8 @@ class Player(pygame.sprite.Sprite):
                     self.collision_enemies = False
             else:
                 self.collision_enemies = False
+
+
         if self.collision_floor == False:
             self.aceleration = 0.4
 
@@ -319,21 +339,23 @@ kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 ground0 = pygame.image.load("Images\\Plataforma\\chão\\ground_middle.png").convert()
 ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
-ground = Blocks(800,450,ground0)
+ground = Blocks(760,370,ground0)
+ground2= Blocks(760+100,370,ground0)
 groundRange =arange(0,screen_x,ground.width)
 
 pygame.display.set_caption("A Tale of the Unworthy") #Titulo da janela do jogo
 running=True
 ############
-aero=[ground]
+aero=[ground,ground2]
 while running:
     screen.blit(background, (0, 0)) ### pintando o background
     screen.blit(ground.image,(ground.x,ground.y))
+    screen.blit(ground2.image,(ground2.x,ground2.y))
     cloudi.move(2)
     cloudi2.move(1.5)
     screen.blit(cloudi.image,(cloudi.x,cloudi.y))
     screen.blit(cloudi2.image,(cloudi2.x,cloudi2.y))
-    floor=[ground]
+    floor=[]
     for i in groundRange:
         chao = Blocks(i,390+char1.size[1],ground.image)
         floor.append(chao)
