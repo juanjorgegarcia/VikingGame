@@ -150,6 +150,8 @@ class Player(pygame.sprite.Sprite):
                 break
             else:
                 self.collision_floor=False
+
+
         for i in enemies:
             if self.rect.colliderect(i.rect) ==  True:
                 if not pygame.sprite.collide_mask(self,i) == None:
@@ -323,6 +325,7 @@ groundRange =arange(0,screen_x,ground.width)
 pygame.display.set_caption("A Tale of the Unworthy") #Titulo da janela do jogo
 running=True
 ############
+aero=[ground]
 while running:
     screen.blit(background, (0, 0)) ### pintando o background
     screen.blit(ground.image,(ground.x,ground.y))
@@ -375,7 +378,7 @@ while running:
     slime1.move(5,0)
     slime1.update()
     char1.updatepos() ## atualizando a posicao do personagem
-    floor=[ground]
+    floor=[]
     clock.tick(60) # ajustando o fps
     pygame.display.update()### atualizando o display
 ############
