@@ -197,11 +197,16 @@ class Player(pygame.sprite.Sprite):
 
 class Enemy(pygame.sprite.Sprite):
  #     #classe para os minions/mobs
-    def __init__(self,x,y,sprite):
+    def __init__(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
         pygame.sprite.Sprite.__init__(self)
+        self.race=race
         self.x=x #coordenada x do personagem
         self.y=y #coordenada y do personagem
         self.current_frame=0
+        self.limitx1=limitx1
+        self.limity1=limity1
+        self.limitx2=limitx2
+        self.limity2=limity2
         self.last_update=0
         self.load_images()
         self.standimg=0
@@ -209,12 +214,12 @@ class Enemy(pygame.sprite.Sprite):
         self.speed_x = 0 #velocidade no eixo x
         self.speed_y = 0 #velocidade no eixo x
         self.aceleration = + 0.4 #gravidade
-        self.walkR = False #status do player andando para direita
+        self.walkR = movingx #status do player andando para direita
         self.walkL = False #status do player andando para esquerda
         self.jump = False #status do player pulando
-        self.rightface= False #sabaer pra onde o jogador esta olhando
+        self.moveUP=movingy
+        self.rightface= False #saber pra onde o inimigo esta olhando
         self.leftface = True
-        self.look_up=False
         self.size = pygame.Surface.get_size(self.current_img) #retangulo equivalente a sprite
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
         self.collision_floor = False # personagem nao esta colidindo
@@ -225,34 +230,65 @@ class Enemy(pygame.sprite.Sprite):
         #self.slimeL=[pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_1.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_2.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_3.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_4.png")]
         self.slimeL=Game.loadimages("Images\\Inimigos\\Slime\\slime_{}.png",5,100,100)
         self.slimeR=Game.loadflipimages(self.slimeL)
+        self.dragonL=Game.loadimages("Images\\Inimigos\\Flying demon\\sprite_{}.png",2,300,300)
+        self.dragonR=Game.loadflipimages(self.dragonL)
+
 
     def animate(self):
         now=pygame.time.get_ticks()
+        if self.race=="Slime":
 
-        if self.leftface==True and self.rightface==False:
-            if now - self.last_update>120:
-                self.last_update=now
-                self.current_frame=(self.current_frame+1)%len(self.slimeL)
-                self.current_img=self.slimeL[self.current_frame]
-                self.current_img=pygame.transform.scale(self.current_img,(100,100))
+            if self.leftface==True and self.rightface==False:
+                if now - self.last_update>120:
+                    self.last_update=now
+                    self.current_frame=(self.current_frame+1)%len(self.slimeL)
+                    self.current_img=self.slimeL[self.current_frame]
 
-        elif self.rightface==True and self.leftface==False:
-            if now - self.last_update>120:
+            elif self.rightface==True and self.leftface==False:
+                if now - self.last_update>120:
+                    self.last_update=now
+                    self.current_frame=(self.current_frame+1)%len(self.slimeR)
+                    self.current_img=self.slimeR[self.current_frame]
+
+
+        if self.race=="Dragon":
+
+
+            if now - self.last_update>200:
                 self.last_update=now
-                self.current_frame=(self.current_frame+1)%len(self.slimeR)
-                self.current_img=self.slimeR[self.current_frame]
-                self.current_img=pygame.transform.scale(self.current_img,(100,100))
+                self.current_frame=(self.current_frame+1)%len(self.dragonL)
+                self.current_img=self.dragonL[self.current_frame]
+
+
+
 
     def move(self,speed_x,speed_y):
-        if self.x==1100:
-            self.speed_x=-speed_x
-            self.leftface=True
-            self.rightface=False
 
-        elif self.x == 0:
+        if self.walkR==True:
             self.speed_x=+speed_x
             self.rightface=True
             self.leftface=False
+
+        if self.x==self.limitx1 and self.walkR == True:
+            self.speed_x=-speed_x
+            self.leftface=True
+            self.rightface=False
+            self.walkR=False
+
+        elif self.x == self.limitx2:
+            self.walkR=True
+
+        if self.moveUP==True:
+            self.speed_y=-speed_y
+
+        if self.y<self.limity1 and self.moveUP == True:
+            self.speed_y=+speed_y
+            self.moveUP=False
+
+        elif self.y > self.limity2:
+            self.moveUP=True
+
+
 
     def update(self):
         self.animate()
@@ -297,6 +333,16 @@ class Game():
             lista.append(pygame.transform.flip(frame,True,False))
         return lista
 
+    def update():
+        dragon1.update()
+        dragon1.move(0,3)
+        slime2.move(5,0)
+        slime1.move(5,0)
+        slime1.update()
+        slime2.update()
+        char1.updatepos()
+
+
 
 ######
 clock=pygame.time.Clock() #importando o timer
@@ -329,17 +375,15 @@ clouds = [cloud,cloud2,cloud3]
 player1="Images\\Player\\STAND_RIGHT\\stand.png"
 char1=Player(400,400,player1)
 char_spritedata = {}
-for i in range (3):
-    name = "pwalkright{}".format(i)
-    pwalkright = pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR{}.png".format(i)).convert()
-    pwalkright = pygame.transform.scale(pwalkright, (char1.size))
-    char_spritedata[name] = pwalkright
 ####################
 enemies = []
+dragon=pygame.image.load("Images\\Inimigos\\Flying demon\\sprite_0.png").convert()
 Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png").convert()
 slime11=pygame.transform.scale(Slime1,(100,100))
-
-slime1=Enemy(1100,500,slime11)
+#(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
+slime1=Enemy(1100,500,1100,0,0,0,slime11,False,False,"Slime")
+slime2=Enemy(500,500,600,50,0,0,slime11,True,False,"Slime")
+dragon1=Enemy(970,500,0,0,-90,400,dragon,False,True,"Dragon")
 enemies.append(slime1)
 #################################
 ############
@@ -373,6 +417,8 @@ while running:
         screen.blit(ground.image,(i,390+(char1.size[1])))
     screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
     screen.blit(slime1.current_img,(slime1.x,slime1.y))
+    screen.blit(slime2.current_img,(slime2.x,slime2.y))
+    screen.blit(dragon1.current_img,(dragon1.x,dragon1.y))
 
     for event in pygame.event.get(): #pegando as açoes do usuario
         if event.type == pygame.QUIT:
@@ -407,10 +453,8 @@ while running:
             if event.key == pygame.K_k:
                 background = vapor
                 background = pygame.transform.scale(background, (screen_x, screen_y))
-
-    slime1.move(5,0)
-    slime1.update()
-    char1.updatepos() ## atualizando a posicao do personagem
+     ## atualizando a posicao do personagem
+    Game.update()
     floor=[]
     clock.tick(60) # ajustando o fps
     pygame.display.update()### atualizando o display
