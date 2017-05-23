@@ -194,10 +194,10 @@ class Player(pygame.sprite.Sprite):
 
 
         if self.walkR == True:
-            if self.x < screen_x/2:           
+            if self.x < screen_x/2:
                 self.x += self.speed_x
             elif self.x >= screen_x/2 and self.x+addBg+pygame.Surface.get_width(self.current_img) <= map_x:
-                addBg = addBg + self.speed_x 
+                addBg = addBg + self.speed_x
 
         if self.walkL == True:
             if self.x > 0 and addBg <= 0:
@@ -360,7 +360,7 @@ enemies.append(slime1)
 #################################
 ############
 jump = pygame.mixer.Sound("Jump10.wav")
-music1=pygame.mixer.music.load("Visager_-_02_-_Royal_Entrance.mp3")
+music1=pygame.mixer.music.load("Heroic Demise (New).mp3")
 ############
 kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 ############
@@ -399,7 +399,7 @@ while running:
             running=False #saindo do jogo fechando a janela
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_m:
-                pygame.mixer.music.play(loops=1)
+                pygame.mixer.music.play(loops=-1)
             if event.key == pygame.K_ESCAPE:
                 running = False #saindo do jogo apertano esc
             if event.key == pygame.K_SPACE and char1.jump==False:
