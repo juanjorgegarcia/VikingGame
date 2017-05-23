@@ -170,7 +170,7 @@ class Player(pygame.sprite.Sprite):
                     break
                 else:
                     self.collision_plat = False
-                    self.jump = True
+                    #self.jump = True
 
         for i in enemies:
             #enemies é uma lista que contem todos os inimigos do player
@@ -372,21 +372,28 @@ kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 
 ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
-ground = Blocks(760,370,ground0)
-ground2= Blocks(760+100,370,ground0)
+ground = Blocks(300,300,ground0)
+ground2 = Blocks(400,300,ground0)
+ground3 = Blocks(800-addBg,200,ground0)
+ground4 = Blocks(900-addBg,200,ground0)
+ground5 = Blocks(1000-addBg,200,ground0)
+
 groundRange = arange(0,map_x,pygame.Surface.get_width(ground0))
 
 pygame.display.set_caption("A Tale of the Unworthy") #Titulo da janela do jogo
 running=True
 ############
-aero=[ground,ground2]
+
 while running:
     screen.blit(background, (0, 0)) ### pintando o background
-    ground = Blocks(760-addBg,370,ground0)
-    ground2= Blocks(760+ground.width-addBg,370,ground0)
-    aero=[ground,ground2]
-    for a in aero:
-        screen.blit(a.image,(a.x,a.y))
+    ground = Blocks(300-addBg,300,ground0)
+    ground2 = Blocks(300+ground.width-addBg,300,ground0)
+    ground3 = Blocks(800-addBg,200,ground0)
+    ground4 = Blocks(900-addBg,200,ground0)
+    ground5 = Blocks(1000-addBg,200,ground0)
+    aero=[ground,ground2,ground3,ground4,ground5]
+    for i in aero:
+        screen.blit(i.image,(i.x,i.y))
     cloudi.move(2)
     cloudi2.move(1.5)
     screen.blit(cloudi.image,(cloudi.x,cloudi.y))
