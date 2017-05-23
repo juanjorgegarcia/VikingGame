@@ -136,6 +136,7 @@ class Player(pygame.sprite.Sprite):
 
 
     def updatepos(self):
+        global addBg
         #atualizando a posicao do player
         self.animate()
         self.speed_y+=self.aceleration
@@ -186,15 +187,22 @@ class Player(pygame.sprite.Sprite):
             self.aceleration = 0.4
 
         if self.collision_enemies == True:
+            addBg = 0
             self.x = 400
             self.y = 400
 
+
         if self.walkR == True:
-            self.x += self.speed_x
+            if self.x < screen_x/2:           
+                self.x += self.speed_x
+            elif self.x >= screen_x/2 and self.x+addBg+pygame.Surface.get_width(self.current_img) <= map_x:
+                addBg = addBg + self.speed_x 
 
         if self.walkL == True:
-            if self.x > 0:
+            if self.x > 0 and addBg <= 0:
                 self.x -= self.speed_x
+            elif self.x > 0 and addBg > 0:
+                addBg = addBg - self.speed_x
 
 class Enemy(pygame.sprite.Sprite):
  #     #classe para os minions/mobs
@@ -246,19 +254,23 @@ class Enemy(pygame.sprite.Sprite):
                 self.current_img=pygame.transform.scale(self.current_img,(100,100))
 
     def move(self,speed_x,speed_y):
-        if self.x==1100:
-            self.speed_x=-speed_x
+        if self.x>=1100-addBg:
+            self.speed_x= -speed_x
             self.leftface=True
             self.rightface=False
 
-        elif self.x == 0:
-            self.speed_x=+speed_x
+        elif self.x <= 100-addBg:
+            self.speed_x= +speed_x
             self.rightface=True
             self.leftface=False
 
     def update(self):
         self.animate()
         self.x+=self.speed_x
+        if char1.walkR == True and addBg > 0:
+                self.x = self.x - char1.speed_x
+        if char1.walkL == True and addBg > 0:
+                self.x = self.x + char1.speed_x
         self.y+=self.speed_y
         self.mask = pygame.mask.from_surface(self.current_img)
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
@@ -293,6 +305,8 @@ clock=pygame.time.Clock() #importando o timer
 ######
 ######
 #char1=Player(400,400,player1)
+map_x = 5000
+map_y = 720
 screen_x=1280
 screen_y=720
 screen=pygame.display.set_mode((screen_x,screen_y)) #criando o display do jogo
@@ -301,7 +315,7 @@ screen=pygame.display.set_mode((screen_x,screen_y)) #criando o display do jogo
 vapor = pygame.image.load("8bitvapor.png").convert()
 background = vapor #dando load
 background = pygame.transform.scale(background, (screen_x, screen_y))  #escalano conforme a tela
-
+addBg = 0
 ######
 cloud = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD.png").convert_alpha()
 cloud = pygame.transform.scale(cloud,(50,50))
@@ -342,7 +356,7 @@ ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").conv
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
 ground = Blocks(760,370,ground0)
 ground2= Blocks(760+100,370,ground0)
-groundRange =arange(0,screen_x,ground.width)
+groundRange = arange(0,map_x,pygame.Surface.get_width(ground0))
 
 pygame.display.set_caption("A Tale of the Unworthy") #Titulo da janela do jogo
 running=True
@@ -350,17 +364,20 @@ running=True
 aero=[ground,ground2]
 while running:
     screen.blit(background, (0, 0)) ### pintando o background
-    screen.blit(ground.image,(ground.x,ground.y))
-    screen.blit(ground2.image,(ground2.x,ground2.y))
+    ground = Blocks(760-addBg,370,ground0)
+    ground2= Blocks(760+ground.width-addBg,370,ground0)
+    aero=[ground,ground2]
+    for a in aero:
+        screen.blit(a.image,(a.x,a.y))
     cloudi.move(2)
     cloudi2.move(1.5)
     screen.blit(cloudi.image,(cloudi.x,cloudi.y))
     screen.blit(cloudi2.image,(cloudi2.x,cloudi2.y))
     floor=[]
     for i in groundRange:
-        chao = Blocks(i,390+char1.size[1],ground.image)
+        chao = Blocks(i-addBg,390+char1.size[1],ground.image)
         floor.append(chao)
-        screen.blit(ground.image,(i,390+(char1.size[1])))
+        screen.blit(chao.image,(i-addBg,390+(char1.size[1])))
     screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
     screen.blit(slime1.current_img,(slime1.x,slime1.y))
 
