@@ -34,15 +34,17 @@ class Player(pygame.sprite.Sprite):
         self.collision_plat = False
 
     def load_images(self):
-        self.walkingR_frames=[pygame.image.load("Images\\Player\\walk_right\\sprite_walkR0.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR1.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR2.png"),pygame.image.load("Images\\Player\\walk_right\\sprite_walkR3.png")]
-        self.attacking_frames=[pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
-        self.walkingR_frames=[pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR0.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR1.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR2.png"),pygame.image.load("Images\\Player\\WALK_RIGHT\\sprite_walkR3.png")]
-        self.attacking_frames=[pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT0.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT1.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT2.png"),pygame.image.load("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT3.png")]
-        self.walkingl_frames=[]
-        self.attackingl_frames=[]
+        self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200)
+        self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200)
+        self.attacking_frames=Game.loadimages("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT{}.png",4,200,200)
+        self.lookingR_up_frames=Game.loadimages("Images\\Player\\CIMA_RIGHT\\cima.png",1,200,200)
+        self.standingL=Game.loadflipimages(self.standingR)
+        self.lookingL_up_frames=Game.loadflipimages(self.lookingR_up_frames)
+        self.walkingl_frames=Game.loadflipimages(self.walkingR_frames)
+        self.attackingl_frames=Game.loadflipimages(self.attacking_frames)
 
-        for frame in self.walkingR_frames:
-            self.walkingl_frames.append(pygame.transform.flip(frame,True,False))
+
+
 
 
     def animate(self):
@@ -50,24 +52,21 @@ class Player(pygame.sprite.Sprite):
 
         if self.look_up==True and self.walkR==False and self.walkL==False and self.jump==False:
             if self.rightface==True:
-                self.current_img=pygame.transform.scale(pygame.image.load("Images\\Player\\CIMA_RIGHT\\cima.png"),(200,200))
+                self.current_img=self.lookingR_up_frames[0]
             if self.leftface==True:
-                self.current_img=pygame.transform.scale(pygame.image.load("Images\\Player\\CIMA_RIGHT\\cima.png"),(200,200))
-                self.current_img = pygame.transform.flip(self.current_img, True, False)
+                self.current_img=self.lookingL_up_frames[0]
 
         elif self.walkR==True and self.walkL==True and self.jump==False:
             if self.leftface==True:
-                self.current_img=pygame.transform.scale(pygame.image.load("Images\\Player\\STAND_RIGHT\\stand.png"),(200,200))
-                self.current_img = pygame.transform.flip(self.current_img, True, False)
+                self.current_img=self.standingL[0]
             elif self.rightface==True:
-                self.current_img=pygame.transform.scale(pygame.image.load("Images\\Player\\STAND_RIGHT\\stand.png"),(200,200))
+                self.current_img=self.standingR[0]
 
         elif self.walkR==False and self.walkL==False and self.jump==False and self.attack==False:
             if self.leftface==True:
-                self.current_img=pygame.transform.scale(pygame.image.load("Images\\Player\\STAND_RIGHT\\stand.png"),(200,200))
-                self.current_img = pygame.transform.flip(self.current_img, True, False)
+                self.current_img=self.standingL[0]
             if self.rightface==True:
-                self.current_img=pygame.transform.scale(pygame.image.load("Images\\Player\\STAND_RIGHT\\stand.png"),(200,200))
+                self.current_img=self.standingR[0]
 
         elif self.walkR==True and self.jump==False:
             if now - self.last_update>80:
@@ -151,6 +150,7 @@ class Player(pygame.sprite.Sprite):
                     self.aceleration = 0
                     self.jump = False
                     self.collision_floor = True
+                    self.y = i.rect.top - self.size[1]
                     break
             else:
                 self.collision_floor=False
@@ -165,7 +165,7 @@ class Player(pygame.sprite.Sprite):
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
-                    self.y = i.rect.top - self.size[1] 
+                    self.y = i.rect.top - self.size[1]
                     ## player para e é mandado para o topo da plataforma
                     break
                 else:
@@ -189,7 +189,7 @@ class Player(pygame.sprite.Sprite):
         if self.collision_enemies == True:
             addBg = 0
             self.x = 400
-            self.y = 400
+
 
 
         if self.walkR == True:
@@ -231,11 +231,10 @@ class Enemy(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.current_img)
 
     def load_images(self):
-        self.slimeL=[pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_1.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_2.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_3.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_4.png")]
-        self.slimeR=[]
+        #self.slimeL=[pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_1.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_2.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_3.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_4.png")]
+        self.slimeL=Game.loadimages("Images\\Inimigos\\Slime\\slime_{}.png",5,100,100)
+        self.slimeR=Game.loadflipimages(self.slimeL)
 
-        for frame in self.slimeL:
-            self.slimeR.append(pygame.transform.flip(frame,True,False))
     def animate(self):
         now=pygame.time.get_ticks()
 
@@ -297,7 +296,19 @@ class Blocks(pygame.sprite.Sprite):
 class Game():
     #classe para o menu o jogo
     #devera conter funções como, start, savegame, highscore, creditos e customizaçao (posivelmente)
-    pass
+    def loadimages(sprite,Nframes,sizex,sizey):
+        lista=[]
+        for i in range(Nframes):
+            S=pygame.image.load(sprite.format(i)).convert_alpha()
+            S=pygame.transform.scale(S,(sizex,sizey))
+            lista.append(S)
+        return lista
+
+    def loadflipimages(Rimagelist):
+        lista=[]
+        for frame in Rimagelist:
+            lista.append(pygame.transform.flip(frame,True,False))
+        return lista
 
 
 ######
@@ -327,7 +338,7 @@ cloudi2 = Blocks(1280,200,cloud2)
 cloud3 = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD_3.png").convert_alpha()
 
 clouds = [cloud,cloud2,cloud3]
-
+#################
 
 ############ carregando as sprites do player
 player1="Images\\Player\\STAND_RIGHT\\stand.png"
@@ -347,11 +358,12 @@ slime1=Enemy(1100,500,slime11)
 enemies.append(slime1)
 #################################
 ############
+jump = pygame.mixer.Sound("Jump10.wav")
 music1=pygame.mixer.music.load("Visager_-_02_-_Royal_Entrance.mp3")
 ############
 kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 ############
-ground0 = pygame.image.load("Images\\Plataforma\\chão\\ground_middle.png").convert()
+
 ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
 ground = Blocks(760,370,ground0)
@@ -391,6 +403,7 @@ while running:
                 running = False #saindo do jogo apertano esc
             if event.key == pygame.K_SPACE and char1.jump==False:
                 char1.move("up")
+                jump.play()
             if event.key == pygame.K_w:
                 char1.move("look_up")
             if event.key == pygame.K_d:
