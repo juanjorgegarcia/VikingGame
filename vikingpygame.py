@@ -267,9 +267,9 @@ class Enemy(pygame.sprite.Sprite):
         self.animate()
         self.x+=self.speed_x
         if char1.walkR == True and addBg > 0:
-                self.x = self.x - char1.speed_x
+            self.x = self.x - char1.speed_x
         if char1.walkL == True and addBg > 0:
-                self.x = self.x + char1.speed_x
+            self.x = self.x + char1.speed_x
         self.y+=self.speed_y
         self.mask = pygame.mask.from_surface(self.current_img)
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
@@ -288,7 +288,12 @@ class Blocks(pygame.sprite.Sprite):
         #self.top = [[self.x,self.width + self.x],[self.y-char1.size[1],self.y-char1.size[1]]]
 
     def move(self,speed):
-        self.x+= -speed
+        if char1.walkR == True and addBg > 0:
+            self.x+= -speed - char1.speed_x*0.1
+        elif char1.walkL == True and addBg > 0:
+            self.x+= -speed + char1.speed_x*0.1
+        else:
+            self.x+= -speed
         if self.x<(0-self.width):
             self.x = 1280
             self.y = randrange(0,300)
