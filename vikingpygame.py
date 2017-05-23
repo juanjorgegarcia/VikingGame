@@ -169,6 +169,7 @@ class Player(pygame.sprite.Sprite):
                     break
                 else:
                     self.collision_plat = False
+                    self.jump = True
 
         for i in enemies:
             #enemies é uma lista que contem todos os inimigos do player
