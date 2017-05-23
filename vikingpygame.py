@@ -150,6 +150,7 @@ class Player(pygame.sprite.Sprite):
                     self.aceleration = 0
                     self.jump = False
                     self.collision_floor = True
+                    self.y = i.rect.top - self.size[1]
                     break
             else:
                 self.collision_floor=False
@@ -164,7 +165,7 @@ class Player(pygame.sprite.Sprite):
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
-                    self.y = i.rect.top - self.size[1] 
+                    self.y = i.rect.top - self.size[1]
                     ## player para e é mandado para o topo da plataforma
                     break
                 else:
@@ -187,7 +188,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.collision_enemies == True:
             self.x = 400
-            self.y = 400
+
 
         if self.walkR == True:
             self.x += self.speed_x
@@ -313,7 +314,7 @@ cloudi2 = Blocks(1280,200,cloud2)
 cloud3 = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD_3.png").convert_alpha()
 
 clouds = [cloud,cloud2,cloud3]
-
+#################
 
 ############ carregando as sprites do player
 player1="Images\\Player\\STAND_RIGHT\\stand.png"
@@ -333,11 +334,12 @@ slime1=Enemy(1100,500,slime11)
 enemies.append(slime1)
 #################################
 ############
+jump = pygame.mixer.Sound("Jump10.wav")
 music1=pygame.mixer.music.load("Visager_-_02_-_Royal_Entrance.mp3")
 ############
 kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 ############
-ground0 = pygame.image.load("Images\\Plataforma\\chão\\ground_middle.png").convert()
+
 ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
 ground = Blocks(760,370,ground0)
@@ -374,6 +376,7 @@ while running:
                 running = False #saindo do jogo apertano esc
             if event.key == pygame.K_SPACE and char1.jump==False:
                 char1.move("up")
+                jump.play()
             if event.key == pygame.K_w:
                 char1.move("look_up")
             if event.key == pygame.K_d:
