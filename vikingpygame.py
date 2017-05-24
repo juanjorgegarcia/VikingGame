@@ -36,12 +36,12 @@ class Player(pygame.sprite.Sprite):
     def load_images(self):
         self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200)
         self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200)
-        self.attacking_frames=Game.loadimages("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT{}.png",4,200,200)
+        self.attackingR_frames=Game.loadimages("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT{}.png",4,200,200)
         self.lookingR_up_frames=Game.loadimages("Images\\Player\\CIMA_RIGHT\\cima.png",1,200,200)
         self.standingL=Game.loadflipimages(self.standingR)
         self.lookingL_up_frames=Game.loadflipimages(self.lookingR_up_frames)
         self.walkingl_frames=Game.loadflipimages(self.walkingR_frames)
-        self.attackingl_frames=Game.loadflipimages(self.attacking_frames)
+        self.attackingL_frames=Game.loadflipimages(self.attackingR_frames)
 
 
 
@@ -57,10 +57,7 @@ class Player(pygame.sprite.Sprite):
                 self.current_img=self.lookingL_up_frames[0]
 
         elif self.walkR==True and self.walkL==True and self.jump==False:
-            if self.leftface==True:
-                self.current_img=self.standingL[0]
-            elif self.rightface==True:
-                self.current_img=self.standingR[0]
+            self.current_img=self.standingL[0]
 
         elif self.walkR==False and self.walkL==False and self.jump==False and self.attack==False:
             if self.leftface==True:
@@ -70,6 +67,7 @@ class Player(pygame.sprite.Sprite):
 
         elif self.walkR==True and self.jump==False:
             if now - self.last_update>80:
+                self.attack=False
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.walkingR_frames)
                 self.current_img=self.walkingR_frames[self.current_frame]
@@ -77,18 +75,35 @@ class Player(pygame.sprite.Sprite):
 
         elif self.walkL==True and self.jump==False:
             if now - self.last_update>80:
+                self.attack=False
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.walkingl_frames)
                 self.current_img=self.walkingl_frames[self.current_frame]
                 self.current_img=pygame.transform.scale(self.current_img,(200,200))
 
-        if self.attack==True:
-            if now - self.last_update>80:
+        if self.attack==True and self.rightface==True:
+            if now - self.last_update>90:
                 self.attack==False
                 self.last_update=now
-                self.current_frame=(self.current_frame+1)%len(self.attacking_frames)
-                self.current_img=self.attacking_frames[self.current_frame]
+                self.current_frame=(self.current_frame+1)%len(self.attackingR_frames)
+                self.current_img=self.attackingR_frames[self.current_frame]
                 self.current_img=pygame.transform.scale(self.current_img,(200,200))
+                if self.current_frame==0:
+                    self.attack=False
+                    self.current_frame=0
+
+        if self.attack==True and self.leftface==True:
+            if now - self.last_update>90:
+                self.attack==False
+                self.last_update=now
+                self.current_frame=(self.current_frame+1)%len(self.attackingL_frames)
+                self.current_img=self.attackingL_frames[self.current_frame]
+                self.current_img=pygame.transform.scale(self.current_img,(200,200))
+                if self.current_frame==0:
+                    self.attack=False
+                    self.current_frame=0
+
+
 
 
     def move(self,direction):
@@ -96,22 +111,22 @@ class Player(pygame.sprite.Sprite):
         if direction == "left":
             self.speed_x = 10
             self.walkL=True #player esta andando para esquerda
-            if self.jump==False:
-                self.leftface=True
-                self.rightface=False
+            self.leftface=True
+            self.rightface=False
 
         if direction == "right":
             self.speed_x = 10
             self.walkR=True #player esta andando para direita
-            if self.jump==False:
-                self.rightface=True
-                self.leftface=False
+            self.rightface=True
+            self.leftface=False
 
         if direction=="stopright":
             self.walkR=False
+            self.current_frame=0
 
         if direction=="stopleft":
             self.walkL=False
+            self.current_frame=0
         if direction=="stop_attack":
             self.attack=False
 
@@ -129,9 +144,10 @@ class Player(pygame.sprite.Sprite):
 
 
         if direction == "up":
-            self.aceleration = 0.4 #se o personagem estiver no ar a aceleraçao esta valendo!
-            self.speed_y = -15 #+ self.aceleration
-            self.jump = True #player esta pulando!
+            if self.attack==False:
+                self.aceleration = 0.4 #se o personagem estiver no ar a aceleraçao esta valendo!
+                self.speed_y = -15 #+ self.aceleration
+                self.jump = True #player esta pulando!
 
 
     def updatepos(self):
@@ -404,7 +420,7 @@ slime11=pygame.transform.scale(Slime1,(100,100))
 #(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
 slime1=Enemy(1100,500,1100,0,0,0,slime11,False,False,"Slime")
 slime2=Enemy(500,500,600,50,0,0,slime11,True,False,"Slime")
-dragon1=Enemy(970,500,0,0,-90,400,dragon,False,True,"Dragon")
+dragon1=Enemy(1200,200,0,0,-90,200,dragon,True,True,"Dragon")
 enemies.append(slime1)
 #################################
 ############
@@ -474,8 +490,6 @@ while running:
                 char1.move("stopleft")
             if event.key == pygame.K_w:
                 char1.move("stoplook_up")
-            if event.key == pygame.K_j:
-                char1.move("stop_attack")
             if event.key == pygame.K_k:
                 background = vapor
                 background = pygame.transform.scale(background, (screen_x, screen_y))
