@@ -81,7 +81,7 @@ class Player(pygame.sprite.Sprite):
                 self.current_img=self.walkingl_frames[self.current_frame]
                 self.current_img=pygame.transform.scale(self.current_img,(200,200))
 
-        if self.attack==True and self.rightface==True:
+        elif self.attack==True and self.rightface==True:
             if now - self.last_update>90:
                 self.attack==False
                 self.last_update=now
@@ -92,7 +92,7 @@ class Player(pygame.sprite.Sprite):
                     self.attack=False
                     self.current_frame=0
 
-        if self.attack==True and self.leftface==True:
+        elif self.attack==True and self.leftface==True:
             if now - self.last_update>90:
                 self.attack==False
                 self.last_update=now
@@ -102,6 +102,12 @@ class Player(pygame.sprite.Sprite):
                 if self.current_frame==0:
                     self.attack=False
                     self.current_frame=0
+
+        if self.jump==True and self.rightface==True:
+            self.current_img=self.standingR[0]
+        if self.jump==True and self.leftface==True:
+            self.current_img=self.standingL[0]
+
 
 
 
