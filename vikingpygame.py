@@ -34,10 +34,10 @@ class Player(pygame.sprite.Sprite):
         self.collision_plat = False
 
     def load_images(self):
-        self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200)
-        self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200)
-        self.attackingR_frames=Game.loadimages("Images\\Player\\ATTACK_RIGHT\\sprite_ATKRIGHT{}.png",4,200,200)
-        self.lookingR_up_frames=Game.loadimages("Images\\Player\\CIMA_RIGHT\\cima.png",1,200,200)
+        self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200,True)
+        self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200,True)
+        self.attackingR_frames=Game.loadimages("Images\\Player\\ATTACK RIGHT\\sprite_ATKRIGHT{}.png",4,400,400,False)
+        self.lookingR_up_frames=Game.loadimages("Images\\Player\\CIMA_RIGHT\\cima.png",1,200,200,True)
         self.standingL=Game.loadflipimages(self.standingR)
         self.lookingL_up_frames=Game.loadflipimages(self.lookingR_up_frames)
         self.walkingl_frames=Game.loadflipimages(self.walkingR_frames)
@@ -87,7 +87,6 @@ class Player(pygame.sprite.Sprite):
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.attackingR_frames)
                 self.current_img=self.attackingR_frames[self.current_frame]
-                self.current_img=pygame.transform.scale(self.current_img,(200,200))
                 if self.current_frame==0:
                     self.attack=False
                     self.current_frame=0
@@ -98,7 +97,6 @@ class Player(pygame.sprite.Sprite):
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.attackingL_frames)
                 self.current_img=self.attackingL_frames[self.current_frame]
-                self.current_img=pygame.transform.scale(self.current_img,(200,200))
                 if self.current_frame==0:
                     self.attack=False
                     self.current_frame=0
@@ -260,9 +258,9 @@ class Enemy(pygame.sprite.Sprite):
 
     def load_images(self):
         #self.slimeL=[pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_1.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_2.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_3.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_4.png")]
-        self.slimeL=Game.loadimages("Images\\Inimigos\\Slime\\slime_{}.png",5,100,100)
+        self.slimeL=Game.loadimages("Images\\Inimigos\\Slime\\slime_{}.png",5,100,100,True)
         self.slimeR=Game.loadflipimages(self.slimeL)
-        self.dragonL=Game.loadimages("Images\\Inimigos\\Flying demon\\sprite_{}.png",2,300,300)
+        self.dragonL=Game.loadimages("Images\\Inimigos\\Flying demon\\sprite_{}.png",2,300,300,True)
         self.dragonR=Game.loadflipimages(self.dragonL)
 
 
@@ -360,12 +358,21 @@ class Blocks(pygame.sprite.Sprite):
 class Game():
     #classe para o menu o jogo
     #devera conter funções como, start, savegame, highscore, creditos e customizaçao (posivelmente)
-    def loadimages(sprite,Nframes,sizex,sizey):
+    def loadimages(sprite,Nframes,sizex,sizey,Siz):
         lista=[]
-        for i in range(Nframes):
-            S=pygame.image.load(sprite.format(i)).convert_alpha()
-            S=pygame.transform.scale(S,(sizex,sizey))
-            lista.append(S)
+        if Siz==True:
+            for i in range(Nframes):
+                S=pygame.image.load(sprite.format(i)).convert_alpha()
+                S=pygame.transform.scale(S,(sizex,sizey)).convert_alpha()
+                lista.append(S)
+            return lista
+
+        if Siz==False:
+            for i in range(Nframes):
+                S=pygame.image.load(sprite.format(i))
+                lista.append(S)
+            return lista
+
         return lista
 
     def loadflipimages(Rimagelist):
