@@ -103,10 +103,27 @@ class Player(pygame.sprite.Sprite):
                     self.attack=False
                     self.current_frame=0
 
-        if self.jump==True and self.rightface==True:
-            self.current_img=self.standingR[0]
-        if self.jump==True and self.leftface==True:
-            self.current_img=self.standingL[0]
+        elif self.attack==True and self.rightface==True and self.jump==True:
+            if now - self.last_update>90:
+                self.attack==False
+                self.last_update=now
+                self.current_frame=(self.current_frame+1)%len(self.attackingL_frames)
+                self.current_img=self.attackingL_frames[self.current_frame]
+                if self.current_frame==0:
+                    self.attack=False
+                    self.current_frame=0
+
+
+        elif self.attack==True and self.leftface==True and self.jump==True:
+            if now - self.last_update>90:
+                self.attack==False
+                self.last_update=now
+                self.current_frame=(self.current_frame+1)%len(self.attackingR_frames)
+                self.current_img=self.attackingR_frames[self.current_frame]
+                if self.current_frame==0:
+                    self.attack=False
+                    self.current_frame=0
+
 
 
 
@@ -161,6 +178,7 @@ class Player(pygame.sprite.Sprite):
                 self.aceleration = 0.4 #se o personagem estiver no ar a aceleraçao esta valendo!
                 self.speed_y = -15 #+ self.aceleration
                 self.jump = True #player esta pulando!
+                self.current_frame=0
 
 
     def updatepos(self):
