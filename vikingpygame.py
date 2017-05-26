@@ -32,7 +32,9 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.current_img)
         self.collision_enemies = False
         self.collision_plat = False
-
+        #self.rect_atk = pygame.Rect(x = self.x + self.size[0] , y = self.y + (self.size[1])/2 , 50, 40)
+        #self.kill = False
+        self.rect_atk = pygame.Rect(0,0,0,0)
     def load_images(self):
         self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200,True)
         self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200,True)
@@ -142,6 +144,13 @@ class Player(pygame.sprite.Sprite):
 
         if direction=="attack":
             self.attack=True
+            if self.rightface == True :
+                self.rect_atk = pygame.Rect(self.x + self.size[0] -20 , self.y + (self.size[1])/2 +20, 100, 50)
+                pygame.draw.rect(screen,(255,0,0),self.rect_atk)
+            else:
+                self.rect_atk = pygame.Rect(self.x -100  , self.y + (self.size[1])/2 +20, 100, 50)
+                pygame.draw.rect(screen,(255,0,255),self.rect_atk)
+
 
         if direction == 0:
             self.speed_x = 0
@@ -191,18 +200,20 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.collision_plat = False
                     #self.jump = True
-
         for i in enemies:
             #enemies é uma lista que contem todos os inimigos do player
             if self.rect.colliderect(i.rect) ==  True:
                 if not pygame.sprite.collide_mask(self,i) == None:
                     self.collision_enemies= True
+                    print("morreu")
                     break
                 else:
                     self.collision_enemies = False
+
+            elif self.rect_atk.colliderect(i.rect) == True:
+                i.death = True
             else:
                 self.collision_enemies = False
-
 
         if self.collision_floor == False:
             self.aceleration = 0.4
@@ -210,8 +221,6 @@ class Player(pygame.sprite.Sprite):
         if self.collision_enemies == True:
             addBg = 0
             self.x = 400
-
-
 
         if self.walkR == True:
             if self.x < screen_x/2:
@@ -255,7 +264,7 @@ class Enemy(pygame.sprite.Sprite):
         self.collision_floor = False # personagem nao esta colidindo
         self.hitbox = pygame.Rect(self.x,self.y,self.x+self.size[0],self.size[1]) #hitbox do personagem
         self.mask = pygame.mask.from_surface(self.current_img)
-
+        self.death = False
     def load_images(self):
         #self.slimeL=[pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_1.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_2.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_3.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_4.png")]
         self.slimeL=Game.loadimages("Images\\Inimigos\\Slime\\slime_{}.png",5,100,100,True)
@@ -330,6 +339,9 @@ class Enemy(pygame.sprite.Sprite):
         self.y+=self.speed_y
         self.mask = pygame.mask.from_surface(self.current_img)
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
+
+        if self.death == True:
+            self.kill()
 
 
 class Blocks(pygame.sprite.Sprite):
@@ -419,6 +431,7 @@ cloudi2 = Blocks(1280,200,cloud2)
 cloud3 = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD_3.png").convert_alpha()
 
 clouds = [cloud,cloud2,cloud3]
+
 #################
 
 ############ carregando as sprites do player
@@ -426,7 +439,7 @@ player1="Images\\Player\\STAND_RIGHT\\stand.png"
 char1=Player(400,400,player1)
 char_spritedata = {}
 ####################
-enemies = []
+#enemies = []
 dragon=pygame.image.load("Images\\Inimigos\\Flying demon\\sprite_0.png").convert()
 Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png").convert()
 slime11=pygame.transform.scale(Slime1,(100,100))
@@ -434,7 +447,7 @@ slime11=pygame.transform.scale(Slime1,(100,100))
 slime1=Enemy(1100,500,1100,0,0,0,slime11,False,False,"Slime")
 slime2=Enemy(500,500,600,50,0,0,slime11,True,False,"Slime")
 dragon1=Enemy(1200,200,0,0,-90,200,dragon,True,True,"Dragon")
-enemies.append(slime1)
+enemies = pygame.sprite.Group(slime1,slime2)
 #################################
 ############
 jump = pygame.mixer.Sound("Jump10.wav")
@@ -476,11 +489,10 @@ while running:
         chao = Blocks(i-addBg,390+char1.size[1],ground.image)
         floor.append(chao)
         screen.blit(chao.image,(i-addBg,390+(char1.size[1])))
+    for i in enemies:
+        if i.death == False:
+            screen.blit(i.current_img,(i.x,i.y))
     screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
-    screen.blit(slime1.current_img,(slime1.x,slime1.y))
-    screen.blit(slime2.current_img,(slime2.x,slime2.y))
-    screen.blit(dragon1.current_img,(dragon1.x,dragon1.y))
-
     for event in pygame.event.get(): #pegando as açoes do usuario
         if event.type == pygame.QUIT:
             running=False #saindo do jogo fechando a janela
@@ -491,7 +503,7 @@ while running:
                 running = False #saindo do jogo apertano esc
             if event.key == pygame.K_SPACE and char1.jump==False:
                 char1.move("up")
-                jump.play()
+                #jump.play()
             if event.key == pygame.K_w:
                 char1.move("look_up")
             if event.key == pygame.K_d:
@@ -513,6 +525,8 @@ while running:
             if event.key == pygame.K_k:
                 background = vapor
                 background = pygame.transform.scale(background, (screen_x, screen_y))
+            if event.key == pygame.K_j:
+                char1.rect_atk = pygame.Rect(0,0,0,0)
      ## atualizando a posicao do personagem
     Game.update()
     floor=[]
