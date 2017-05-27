@@ -2,7 +2,15 @@
 import pygame, os
 from random import randrange
 from numpy import arange
+from settings import *
+
+
+#######
+#initializing pygame
 pygame.init()
+pygame.mixer.init()
+#####
+
 
 class Player(pygame.sprite.Sprite):
     #classe para Player
@@ -423,14 +431,12 @@ class Game():
 
 
 ######
-clock=pygame.time.Clock() #importando o timer
+clock = pygame.time.Clock() #importando o timer
 ######
 ######
 #char1=Player(400,400,player1)
 map_x = 5000
 map_y = 720
-screen_x=1280
-screen_y=720
 screen=pygame.display.set_mode((screen_x,screen_y)) #criando o display do jogo
 ######
 ###### carregando o background Do jogo
@@ -469,7 +475,7 @@ enemies = pygame.sprite.Group(slime1,slime2)
 #################################
 ############
 jump = pygame.mixer.Sound("Jump10.wav")
-music1=pygame.mixer.music.load("Heroic Demise (New).mp3")
+music1 = pygame.mixer.music.load("Heroic Demise (New).mp3")
 ############
 kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 ############
@@ -484,7 +490,7 @@ ground5 = Blocks(1000-addBg,200,ground0)
 
 groundRange = arange(0,map_x,pygame.Surface.get_width(ground0))
 
-pygame.display.set_caption("A Tale of the Unworthy") #Titulo da janela do jogo
+pygame.display.set_caption(title) #Titulo da janela do jogo
 running=True
 ############
 
@@ -548,7 +554,7 @@ while running:
      ## atualizando a posicao do personagem
     Game.update()
     floor=[]
-    clock.tick(60) # ajustando o fps
+    clock.tick(fps) # ajustando o fps
     pygame.display.update()### atualizando o display
 ############
 pygame.quit() #fechando o pygame
