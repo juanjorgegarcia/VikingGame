@@ -244,7 +244,7 @@ class Player(pygame.sprite.Sprite):
         if self.collision_enemies == True:
             addBg = 0
             self.x -= 10
-            
+
         if self.walkR == True:
             if self.x < screen_x/2:
                 self.x += self.speed_x
@@ -301,7 +301,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def animate(self):
         now=pygame.time.get_ticks()
-        
+
         if self.race=="Slime":
 
             if self.leftface==True and self.rightface==False:
