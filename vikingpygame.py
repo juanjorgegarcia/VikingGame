@@ -211,8 +211,6 @@ class Player(pygame.sprite.Sprite):
             addBg = 0
             self.x = 400
 
-
-
         if self.walkR == True:
             if self.x < screen_x/2:
                 self.x += self.speed_x
@@ -231,6 +229,7 @@ class Enemy(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.race=race
         self.x=x #coordenada x do personagem
+        self.xOriginal = x
         self.y=y #coordenada y do personagem
         self.current_frame=0
         self.limitx1=limitx1
@@ -255,6 +254,7 @@ class Enemy(pygame.sprite.Sprite):
         self.collision_floor = False # personagem nao esta colidindo
         self.hitbox = pygame.Rect(self.x,self.y,self.x+self.size[0],self.size[1]) #hitbox do personagem
         self.mask = pygame.mask.from_surface(self.current_img)
+        self.traveledDistance = 0#Marca quantos pixels o inimigo andou em relação ao offset (addBg)
 
     def load_images(self):
         #self.slimeL=[pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_1.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_2.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_3.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_4.png")]
@@ -283,7 +283,6 @@ class Enemy(pygame.sprite.Sprite):
 
         if self.race=="Dragon":
 
-
             if now - self.last_update>200:
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.dragonL)
@@ -299,13 +298,13 @@ class Enemy(pygame.sprite.Sprite):
             self.rightface=True
             self.leftface=False
 
-        if self.x==self.limitx1 and self.walkR == True:
+        if self.x==self.limitx1-addBg and self.walkR == True:
             self.speed_x=-speed_x
             self.leftface=True
             self.rightface=False
             self.walkR=False
 
-        elif self.x == self.limitx2:
+        elif self.x == self.limitx2-addBg:
             self.walkR=True
 
         if self.moveUP==True:
@@ -325,8 +324,18 @@ class Enemy(pygame.sprite.Sprite):
         self.x+=self.speed_x
         if char1.walkR == True and addBg > 0:
             self.x = self.x - char1.speed_x
+            self.traveledDistance += char1.speed_x
+        elif addBg <= 0:
+            self.x = self.x + self.traveledDistance
+            self.traveledDistance = 0
+
         if char1.walkL == True and addBg > 0:
             self.x = self.x + char1.speed_x
+            self.traveledDistance -= char1.speed_x
+        elif addBg <= 0:
+            self.x = self.x + self.traveledDistance
+            self.traveledDistance = 0
+
         self.y+=self.speed_y
         self.mask = pygame.mask.from_surface(self.current_img)
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
@@ -385,8 +394,8 @@ class Game():
         dragon1.update()
         dragon1.move(0,3)
         slime2.move(5,0)
-        slime1.move(5,0)
-        slime1.update()
+        #slime1.move(5,0)
+        #slime1.update()
         slime2.update()
         char1.updatepos()
 
@@ -431,10 +440,13 @@ dragon=pygame.image.load("Images\\Inimigos\\Flying demon\\sprite_0.png").convert
 Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png").convert()
 slime11=pygame.transform.scale(Slime1,(100,100))
 #(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
-slime1=Enemy(1100,500,1100,0,0,0,slime11,False,False,"Slime")
-slime2=Enemy(500,500,600,50,0,0,slime11,True,False,"Slime")
+slime2=Enemy(1100,500,1100,0,0,0,slime11,True,False,"Slime")
+#enemies.append(slime1)
+#slime1=Enemy(500,500,600,0,0,0,slime11,True,False,"Slime")
+enemies.append(slime2)
 dragon1=Enemy(1200,200,0,0,-90,200,dragon,True,True,"Dragon")
-enemies.append(slime1)
+enemies.append(dragon1)
+#enemies.append(slime1)
 #################################
 ############
 jump = pygame.mixer.Sound("Jump10.wav")
@@ -477,10 +489,8 @@ while running:
         floor.append(chao)
         screen.blit(chao.image,(i-addBg,390+(char1.size[1])))
     screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
-    screen.blit(slime1.current_img,(slime1.x,slime1.y))
-    screen.blit(slime2.current_img,(slime2.x,slime2.y))
-    screen.blit(dragon1.current_img,(dragon1.x,dragon1.y))
-
+    for a in enemies:
+        screen.blit(a.current_img,(a.x,a.y))
     for event in pygame.event.get(): #pegando as açoes do usuario
         if event.type == pygame.QUIT:
             running=False #saindo do jogo fechando a janela
