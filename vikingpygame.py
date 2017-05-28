@@ -72,7 +72,10 @@ class Player(pygame.sprite.Sprite):
                 self.current_img=self.lookingL_up_frames[0]
 
         elif self.walkR==True and self.walkL==True and self.jump==False:
-            self.current_img=self.standingL[0]
+            if self.leftface==True:
+                self.current_img=self.standingL[0]
+            if self.rightface==True:
+                self.current_img=self.standingR[0]
 
         elif self.walkR==False and self.walkL==False and self.jump==False and self.attack==False:
             if self.leftface==True:
@@ -106,6 +109,7 @@ class Player(pygame.sprite.Sprite):
                     self.attack=False
                     self.current_frame=0
 
+
         elif self.attack==True and self.leftface==True:
             if now - self.last_update>90:
                 self.attack==False
@@ -124,7 +128,6 @@ class Player(pygame.sprite.Sprite):
                 self.current_img=self.attackingL_frames[self.current_frame]
                 if self.current_frame==0:
                     self.attack=False
-                    self.current_frame=0
 
 
         elif self.attack==True and self.leftface==True and self.jump==True:
@@ -136,6 +139,11 @@ class Player(pygame.sprite.Sprite):
                 if self.current_frame==0:
                     self.attack=False
                     self.current_frame=0
+        elif self.jump==True:
+            if self.rightface==True:
+                self.current_img=self.standingR[0]
+            if self.leftface==True:
+                self.current_img=self.standingL[0]
 
     def move(self,direction):
         #movendo o player
@@ -168,7 +176,11 @@ class Player(pygame.sprite.Sprite):
             self.look_up=False
 
         if direction=="attack":
+            self.walkL=False
+            self.walkR=False
             self.attack=True
+            # self.walkL=False
+            # self.walkR=False
             if self.rightface == True :
                 self.rect_atk = pygame.Rect(self.x + self.size[0] -20 , self.y + (self.size[1])/2 +20, 100, 50)
                 pygame.draw.rect(screen,(255,0,0),self.rect_atk)
@@ -439,8 +451,6 @@ class Game():
         dragon1.update()
         dragon1.move(0,3)
         slime2.move(5,0)
-        #slime1.move(5,0)
-        #slime1.update()
         slime2.update()
         char1.updatepos()
 
