@@ -1,4 +1,9 @@
 # -- coding: utf-8 --
+#########################BUGS:################################
+#Dragão dasaparece do nada
+#Colisão lateral pode ser implementada para o obstaculo no chao
+#Imagem do kkkeae nao esta sendo mostrada
+##############################################################
 import pygame, os
 from random import randrange
 from numpy import arange
@@ -67,12 +72,7 @@ class Player(pygame.sprite.Sprite):
                 self.current_img=self.lookingL_up_frames[0]
 
         elif self.walkR==True and self.walkL==True and self.jump==False:
-            if self.leftface==True:
-                self.current_img=self.standingL[0]
-            if self.rightface==True:
-                self.current_img=self.standingR[0]
-
-
+            self.current_img=self.standingL[0]
 
         elif self.walkR==False and self.walkL==False and self.jump==False and self.attack==False:
             if self.leftface==True:
@@ -136,19 +136,6 @@ class Player(pygame.sprite.Sprite):
                 if self.current_frame==0:
                     self.attack=False
                     self.current_frame=0
-
-        elif self.jump==True:
-            if self.rightface==True:
-                self.current_img=self.standingR[0]
-            if self.leftface==True:
-                self.current_img=self.standingL[0]
-
-
-
-
-
-
-
 
     def move(self,direction):
         #movendo o player
@@ -317,6 +304,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def animate(self):
         now=pygame.time.get_ticks()
+        
         if self.race=="Slime":
 
             if self.leftface==True and self.rightface==False:
@@ -453,6 +441,14 @@ class Game():
         slime2.update()
         char1.updatepos()
 
+    def animateBG(bgImages): #Função que anima o background
+        global last_bg_update, current_bg_frame, current_bg_image
+        bgAnimationNOW = pygame.time.get_ticks()
+        if bgAnimationNOW - last_bg_update > 200:
+            last_bg_update = bgAnimationNOW
+            current_bg_frame=(current_bg_frame+1)%len(bgImages)
+            current_bg_image = bgImages[current_bg_frame]
+        return current_bg_image
 
 
 ######
@@ -482,6 +478,10 @@ cloud3 = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD_3.png").convert_alp
 clouds = [cloud,cloud2,cloud3]
 
 #################
+last_bg_update = 0
+current_bg_frame = 0
+current_bg_image = 0
+bgImages = Game.loadimages("Images\\Background_fire\\sprite_{}.png",14,screen_x,screen_y,True)
 
 ############ carregando as sprites do player
 player1="Images\\Player\\STAND_RIGHT\\stand.png"
@@ -508,12 +508,13 @@ kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 
 ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
-ground = Blocks(300,300,ground0)
-ground2 = Blocks(400,300,ground0)
-ground3 = Blocks(800-addBg,200,ground0)
-ground4 = Blocks(900-addBg,200,ground0)
-ground5 = Blocks(1000-addBg,200,ground0)
+groundDEFAULT = Blocks(300,300,ground0)
 
+obstaculo0 = pygame.image.load("Images\\Plataforma\\CHÃO\\sprite_0.png").convert()
+obstaculo0 = pygame.transform.scale(obstaculo0,(100,100)).convert()
+obstaculoDEFAULT = Blocks(300,300,obstaculo0)
+
+########
 groundRange = arange(0,map_x,pygame.Surface.get_width(ground0))
 
 pygame.display.set_caption(title) #Titulo da janela do jogo
@@ -521,30 +522,39 @@ running=True
 ############
 
 while running:
-    screen.blit(background, (0, 0)) ### pintando o background
-    ground = Blocks(300-addBg,300,ground0)
-    ground2 = Blocks(300+ground.width-addBg,300,ground0)
-    ground3 = Blocks(800-addBg,200,ground0)
-    ground4 = Blocks(900-addBg,200,ground0)
-    ground5 = Blocks(1000-addBg,200,ground0)
-    aero=[ground,ground2,ground3,ground4,ground5]
-    for i in aero:
-        screen.blit(i.image,(i.x,i.y))
+    if background == kkkeae:
+        screen.blit(background, (0, 0))
+    else:
+        screen.blit(Game.animateBG(bgImages), (0, 0)) ### pintando o background
     cloudi.move(2)
     cloudi2.move(1.5)
     screen.blit(cloudi.image,(cloudi.x,cloudi.y))
     screen.blit(cloudi2.image,(cloudi2.x,cloudi2.y))
+
+    #######LISTA DOS CHAOS NO MAPA
+    ground10 = Blocks(300-addBg,300,ground0)
+    ground11 = Blocks(300+groundDEFAULT.width-addBg,300,ground0)
+    ground12 = Blocks(300+groundDEFAULT.width*2-addBg,300,ground0)
+    ground20 = Blocks(800-addBg,200,ground0)
+    ground21 = Blocks(800+groundDEFAULT.width-addBg,200,ground0)
+    ground22 = Blocks(800+groundDEFAULT.width*2-addBg,200,ground0)
+    obstacle1 = Blocks(1400-addBg,390+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
+
+    aero=[ground10,ground11,ground12,ground20,ground21,ground22,obstacle1] #LISTA COM OS CHAOS
+    for i in aero:
+        screen.blit(i.image,(i.x,i.y))
+
     floor=[]
     for i in groundRange:
-        chao = Blocks(i-addBg,390+char1.size[1],ground.image)
+        chao = Blocks(i-addBg,390+char1.size[1],groundDEFAULT.image)
         floor.append(chao)
         screen.blit(chao.image,(i-addBg,390+(char1.size[1])))
     for i in enemies:
         if i.death == False:
             screen.blit(i.current_img,(i.x,i.y))
-    screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
     for a in enemies:
         screen.blit(a.current_img,(a.x,a.y))
+    screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
     for event in pygame.event.get(): #pegando as açoes do usuario
         if event.type == pygame.QUIT:
             running=False #saindo do jogo fechando a janela
