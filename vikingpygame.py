@@ -2,7 +2,15 @@
 import pygame, os
 from random import randrange
 from numpy import arange
+from settings import *
+
+
+#######
+#initializing pygame
 pygame.init()
+pygame.mixer.init()
+#####
+
 
 class Player(pygame.sprite.Sprite):
     #classe para Player
@@ -32,7 +40,9 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.current_img)
         self.collision_enemies = False
         self.collision_plat = False
-
+        #self.rect_atk = pygame.Rect(x = self.x + self.size[0] , y = self.y + (self.size[1])/2 , 50, 40)
+        #self.kill = False
+        self.rect_atk = pygame.Rect(0,0,0,0)
     def load_images(self):
         self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200,True)
         self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200,True)
@@ -101,10 +111,27 @@ class Player(pygame.sprite.Sprite):
                     self.attack=False
                     self.current_frame=0
 
-        if self.jump==True and self.rightface==True:
-            self.current_img=self.standingR[0]
-        if self.jump==True and self.leftface==True:
-            self.current_img=self.standingL[0]
+        elif self.attack==True and self.rightface==True and self.jump==True:
+            if now - self.last_update>90:
+                self.attack==False
+                self.last_update=now
+                self.current_frame=(self.current_frame+1)%len(self.attackingL_frames)
+                self.current_img=self.attackingL_frames[self.current_frame]
+                if self.current_frame==0:
+                    self.attack=False
+                    self.current_frame=0
+
+
+        elif self.attack==True and self.leftface==True and self.jump==True:
+            if now - self.last_update>90:
+                self.attack==False
+                self.last_update=now
+                self.current_frame=(self.current_frame+1)%len(self.attackingR_frames)
+                self.current_img=self.attackingR_frames[self.current_frame]
+                if self.current_frame==0:
+                    self.attack=False
+                    self.current_frame=0
+
 
 
 
@@ -142,6 +169,13 @@ class Player(pygame.sprite.Sprite):
 
         if direction=="attack":
             self.attack=True
+            if self.rightface == True :
+                self.rect_atk = pygame.Rect(self.x + self.size[0] -20 , self.y + (self.size[1])/2 +20, 100, 50)
+                pygame.draw.rect(screen,(255,0,0),self.rect_atk)
+            else:
+                self.rect_atk = pygame.Rect(self.x -100  , self.y + (self.size[1])/2 +20, 100, 50)
+                pygame.draw.rect(screen,(255,0,255),self.rect_atk)
+
 
         if direction == 0:
             self.speed_x = 0
@@ -152,6 +186,7 @@ class Player(pygame.sprite.Sprite):
                 self.aceleration = 0.4 #se o personagem estiver no ar a aceleraçao esta valendo!
                 self.speed_y = -15 #+ self.aceleration
                 self.jump = True #player esta pulando!
+                self.current_frame=0
 
 
     def updatepos(self):
@@ -191,18 +226,20 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.collision_plat = False
                     #self.jump = True
-
         for i in enemies:
             #enemies é uma lista que contem todos os inimigos do player
             if self.rect.colliderect(i.rect) ==  True:
                 if not pygame.sprite.collide_mask(self,i) == None:
                     self.collision_enemies= True
+                    print("morreu")
                     break
                 else:
                     self.collision_enemies = False
+
+            elif self.rect_atk.colliderect(i.rect) == True:
+                i.death = True
             else:
                 self.collision_enemies = False
-
 
         if self.collision_floor == False:
             self.aceleration = 0.4
@@ -255,6 +292,7 @@ class Enemy(pygame.sprite.Sprite):
         self.hitbox = pygame.Rect(self.x,self.y,self.x+self.size[0],self.size[1]) #hitbox do personagem
         self.mask = pygame.mask.from_surface(self.current_img)
         self.traveledDistance = 0#Marca quantos pixels o inimigo andou em relação ao offset (addBg)
+        self.death = False
 
     def load_images(self):
         #self.slimeL=[pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_1.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_2.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_3.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_4.png")]
@@ -340,6 +378,9 @@ class Enemy(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.current_img)
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
 
+        if self.death == True:
+            self.kill()
+
 
 class Blocks(pygame.sprite.Sprite):
     # classe para elementos estáticos do jogo
@@ -402,14 +443,12 @@ class Game():
 
 
 ######
-clock=pygame.time.Clock() #importando o timer
+clock = pygame.time.Clock() #importando o timer
 ######
 ######
 #char1=Player(400,400,player1)
 map_x = 5000
 map_y = 720
-screen_x=1280
-screen_y=720
 screen=pygame.display.set_mode((screen_x,screen_y)) #criando o display do jogo
 ######
 ###### carregando o background Do jogo
@@ -428,6 +467,7 @@ cloudi2 = Blocks(1280,200,cloud2)
 cloud3 = pygame.image.load("Images\\Plataforma\\NUVEM\\CLOUD_3.png").convert_alpha()
 
 clouds = [cloud,cloud2,cloud3]
+
 #################
 
 ############ carregando as sprites do player
@@ -443,14 +483,12 @@ slime11=pygame.transform.scale(Slime1,(100,100))
 slime2=Enemy(1100,500,1100,0,0,0,slime11,True,False,"Slime")
 #enemies.append(slime1)
 #slime1=Enemy(500,500,600,0,0,0,slime11,True,False,"Slime")
-enemies.append(slime2)
 dragon1=Enemy(1200,200,0,0,-90,200,dragon,True,True,"Dragon")
-enemies.append(dragon1)
-#enemies.append(slime1)
+enemies = pygame.sprite.Group(slime2,dragon1)
 #################################
 ############
 jump = pygame.mixer.Sound("Jump10.wav")
-music1=pygame.mixer.music.load("Heroic Demise (New).mp3")
+music1 = pygame.mixer.music.load("Heroic Demise (New).mp3")
 ############
 kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 ############
@@ -465,7 +503,7 @@ ground5 = Blocks(1000-addBg,200,ground0)
 
 groundRange = arange(0,map_x,pygame.Surface.get_width(ground0))
 
-pygame.display.set_caption("A Tale of the Unworthy") #Titulo da janela do jogo
+pygame.display.set_caption(title) #Titulo da janela do jogo
 running=True
 ############
 
@@ -488,6 +526,9 @@ while running:
         chao = Blocks(i-addBg,390+char1.size[1],ground.image)
         floor.append(chao)
         screen.blit(chao.image,(i-addBg,390+(char1.size[1])))
+    for i in enemies:
+        if i.death == False:
+            screen.blit(i.current_img,(i.x,i.y))
     screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
     for a in enemies:
         screen.blit(a.current_img,(a.x,a.y))
@@ -523,10 +564,12 @@ while running:
             if event.key == pygame.K_k:
                 background = vapor
                 background = pygame.transform.scale(background, (screen_x, screen_y))
+            if event.key == pygame.K_j:
+                char1.rect_atk = pygame.Rect(0,0,0,0)
      ## atualizando a posicao do personagem
     Game.update()
     floor=[]
-    clock.tick(60) # ajustando o fps
+    clock.tick(fps) # ajustando o fps
     pygame.display.update()### atualizando o display
 ############
 pygame.quit() #fechando o pygame
