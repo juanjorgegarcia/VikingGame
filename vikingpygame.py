@@ -65,7 +65,12 @@ class Player(pygame.sprite.Sprite):
                 self.current_img=self.lookingL_up_frames[0]
 
         elif self.walkR==True and self.walkL==True and self.jump==False:
-            self.current_img=self.standingL[0]
+            if self.leftface==True:
+                self.current_img=self.standingL[0]
+            if self.rightface==True:
+                self.current_img=self.standingR[0]
+
+
 
         elif self.walkR==False and self.walkL==False and self.jump==False and self.attack==False:
             if self.leftface==True:
@@ -129,6 +134,14 @@ class Player(pygame.sprite.Sprite):
                 if self.current_frame==0:
                     self.attack=False
                     self.current_frame=0
+
+        elif self.jump==True:
+            if self.rightface==True:
+                self.current_img=self.standingR[0]
+            if self.leftface==True:
+                self.current_img=self.standingL[0]
+
+
 
 
 
