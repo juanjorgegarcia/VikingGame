@@ -40,8 +40,6 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.current_img)
         self.collision_enemies = False
         self.collision_plat = False
-        #self.rect_atk = pygame.Rect(x = self.x + self.size[0] , y = self.y + (self.size[1])/2 , 50, 40)
-        #self.kill = False
         self.rect_atk = pygame.Rect(0,0,0,0)
     def load_images(self):
         self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200,True)
@@ -231,7 +229,6 @@ class Player(pygame.sprite.Sprite):
             if self.rect.colliderect(i.rect) ==  True:
                 if not pygame.sprite.collide_mask(self,i) == None:
                     self.collision_enemies= True
-                    print("morreu")
                     break
                 else:
                     self.collision_enemies = False
@@ -246,8 +243,8 @@ class Player(pygame.sprite.Sprite):
 
         if self.collision_enemies == True:
             addBg = 0
-            self.x = 400
-
+            self.x -= 10
+            
         if self.walkR == True:
             if self.x < screen_x/2:
                 self.x += self.speed_x
@@ -542,7 +539,7 @@ while running:
                 running = False #saindo do jogo apertano esc
             if event.key == pygame.K_SPACE and char1.jump==False:
                 char1.move("up")
-                jump.play()
+                #jump.play()
             if event.key == pygame.K_w:
                 char1.move("look_up")
             if event.key == pygame.K_d:
