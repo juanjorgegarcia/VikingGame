@@ -46,6 +46,8 @@ class Player(pygame.sprite.Sprite):
         self.collision_enemies = False
         self.collision_plat = False
         self.rect_atk = pygame.Rect(0,0,0,0)
+        self.life = 3
+
     def load_images(self):
         self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200,True)
         self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200,True)
@@ -244,6 +246,10 @@ class Player(pygame.sprite.Sprite):
         if self.collision_enemies == True:
             addBg = 0
             self.x -= 10
+            self.life-=1
+            print(self.life)
+            if self.life <=0:
+                print("you loose")
 
         if self.walkR == True:
             if self.x < screen_x/2:
