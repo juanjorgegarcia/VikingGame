@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite):
         self.current_img=pygame.image.load("Images\\Player\\STAND_RIGHT\\stand.png")
         self.speed_x = 0 #velocidade no eixo x
         self.speed_y = 0 #velocidade no eixo x
-        self.aceleration = + 0.4 #gravidade
+        self.aceleration = 0 #gravidade
         self.walkR = False #status do player andando para direita
         self.walkL = False #status do player andando para esquerda
         self.jump = False #status do player pulando
@@ -47,7 +47,7 @@ class Player(pygame.sprite.Sprite):
         self.collision_plat = False
         self.rect_atk = pygame.Rect(0,0,0,0)
         self.life = 3
-
+        self.ignore = 0
     def load_images(self):
         self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200,True)
         self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200,True)
@@ -210,14 +210,17 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.current_img.get_rect(x=self.x,y=self.y)
         self.hitbox = pygame.Rect(self.x+70,self.y,60,192)
         self.mask = pygame.mask.from_surface(self.current_img)
+        self.ignore += 1
+        #print("vel",self.speed_y)
+
 
         for i in floor: #floor é a lista q contem todos os quadrados do chao do jogo
             if self.hitbox.colliderect(i.rect) == True: #se o retangulo do player colidir com o da plataforma
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
-                    self.collision_floor = True
                     self.y = i.rect.top - self.size[1]
+                    self.collision_floor = True
                     break
             else:
                 self.collision_floor=False
@@ -240,9 +243,18 @@ class Player(pygame.sprite.Sprite):
                     #self.jump = True
         for i in enemies:
             #enemies é uma lista que contem todos os inimigos do player
-            if self.rect.colliderect(i.rect) ==  True:
+            if self.rect.colliderect(i.rect) ==  True and self.ignore >=120 : #2 segundos de invulnerabilidade
                 if not pygame.sprite.collide_mask(self,i) == None:
                     self.collision_enemies= True
+
+                    if i.x > self.x and self.speed_y == 0:
+                        self.x -= 100
+                    elif i.x < self.x and self.speed_y == 0:
+                        self.x += 100
+                    elif self.speed_y>1:
+                        print("por cima")
+                        self.speed_y = -8
+                    self.ignore = 0
                     break
                 else:
                     self.collision_enemies = False
@@ -257,11 +269,11 @@ class Player(pygame.sprite.Sprite):
 
         if self.collision_enemies == True:
             addBg = 0
-            self.x -= 10
             self.life-=1
             print(self.life)
             if self.life <=0:
                 print("you loose")
+
 
         if self.walkR == True:
             if self.x < screen_x/2:
