@@ -249,7 +249,7 @@ class Player(pygame.sprite.Sprite):
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
-                    self.y = i.rect.top - self.size[1]
+                    self.y = i.rect.top - self.size[1] -1
                     break
                 elif self.aceleration == 0 and self.x > i.x:
                     self.speed_y = 0
@@ -543,10 +543,10 @@ dragon=pygame.image.load("Images\\Inimigos\\Flying demon\\sprite_0.png").convert
 Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png").convert()
 slime11=pygame.transform.scale(Slime1,(100,100))
 #(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
-slime2=Enemy(1100,500,1100,0,0,0,slime11,False,False,"Slime")
+slime2=Enemy(1100,500,1100,0,0,0,slime11,True,False,"Slime")
 #enemies.append(slime1)
 #slime1=Enemy(500,500,600,0,0,0,slime11,True,False,"Slime")
-dragon1=Enemy(1200,200,0,0,-90,200,dragon,True,True,"Dragon")
+dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
 enemies = pygame.sprite.Group(slime2,dragon1)
 #################################
 ############
