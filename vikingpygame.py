@@ -112,8 +112,6 @@ class Player(pygame.sprite.Sprite):
 
 
         elif self.attack==True and self.leftface==True:
-            #self.x = self.hitbox.centerx
-            print("oi")
             if now - self.last_update>90:
                 self.attack==False
                 self.last_update=now
@@ -204,7 +202,6 @@ class Player(pygame.sprite.Sprite):
                 self.jump = True #player esta pulando!
                 self.current_frame=0
 
-
     def updatepos(self):
         global addBg
         #atualizando a posicao do player
@@ -245,6 +242,21 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.collision_plat = False
                     #self.jump = True
+        for i in obs:
+            if self.rect.colliderect(i.rect) == True:
+                if self.speed_y > 0 and self.hitbox.colliderect(i.rect) == True:
+                    ## se o player estiver caindo
+                    self.speed_y = 0
+                    self.aceleration = 0
+                    self.jump = False
+                    self.y = i.rect.top - self.size[1] -1
+                    break
+                elif self.aceleration == 0 and self.x > i.x:
+                    self.speed_y = 0
+                    self.x = i.rect.right +1
+                elif self.aceleration == 0 and self.x  < i.x:
+                    self.speed_y = 0
+                    self.x = i.rect.left - self.size[0] - 1
         for i in enemies:
             #enemies é uma lista que contem todos os inimigos do player
             if self.rect.colliderect(i.rect) ==  True and self.ignore >=120 : #2 segundos de invulnerabilidade
@@ -277,7 +289,6 @@ class Player(pygame.sprite.Sprite):
 
         if self.collision_floor == False:
             self.aceleration = 0.4
-
         if self.collision_enemies == True:
             addBg = 0
             self.life-=1
@@ -431,7 +442,6 @@ class Blocks(pygame.sprite.Sprite):
         self.image = sprite
         self.width,self.height = pygame.Surface.get_size(self.image)
         self.rect = self.image.get_rect(x = self.x, y = self.y)
-        #self.top = [[self.x,self.width + self.x],[self.y-char1.size[1],self.y-char1.size[1]]]
 
     def move(self,speed):
         if char1.walkR == True and addBg > 0:
@@ -487,7 +497,6 @@ class Game():
             current_bg_frame=(current_bg_frame+1)%len(bgImages)
             current_bg_image = bgImages[current_bg_frame]
         return current_bg_image
-
 
 ######
 clock = pygame.time.Clock() #importando o timer
@@ -551,14 +560,13 @@ groundDEFAULT = Blocks(300,300,ground0)
 obstaculo0 = pygame.image.load("Images\\Plataforma\\CHÃO\\sprite_0.png").convert()
 obstaculo0 = pygame.transform.scale(obstaculo0,(100,100)).convert()
 obstaculoDEFAULT = Blocks(300,300,obstaculo0)
-
+#obs = pygame.sprite.Group()
 ########
 groundRange = arange(0,map_x,pygame.Surface.get_width(ground0))
 
 pygame.display.set_caption(title) #Titulo da janela do jogo
 running=True
 ############
-print("oiu")
 while running:
     if background == kkkeae:
         screen.blit(background, (0, 0))
@@ -577,8 +585,11 @@ while running:
     ground21 = Blocks(800+groundDEFAULT.width-addBg,200,ground0)
     ground22 = Blocks(800+groundDEFAULT.width*2-addBg,200,ground0)
     obstacle1 = Blocks(1400-addBg,390+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
-
-    aero=[ground10,ground11,ground12,ground20,ground21,ground22,obstacle1] #LISTA COM OS CHAOS
+    #obs.add(obstacle1)
+    obs=[obstacle1]
+    for i in obs:
+        screen.blit(i.image,(i.x,i.y))
+    aero=[ground10,ground11,ground12,ground20,ground21,ground22] #LISTA COM OS CHAOS
     for i in aero:
         screen.blit(i.image,(i.x,i.y))
 
@@ -625,11 +636,8 @@ while running:
             if event.key == pygame.K_k:
                 background = vapor
                 background = pygame.transform.scale(background, (screen_x, screen_y))
-            # if event.key == pygame.K_j:
-            #     char1.rect_atk = pygame.Rect(0,0,0,0)
      ## atualizando a posicao do personagem
     Game.update()
-    floor=[]
 ############
 pygame.quit() #fechando o pygame
 quit() # fechandoo python
