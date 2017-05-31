@@ -48,10 +48,11 @@ class Player(pygame.sprite.Sprite):
         self.rect_atk = pygame.Rect(0,0,0,0)
         self.life = 3
         self.ignore = 0
+        self.oi = self.rect.center[0]
     def load_images(self):
         self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200,True)
         self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200,True)
-        self.attackingR_frames=Game.loadimages("Images\\Player\\ATTACK RIGHT\\sprite_ATKRIGHT{}.png",4,400,400,False)
+        self.attackingR_frames=Game.loadimages("Images\\Player\\ATTACK RIGHT\\sprite_ATKRIGHT{}.png",5,450,200,True)
         self.lookingR_up_frames=Game.loadimages("Images\\Player\\CIMA_RIGHT\\cima.png",1,200,200,True)
         self.standingL=Game.loadflipimages(self.standingR)
         self.lookingL_up_frames=Game.loadflipimages(self.lookingR_up_frames)
@@ -111,6 +112,8 @@ class Player(pygame.sprite.Sprite):
 
 
         elif self.attack==True and self.leftface==True:
+            #self.x = self.hitbox.centerx
+            print("oi")
             if now - self.last_update>90:
                 self.attack==False
                 self.last_update=now
@@ -181,12 +184,13 @@ class Player(pygame.sprite.Sprite):
             self.attack=True
             # self.walkL=False
             # self.walkR=False
-            if self.rightface == True :
-                self.rect_atk = pygame.Rect(self.x + self.size[0] -20 , self.y + (self.size[1])/2 +20, 100, 50)
-                pygame.draw.rect(screen,(255,0,0),self.rect_atk)
-            else:
-                self.rect_atk = pygame.Rect(self.x -100  , self.y + (self.size[1])/2 +20, 100, 50)
-                pygame.draw.rect(screen,(255,0,255),self.rect_atk)
+
+            # if self.rightface == True :
+            #     self.rect_atk = pygame.Rect(self.x + self.size[0] +25 , self.y + (self.size[1])/2 -20, 100, 100)
+            #     pygame.draw.rect(screen,(255,0,0),self.rect_atk)
+            # else:
+            #     self.rect_atk = pygame.Rect(self.x -100  , self.y + (self.size[1])/2 +20, 100, 50)
+            #     pygame.draw.rect(screen,(255,0,255),self.rect_atk)
 
 
         if direction == 0:
@@ -245,22 +249,29 @@ class Player(pygame.sprite.Sprite):
             #enemies é uma lista que contem todos os inimigos do player
             if self.rect.colliderect(i.rect) ==  True and self.ignore >=120 : #2 segundos de invulnerabilidade
                 if not pygame.sprite.collide_mask(self,i) == None:
-                    self.collision_enemies= True
-
-                    if i.x > self.x and self.speed_y == 0:
-                        self.x -= 100
-                    elif i.x < self.x and self.speed_y == 0:
-                        self.x += 100
-                    elif self.speed_y>1:
-                        print("por cima")
-                        self.speed_y = -8
-                    self.ignore = 0
-                    break
+                    if self.attack == False:
+                        self.collision_enemies= True
+                        if i.x > self.x and self.speed_y == 0:
+                            self.x -= 100
+                        elif i.x < self.x and self.speed_y == 0:
+                            self.x += 100
+                        elif self.speed_y>1:
+                            print("por cima")
+                            self.speed_y = -8
+                        self.ignore = 0
+                        break
+                    else:
+                        if self.rightface == True and i.x > self.x:
+                            i.death = True
+                            print("Matei direita")
+                        elif self.leftface == True and i.x < self.x:
+                            i.death = True
+                            print("Matei esquerda")
                 else:
                     self.collision_enemies = False
 
-            elif self.rect_atk.colliderect(i.rect) == True:
-                i.death = True
+            # elif self.rect_atk.colliderect(i.rect) == True:
+            #     i.death = True
             else:
                 self.collision_enemies = False
 
@@ -465,6 +476,8 @@ class Game():
         slime2.move(5,0)
         slime2.update()
         char1.updatepos()
+        clock.tick(fps) # ajustando o fps
+        pygame.display.update()### atualizando o display
 
     def animateBG(bgImages): #Função que anima o background
         global last_bg_update, current_bg_frame, current_bg_image
@@ -518,7 +531,7 @@ dragon=pygame.image.load("Images\\Inimigos\\Flying demon\\sprite_0.png").convert
 Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png").convert()
 slime11=pygame.transform.scale(Slime1,(100,100))
 #(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
-slime2=Enemy(1100,500,1100,0,0,0,slime11,True,False,"Slime")
+slime2=Enemy(1100,500,1100,0,0,0,slime11,False,False,"Slime")
 #enemies.append(slime1)
 #slime1=Enemy(500,500,600,0,0,0,slime11,True,False,"Slime")
 dragon1=Enemy(1200,200,0,0,-90,200,dragon,True,True,"Dragon")
@@ -545,7 +558,7 @@ groundRange = arange(0,map_x,pygame.Surface.get_width(ground0))
 pygame.display.set_caption(title) #Titulo da janela do jogo
 running=True
 ############
-
+print("oiu")
 while running:
     if background == kkkeae:
         screen.blit(background, (0, 0))
@@ -612,13 +625,11 @@ while running:
             if event.key == pygame.K_k:
                 background = vapor
                 background = pygame.transform.scale(background, (screen_x, screen_y))
-            if event.key == pygame.K_j:
-                char1.rect_atk = pygame.Rect(0,0,0,0)
+            # if event.key == pygame.K_j:
+            #     char1.rect_atk = pygame.Rect(0,0,0,0)
      ## atualizando a posicao do personagem
     Game.update()
     floor=[]
-    clock.tick(fps) # ajustando o fps
-    pygame.display.update()### atualizando o display
 ############
 pygame.quit() #fechando o pygame
 quit() # fechandoo python
