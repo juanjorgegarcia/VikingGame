@@ -249,14 +249,16 @@ class Player(pygame.sprite.Sprite):
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
-                    self.y = i.rect.top - self.size[1] -1
+                    self.y = i.rect.top - self.size[1]
                     break
                 elif self.aceleration == 0 and self.x > i.x:
                     self.speed_y = 0
-                    self.x = i.rect.right +1
-                elif self.aceleration == 0 and self.x  < i.x:
+                    #self.x = i.rect.right +1
+                    self.speed_x = 0
+                elif self.aceleration == 0 and self.x  < i.x and self.walkL==False:
                     self.speed_y = 0
-                    self.x = i.rect.left - self.size[0] - 1
+                    #self.x = i.rect.left - self.size[0] - 1
+                    self.speed_x = 0
         for i in enemies:
             #enemies é uma lista que contem todos os inimigos do player
             if self.rect.colliderect(i.rect) ==  True and self.ignore >=120 : #2 segundos de invulnerabilidade
@@ -296,17 +298,16 @@ class Player(pygame.sprite.Sprite):
             if self.life <=0:
                 print("you loose")
 
-
         if self.walkR == True:
-            if self.x < screen_x/2:
+            if self.x < screenPlayerAreaMax:
                 self.x += self.speed_x
-            elif self.x >= screen_x/2 and self.x+addBg+pygame.Surface.get_width(self.current_img) <= map_x:
+            elif self.x >= screenPlayerAreaMax and self.x+addBg+pygame.Surface.get_width(self.current_img) <= map_x:
                 addBg = addBg + self.speed_x
 
         if self.walkL == True:
-            if self.x > 0 and addBg <= 0:
+            if self.x > screenPlayerAreaMin:
                 self.x -= self.speed_x
-            elif self.x > 0 and addBg > 0:
+            if self.x <= screenPlayerAreaMin and addBg > 0:
                 addBg = addBg - self.speed_x
 
 class Enemy(pygame.sprite.Sprite):
@@ -410,14 +411,14 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         self.animate()
         self.x+=self.speed_x
-        if char1.walkR == True and addBg > 0:
+        if char1.walkR == True and addBg > 0 and char1.x >= screenPlayerAreaMax:
             self.x = self.x - char1.speed_x
             self.traveledDistance += char1.speed_x
         elif addBg <= 0:
             self.x = self.x + self.traveledDistance
             self.traveledDistance = 0
 
-        if char1.walkL == True and addBg > 0:
+        if char1.walkL == True and addBg > 0 and char1.x <= screenPlayerAreaMin:
             self.x = self.x + char1.speed_x
             self.traveledDistance -= char1.speed_x
         elif addBg <= 0:
@@ -506,6 +507,8 @@ clock = pygame.time.Clock() #importando o timer
 map_x = 5000
 map_y = 720
 screen=pygame.display.set_mode((screen_x,screen_y)) #criando o display do jogo
+screenPlayerAreaMin = 400
+screenPlayerAreaMax = screen_x/2
 ######
 ###### carregando o background Do jogo
 vapor = pygame.image.load("8bitvapor.png").convert()
@@ -568,6 +571,7 @@ pygame.display.set_caption(title) #Titulo da janela do jogo
 running=True
 ############
 while running:
+    print(char1.x)
     if background == kkkeae:
         screen.blit(background, (0, 0))
     else:
