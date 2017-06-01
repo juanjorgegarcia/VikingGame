@@ -1,7 +1,7 @@
 # -- coding: utf-8 --
 #########################BUGS:################################
 #Dragão dasaparece do nada
-#Colisão lateral pode ser implementada para o obstaculo no chao
+#Colisão lateral pode ser implementada para o obstaculo no chao (done)
 #Imagem do kkkeae nao esta sendo mostrada
 ##############################################################
 import pygame, os
@@ -45,10 +45,9 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.current_img)
         self.collision_enemies = False
         self.collision_plat = False
-        self.rect_atk = pygame.Rect(0,0,0,0)
         self.life = 3
         self.ignore = 0
-        self.oi = self.rect.center[0]
+
     def load_images(self):
         self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200,True)
         self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200,True)
@@ -58,9 +57,6 @@ class Player(pygame.sprite.Sprite):
         self.lookingL_up_frames=Game.loadflipimages(self.lookingR_up_frames)
         self.walkingl_frames=Game.loadflipimages(self.walkingR_frames)
         self.attackingL_frames=Game.loadflipimages(self.attackingR_frames)
-
-
-
 
 
     def animate(self):
@@ -179,14 +175,6 @@ class Player(pygame.sprite.Sprite):
             # self.walkL=False
             # self.walkR=False
 
-            # if self.rightface == True :
-            #     self.rect_atk = pygame.Rect(self.x + self.size[0] +25 , self.y + (self.size[1])/2 -20, 100, 100)
-            #     pygame.draw.rect(screen,(255,0,0),self.rect_atk)
-            # else:
-            #     self.rect_atk = pygame.Rect(self.x -100  , self.y + (self.size[1])/2 +20, 100, 50)
-            #     pygame.draw.rect(screen,(255,0,255),self.rect_atk)
-
-
         if direction == 0:
             self.speed_x = 0
 
@@ -249,20 +237,24 @@ class Player(pygame.sprite.Sprite):
                     break
                 elif self.aceleration == 0 and self.x > i.x and self.walkR==False:
                     self.speed_y = 0
+
                     self.speed_x = 0
                 elif self.aceleration == 0 and self.x < i.x and self.walkL==False:
                     self.speed_y = 0
                     self.speed_x = 0
+
         for i in enemies:
             #enemies é uma lista que contem todos os inimigos do player
             if self.rect.colliderect(i.rect) ==  True and self.ignore >=120 : #2 segundos de invulnerabilidade
                 if not pygame.sprite.collide_mask(self,i) == None:
                     if self.attack == False:
                         self.collision_enemies= True
-                        if i.x > self.x and self.speed_y == 0:
+                        if i.x > self.x and self.speed_y < 1:
+                            print("direita")
                             self.x -= 100
-                        elif i.x < self.x and self.speed_y == 0:
-                            self.x += 100
+                        elif i.x < self.x and self.speed_y < 1:
+                            print("esquerda")
+                            self.x+=100
                         elif self.speed_y>1:
                             print("por cima")
                             self.speed_y = -8
@@ -271,26 +263,31 @@ class Player(pygame.sprite.Sprite):
                     else:
                         if self.rightface == True and i.x > self.x:
                             i.death = True
+                            if oi:
+                                soled.play()
                             print("Matei direita")
                         elif self.leftface == True and i.x < self.x:
                             i.death = True
+                            if oi:
+                                soled.play()
                             print("Matei esquerda")
                 else:
                     self.collision_enemies = False
 
-            # elif self.rect_atk.colliderect(i.rect) == True:
-            #     i.death = True
             else:
                 self.collision_enemies = False
 
         if self.collision_floor == False:
             self.aceleration = 0.4
         if self.collision_enemies == True:
-            addBg = 0
             self.life-=1
-            print(self.life)
-            if self.life <=0:
+            if self.life>0:
+                dmg01.play()
+            else:
                 print("you loose")
+                death01.play()
+            addBg = 0
+            print(self.life)
 
         if self.walkR == True:
             if self.x < screenPlayerAreaMax:
@@ -505,6 +502,14 @@ class Game():
             return False
 playLoop = True
 
+def yodao():
+    global death01,jump,atk01,soled,oi
+    death01 = pygame.mixer.Sound("Soundfx\\yoda_lago.wav")
+    jump = pygame.mixer.Sound("Soundfx\\yoda_fon.wav")
+    atk01 = pygame.mixer.Sound("Soundfx\\yoda_hi.wav")
+    soled = pygame.mixer.Sound("Soundfx\\yoda_solado.wav")
+    oi = True
+oi = False
 ######
 clock = pygame.time.Clock() #importando o timer
 ######
@@ -556,8 +561,11 @@ dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
 enemies = pygame.sprite.Group(slime2,dragon1)
 #################################
 ############
-jump = pygame.mixer.Sound("Jump10.wav")
-music1 = pygame.mixer.music.load("Heroic Demise (New).mp3")
+atk01 = pygame.mixer.Sound("Soundfx\\atk_01.wav")
+death01 = pygame.mixer.Sound("Soundfx\\death_01.wav")
+jump = pygame.mixer.Sound("Soundfx\\Jump_00.wav")
+dmg01 = pygame.mixer.Sound("Soundfx\\damage_01.wav")
+music1 = pygame.mixer.music.load("Soundfx\\Heroic Demise (New).mp3")
 ############
 kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 ############
@@ -583,6 +591,7 @@ restart = False #Variavel para recomeçar o jogo do zero
 #####################################FIM DAS VARIAVEIS ------> LEMBRAR DE COPIAR E COLAR NO DPLAYLOOP O QUE FOR VARIAVEL##################################
 
 pygame.display.set_caption(title) #Titulo da janela do jogo
+# <<<<<<< HEAD
 while playLoop: ######LOOP DO RESTART DO JOGO
     clouds = [cloud,cloud2,cloud3]
     addBg = 0
@@ -649,8 +658,10 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                     running = False #saindo do jogo apertano esc
                     playLoop = False
                 if event.key == pygame.K_SPACE and char1.jump==False:
+                    jump.play()
                     char1.move("up")
-                    #jump.play()
+                if event.key == pygame.K_y:
+                    yodao()
                 if event.key == pygame.K_w:
                     char1.move("look_up")
                 if event.key == pygame.K_d:
@@ -659,6 +670,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                     char1.move("left")
                 if event.key == pygame.K_j:
                     char1.move("attack")
+                    atk01.play()
                 if event.key == pygame.K_k:
                     background = kkkeae
                     background = pygame.transform.scale(background, (screen_x, screen_y))
@@ -672,7 +684,6 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                 if event.key == pygame.K_k:
                     background = vapor
                     background = pygame.transform.scale(background, (screen_x, screen_y))
-         ## atualizando a posicao do personagem
         Game.update()
         if Game.goal(char1.hitbox,endBlock.rect) == True:
             diescreen = True
