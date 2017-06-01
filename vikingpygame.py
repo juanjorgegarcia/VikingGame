@@ -1,7 +1,7 @@
 # -- coding: utf-8 --
 #########################BUGS:################################
 #Dragão dasaparece do nada
-#Colisão lateral pode ser implementada para o obstaculo no chao
+#Colisão lateral pode ser implementada para o obstaculo no chao (done)
 #Imagem do kkkeae nao esta sendo mostrada
 ##############################################################
 import pygame, os
@@ -45,10 +45,9 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.current_img)
         self.collision_enemies = False
         self.collision_plat = False
-        self.rect_atk = pygame.Rect(0,0,0,0)
         self.life = 3
         self.ignore = 0
-        self.oi = self.rect.center[0]
+
     def load_images(self):
         self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200,True)
         self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200,True)
@@ -58,9 +57,6 @@ class Player(pygame.sprite.Sprite):
         self.lookingL_up_frames=Game.loadflipimages(self.lookingR_up_frames)
         self.walkingl_frames=Game.loadflipimages(self.walkingR_frames)
         self.attackingL_frames=Game.loadflipimages(self.attackingR_frames)
-
-
-
 
 
     def animate(self):
@@ -183,14 +179,6 @@ class Player(pygame.sprite.Sprite):
             # self.walkL=False
             # self.walkR=False
 
-            # if self.rightface == True :
-            #     self.rect_atk = pygame.Rect(self.x + self.size[0] +25 , self.y + (self.size[1])/2 -20, 100, 100)
-            #     pygame.draw.rect(screen,(255,0,0),self.rect_atk)
-            # else:
-            #     self.rect_atk = pygame.Rect(self.x -100  , self.y + (self.size[1])/2 +20, 100, 50)
-            #     pygame.draw.rect(screen,(255,0,255),self.rect_atk)
-
-
         if direction == 0:
             self.speed_x = 0
 
@@ -249,16 +237,16 @@ class Player(pygame.sprite.Sprite):
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
-                    self.y = i.rect.top - self.size[1] -1
+                    self.y = i.rect.top - self.size[1]
                     break
                 elif self.aceleration == 0 and self.x > i.x:
                     self.speed_y = 0
-                    #self.x = i.rect.right +1
-                    self.speed_x = 0
-                elif self.aceleration == 0 and self.x  < i.x and self.walkL==False:
+                    if self.leftface == True:
+                        self.speed_x = 0
+                elif self.aceleration == 0 and self.x  < i.x:
                     self.speed_y = 0
-                    #self.x = i.rect.left - self.size[0] - 1
-                    self.speed_x = 0
+                    if self.rightface == True:
+                        self.speed_x = 0
         for i in enemies:
             #enemies é uma lista que contem todos os inimigos do player
             if self.rect.colliderect(i.rect) ==  True and self.ignore >=120 : #2 segundos de invulnerabilidade
@@ -266,9 +254,9 @@ class Player(pygame.sprite.Sprite):
                     if self.attack == False:
                         self.collision_enemies= True
                         if i.x > self.x and self.speed_y == 0:
-                            self.x -= 100
+                            self.speed_x -= 10
                         elif i.x < self.x and self.speed_y == 0:
-                            self.x += 100
+                            self.speed_x+=10
                         elif self.speed_y>1:
                             print("por cima")
                             self.speed_y = -8
@@ -284,8 +272,6 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.collision_enemies = False
 
-            # elif self.rect_atk.colliderect(i.rect) == True:
-            #     i.death = True
             else:
                 self.collision_enemies = False
 
@@ -571,7 +557,6 @@ pygame.display.set_caption(title) #Titulo da janela do jogo
 running=True
 ############
 while running:
-    print(char1.x)
     if background == kkkeae:
         screen.blit(background, (0, 0))
     else:
