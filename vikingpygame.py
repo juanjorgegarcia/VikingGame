@@ -24,6 +24,7 @@ class Player(pygame.sprite.Sprite):
         self.x = x #coordenada x do personagem
         self.y = y #coordenada y do personagem
         self.current_frame=0
+        self.attackframe=0
         self.last_update=0
         self.load_images()
         self.standimg=0
@@ -63,7 +64,7 @@ class Player(pygame.sprite.Sprite):
 
     def animate(self):
         now=pygame.time.get_ticks()
-        if self.look_up==True and self.walkR==False and self.walkL==False and self.jump==False:
+        if self.look_up==True and self.walkR==False and self.walkL==False and self.jump==False and self.attack==False:
             if self.rightface==True:
                 self.current_img=self.lookingR_up_frames[0]
             if self.leftface==True:
@@ -100,17 +101,15 @@ class Player(pygame.sprite.Sprite):
             if self.rightface==True:
                 self.current_img=self.standingR[0]
 
-        elif self.walkR==True and self.jump==False:
+        elif self.walkR==True and self.jump==False and self.attack==False:
             if now - self.last_update>80:
-                self.attack=False
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.walkingR_frames)
                 self.current_img=self.walkingR_frames[self.current_frame]
                 self.current_img=pygame.transform.scale(self.current_img,(200,200))
 
-        elif self.walkL==True and self.jump==False:
+        elif self.walkL==True and self.jump==False and self.attack==False:
             if now - self.last_update>80:
-                self.attack=False
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.walkingl_frames)
                 self.current_img=self.walkingl_frames[self.current_frame]
@@ -119,39 +118,40 @@ class Player(pygame.sprite.Sprite):
         elif self.attack==True and self.rightface==True:
             if now - self.last_update>90:
                 self.last_update=now
-                self.current_frame=(self.current_frame+1)%len(self.attackingR_frames)
-                self.current_img=self.attackingR_frames[self.current_frame]
-                if self.current_frame==0:
+                self.attackframe=(self.attackframe+1)%len(self.attackingR_frames)
+                self.current_img=self.attackingR_frames[self.attackframe]
+                if self.attackframe==0:
                     self.attack=False
-                    self.current_frame=0
 
 
         elif self.attack==True and self.leftface==True:
             if now - self.last_update>90:
                 self.last_update=now
-                self.current_frame=(self.current_frame+1)%len(self.attackingL_frames)
-                self.current_img=self.attackingL_frames[self.current_frame]
-                if self.current_frame==0:
+                self.attackframe=(self.attackframe+1)%len(self.attackingL_frames)
+                self.current_img=self.attackingL_frames[self.attackframe]
+                if self.attackframe==0:
                     self.attack=False
-                    self.current_frame=0
+
 
         elif self.attack==True and self.rightface==True and self.jump==True:
             if now - self.last_update>90:
                 self.last_update=now
-                self.current_frame=(self.current_frame+1)%len(self.attackingL_frames)
-                self.current_img=self.attackingL_frames[self.current_frame]
-                if self.current_frame==0:
+                self.attackframe=(self.attackframe+1)%len(self.attackingL_frames)
+                self.current_img=self.attackingL_frames[self.attackframe]
+                if self.attackframe==0:
                     self.attack=False
 
 
         elif self.attack==True and self.leftface==True and self.jump==True:
             if now - self.last_update>90:
                 self.last_update=now
-                self.current_frame=(self.current_frame+1)%len(self.attackingR_frames)
-                self.current_img=self.attackingR_frames[self.current_frame]
-                if self.current_frame==0:
+                self.attackframe=(self.attackframe+1)%len(self.attackingR_frames)
+                self.current_img=self.attackingR_frames[self.attackframe]
+                if self.attackframe==0:
                     self.attack=False
-                    self.current_frame=0
+
+
+
         elif self.jump==True:
             if self.rightface==True:
                 self.current_img=self.standingR[0]
@@ -162,16 +162,18 @@ class Player(pygame.sprite.Sprite):
     def move(self,direction):
         #movendo o player
         if direction == "left":
-            self.speed_x = 10
-            self.walkL=True #player esta andando para esquerda
-            self.leftface=True
-            self.rightface=False
+            if self.attack==False:
+                self.speed_x = 10
+                self.walkL=True #player esta andando para esquerda
+                self.leftface=True
+                self.rightface=False
 
         if direction == "right":
-            self.speed_x = 10
-            self.walkR=True #player esta andando para direita
-            self.rightface=True
-            self.leftface=False
+            if self.attack==False:
+                self.speed_x = 10
+                self.walkR=True #player esta andando para direita
+                self.rightface=True
+                self.leftface=False
 
         if direction=="stopright":
             self.walkR=False
@@ -190,11 +192,7 @@ class Player(pygame.sprite.Sprite):
             self.look_up=False
 
         if direction=="attack":
-            self.walkL=False
-            self.walkR=False
             self.attack=True
-            # self.walkL=False
-            # self.walkR=False
 
         if direction == 0:
             self.speed_x = 0
@@ -310,7 +308,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.collision_floor == False:
             self.aceleration = 0.4
-            
+
         if self.collision_enemies == True:
             self.life-=1
             if self.life>0:
@@ -322,20 +320,34 @@ class Player(pygame.sprite.Sprite):
             addBg = 0
             print(self.life)
 
-        if self.walkR == True:
+        if self.walkR == True and self.jump==False:
+            if self.attack==False:
+                if self.x < screenPlayerAreaMax:
+                    self.x += self.speed_x
+                elif self.x >= screenPlayerAreaMax and self.x+addBg+pygame.Surface.get_width(self.current_img) <= map_x:
+                    addBg = addBg + self.speed_x
+
+        if self.walkL == True and self.jump==False:
+            if self.attack==False:
+                if self.x <= screenPlayerAreaMin and addBg <= 0 and self.x >= 0:
+                    self.x -= self.speed_x
+                elif self.x > screenPlayerAreaMin and addBg > 0:
+                    self.x -= self.speed_x
+                elif self.x > screenPlayerAreaMin and addBg <= 0:
+                    self.x -= self.speed_x
+                elif self.x <= screenPlayerAreaMin and addBg > 0:
+                    addBg = addBg - self.speed_x
+
+        if self.walkR == True and self.jump==True:
             if self.x < screenPlayerAreaMax:
                 self.x += self.speed_x
             elif self.x >= screenPlayerAreaMax and self.x+addBg+pygame.Surface.get_width(self.current_img) <= map_x:
                 addBg = addBg + self.speed_x
 
-        if self.walkL == True:
-            if self.x <= screenPlayerAreaMin and addBg <= 0 and self.x >= 0:
+        elif self.walkL == True and self.jump==True:
+            if self.x > screenPlayerAreaMin:
                 self.x -= self.speed_x
-            elif self.x > screenPlayerAreaMin and addBg > 0:
-                self.x -= self.speed_x
-            elif self.x > screenPlayerAreaMin and addBg <= 0:
-                self.x -= self.speed_x
-            elif self.x <= screenPlayerAreaMin and addBg > 0:
+            if self.x <= screenPlayerAreaMin and addBg > 0:
                 addBg = addBg - self.speed_x
 
 
@@ -348,6 +360,7 @@ class Enemy(pygame.sprite.Sprite):
         self.xOriginal = x
         self.y=y #coordenada y do personagem
         self.current_frame=0
+        self.death_frame=0
         self.limitx1=limitx1
         self.limity1=limity1
         self.limitx2=limitx2
@@ -377,6 +390,8 @@ class Enemy(pygame.sprite.Sprite):
         #self.slimeL=[pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_1.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_2.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_3.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_4.png")]
         self.slimeL=Game.loadimages("Images\\Inimigos\\Slime\\slime_{}.png",5,100,100,True)
         self.slimeR=Game.loadflipimages(self.slimeL)
+        self.slimeLD=Game.loadimages("Images\\Inimigos\\Slime\\Slime death\\sprite_{}.png",6,100,100,True)
+        self.slimeRD=Game.loadflipimages(self.slimeLD)
         self.dragonL=Game.loadimages("Images\\Inimigos\\Flying demon\\sprite_{}.png",2,300,300,True)
         self.dragonR=Game.loadflipimages(self.dragonL)
 
@@ -386,17 +401,38 @@ class Enemy(pygame.sprite.Sprite):
 
         if self.race=="Slime":
 
-            if self.leftface==True and self.rightface==False:
+            if self.leftface==True and self.rightface==False and self.death==False:
                 if now - self.last_update>120:
                     self.last_update=now
                     self.current_frame=(self.current_frame+1)%len(self.slimeL)
                     self.current_img=self.slimeL[self.current_frame]
 
-            elif self.rightface==True and self.leftface==False:
+            elif self.rightface==True and self.leftface==False and self.death==False:
                 if now - self.last_update>120:
                     self.last_update=now
                     self.current_frame=(self.current_frame+1)%len(self.slimeR)
                     self.current_img=self.slimeR[self.current_frame]
+
+            if self.death == True:
+                self.speed_x=0
+                self.speed_y=0
+                if self.leftface==True:
+                    if now - self.last_update>190:
+                        self.last_update=now
+                        self.death_frame=(self.death_frame+1)%len(self.slimeLD)
+                        self.current_img=self.slimeLD[self.death_frame]
+                        if self.death_frame==0:
+                            self.kill()
+                if self.rightface==True:
+                    if now - self.last_update>190:
+                        self.last_update=now
+                        self.death_frame=(self.death_frame+1)%len(self.slimeRD)
+                        self.current_img=self.slimeRD[self.death_frame]
+                        if self.death_frame==0:
+                            self.kill()
+
+
+
 
 
         if self.race=="Dragon":
@@ -405,6 +441,8 @@ class Enemy(pygame.sprite.Sprite):
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.dragonL)
                 self.current_img=self.dragonL[self.current_frame]
+            if self.death == True:
+                self.kill()
 
 
 
@@ -458,8 +496,9 @@ class Enemy(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.current_img)
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
 
-        if self.death == True:
-            self.kill()
+        # if self.death == True:
+        #     self.kill()
+
 
 
 class Blocks(pygame.sprite.Sprite):
@@ -715,6 +754,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                     char1.move("look_up")
                 if event.key == pygame.K_d:
                     char1.move("right")
+                    print(char1.walkR)
                 if event.key == pygame.K_a:
                     char1.move("left")
                 if event.key == pygame.K_j:
