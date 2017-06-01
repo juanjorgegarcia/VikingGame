@@ -118,6 +118,8 @@ class Player(pygame.sprite.Sprite):
 
         elif self.attack==True and self.rightface==True:
             if now - self.last_update>90:
+                if self.attackframe == 0:
+                    atk01.play()
                 self.last_update=now
                 self.attackframe=(self.attackframe+1)%len(self.attackingR_frames)
                 self.current_img=self.attackingR_frames[self.attackframe]
@@ -127,6 +129,8 @@ class Player(pygame.sprite.Sprite):
 
         elif self.attack==True and self.leftface==True:
             if now - self.last_update>90:
+                if self.attackframe == 0:
+                    atk01.play()
                 self.last_update=now
                 self.attackframe=(self.attackframe+1)%len(self.attackingL_frames)
                 self.current_img=self.attackingL_frames[self.attackframe]
@@ -136,6 +140,8 @@ class Player(pygame.sprite.Sprite):
 
         elif self.attack==True and self.rightface==True and self.jump==True:
             if now - self.last_update>90:
+                if self.attackframe == 0:
+                    atk01.play()
                 self.last_update=now
                 self.attackframe=(self.attackframe+1)%len(self.attackingL_frames)
                 self.current_img=self.attackingL_frames[self.attackframe]
@@ -145,6 +151,8 @@ class Player(pygame.sprite.Sprite):
 
         elif self.attack==True and self.leftface==True and self.jump==True:
             if now - self.last_update>90:
+                if self.attackframe == 0:
+                    atk01.play()
                 self.last_update=now
                 self.attackframe=(self.attackframe+1)%len(self.attackingR_frames)
                 self.current_img=self.attackingR_frames[self.attackframe]
@@ -763,7 +771,6 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                     char1.move("left")
                 if event.key == pygame.K_j:
                     char1.move("attack")
-                    atk01.play()
                 if event.key == pygame.K_k:
                     background = kkkeae
                     background = pygame.transform.scale(background, (screen_x, screen_y))
