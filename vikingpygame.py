@@ -27,8 +27,8 @@ class Player(pygame.sprite.Sprite):
         self.attackframe=0
         self.last_update=0
         self.load_images()
-        self.standimg=0
-        self.current_img=pygame.image.load("Images\\Player\\STAND_RIGHT\\stand.png")
+        self.standimg = 0
+        self.current_img = pygame.image.load("Images\\Player\\STAND_RIGHT\\stand.png")
         self.speed_x = 0 #velocidade no eixo x
         self.speed_y = 0 #velocidade no eixo x
         self.aceleration = 0 #gravidade
@@ -37,8 +37,8 @@ class Player(pygame.sprite.Sprite):
         self.jump = False #status do player pulando
         self.rightface= True #sabaer pra onde o jogador esta olhando
         self.leftface = False
-        self.look_up=False
-        self.attack=False
+        self.look_up = False
+        self.attack = False
         self.size = pygame.Surface.get_size(self.current_img) #retangulo equivalente a sprite
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
         self.collision_floor = False # personagem nao esta colidindo
@@ -49,6 +49,7 @@ class Player(pygame.sprite.Sprite):
         self.life = 3
         self.ignore = 0
         self.hurt = False
+
     def load_images(self):
         self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200,True)
         self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200,True)
@@ -278,7 +279,9 @@ class Player(pygame.sprite.Sprite):
                         elif self.speed_y>1:
                             print("por cima")
                             self.speed_y = -8
-                        self.ignore = 0
+
+                        else:
+                            self.ignore = 0
                         break
                     else:
                         #self.hurt = False
@@ -522,7 +525,6 @@ class Blocks(pygame.sprite.Sprite):
         if self.x<(0-self.width):
             self.x = 1280
             self.y = randrange(0,300)
-
 class Game():
     #classe para o menu o jogo
     #devera conter funções como, start, savegame, highscore, creditos e customizaçao (posivelmente)
