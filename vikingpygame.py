@@ -409,6 +409,10 @@ class Enemy(pygame.sprite.Sprite):
         self.slimeRD=Game.loadflipimages(self.slimeLD)
         self.dragonL=Game.loadimages("Images\\Inimigos\\Flying demon\\sprite_{}.png",2,300,300,True)
         self.dragonR=Game.loadflipimages(self.dragonL)
+        self.minidemonL=Game.loadimages("Images\\Inimigos\\MIni Demon\\sprite_{}.png",4,150,150,True)
+        self.minidemonR=Game.loadflipimages(self.minidemonL)
+        self.minidemonLD=Game.loadimages("Images\\Inimigos\\MIni Demon\\Demon Death\\sprite_{}.png",5,150,150,True)
+        self.minidemonRD=Game.loadflipimages(self.minidemonLD)
 
 
     def animate(self):
@@ -446,10 +450,6 @@ class Enemy(pygame.sprite.Sprite):
                         if self.death_frame==0:
                             self.kill()
 
-
-
-
-
         if self.race=="Dragon":
 
             if now - self.last_update>200:
@@ -458,6 +458,38 @@ class Enemy(pygame.sprite.Sprite):
                 self.current_img=self.dragonL[self.current_frame]
             if self.death == True:
                 self.kill()
+
+        if self.race=="Minidemon":
+            if self.leftface==True and self.rightface==False and self.death==False:
+                if now - self.last_update>120:
+                    self.last_update=now
+                    self.current_frame=(self.current_frame+1)%len(self.minidemonL)
+                    self.current_img=self.minidemonL[self.current_frame]
+
+            elif self.rightface==True and self.leftface==False and self.death==False:
+                if now - self.last_update>120:
+                    self.last_update=now
+                    self.current_frame=(self.current_frame+1)%len(self.minidemonR)
+                    self.current_img=self.minidemonR[self.current_frame]
+
+            if self.death == True:
+                self.speed_x=0
+                self.speed_y=0
+                if self.leftface==True:
+                    if now - self.last_update>190:
+                        self.last_update=now
+                        self.death_frame=(self.death_frame+1)%len(self.minidemonLD)
+                        self.current_img=self.minidemonLD[self.death_frame]
+                        if self.death_frame==0:
+                            self.kill()
+                if self.rightface==True:
+                    if now - self.last_update>190:
+                        self.last_update=now
+                        self.death_frame=(self.death_frame+1)%len(self.minidemonRD)
+                        self.current_img=self.minidemonRD[self.death_frame]
+                        if self.death_frame==0:
+                            self.kill()
+
 
 
 
@@ -510,10 +542,6 @@ class Enemy(pygame.sprite.Sprite):
         self.y+=self.speed_y
         self.mask = pygame.mask.from_surface(self.current_img)
         self.rect = self.current_img.get_rect(x = self.x, y = self.y)
-
-        # if self.death == True:
-        #     self.kill()
-
 
 
 class Blocks(pygame.sprite.Sprite):
@@ -570,6 +598,8 @@ class Game():
         slime2.update()
         slime3.move(5,0)
         slime3.update()
+        minidemon1.move(3,0)
+        minidemon1.update()
         char1.updatepos()
         clock.tick(fps) # ajustando o fps
         pygame.display.update()### atualizando o display
@@ -637,16 +667,15 @@ player1="Images\\Player\\STAND_RIGHT\\stand.png"
 char1=Player(400,400,player1)
 char_spritedata = {}
 ####################
-
+Mdemon=pygame.image.load("Images\\Inimigos\\MIni Demon\\sprite_0.png")
+minidemon11=pygame.transform.scale(Mdemon,(200,200))
 dragon=pygame.image.load("Images\\Inimigos\\Flying demon\\sprite_0.png").convert()
 Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png").convert()
 slime11=pygame.transform.scale(Slime1,(100,100))
-#(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
 slime2=Enemy(1100,500,1100,0,0,0,slime11,True,False,"Slime")
-#enemies.append(slime1)
-#slime1=Enemy(500,500,600,0,0,0,slime11,True,False,"Slime")
 dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
-enemies = pygame.sprite.Group(slime2,dragon1)
+minidemon1=Enemy(1100,440,1100,0,0,0,minidemon11,True,False,"Minidemon")
+enemies = pygame.sprite.Group(slime2,dragon1,minidemon1)
 #################################
 ############
 
@@ -694,9 +723,10 @@ while playLoop: ######LOOP DO RESTART DO JOGO
     current_bg_image = 0
     #(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
     slime2=Enemy(1100,530,1100,0,0,0,slime11,True,False,"Slime")
+    minidemon1=Enemy(1400+100,470,2000-100,1400+100,0,0,minidemon11,True,False,"Minidemon")
     dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
     slime3=Enemy(1400 + 100,530,2000-100,1400+100,0,0,slime11,True,False,"Slime")
-    enemies = pygame.sprite.Group(slime2,dragon1,slime3)
+    enemies = pygame.sprite.Group(slime2,dragon1,slime3,minidemon1)
     diescreen = False
     restart = False
     char1.walkR = False
