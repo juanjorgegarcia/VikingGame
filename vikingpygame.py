@@ -553,6 +553,8 @@ class Game():
         dragon1.move(0,3)
         slime2.move(5,0)
         slime2.update()
+        slime3.move(5,0)
+        slime3.update()
         char1.updatepos()
         clock.tick(fps) # ajustando o fps
         pygame.display.update()### atualizando o display
@@ -675,9 +677,10 @@ while playLoop: ######LOOP DO RESTART DO JOGO
     last_bg_update = 0
     current_bg_frame = 0
     current_bg_image = 0
+    #(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
     slime2=Enemy(1100,530,1100,0,0,0,slime11,True,False,"Slime")
     dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
-    slime3=Enemy(1400 + 100,430,1100,2000-100,0,0,slime11,True,False,"Slime")
+    slime3=Enemy(1400 + 100,530,2000-100,1400+100,0,0,slime11,True,False,"Slime")
     enemies = pygame.sprite.Group(slime2,dragon1,slime3)
     diescreen = False
     restart = False
@@ -781,6 +784,10 @@ while playLoop: ######LOOP DO RESTART DO JOGO
             screen.blit(diedIMG,(0,0))
             Game.update()
             for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    diescreen = False
+                    running = False #saindo do jogo fechando a janela
+                    playLoop = False
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         diescreen = False
@@ -789,10 +796,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                         diescreen = False
                         running = False #saindo do jogo apertano esc
                         playLoop = False
-                    if event.type == pygame.QUIT:
-                        diescreen = False
-                        running=False #saindo do jogo fechando a janela
-                        playLoop = False
+
         if restart == True:
             running = False
             restart = False
