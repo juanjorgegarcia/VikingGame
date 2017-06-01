@@ -253,10 +253,12 @@ class Player(pygame.sprite.Sprite):
                 if not pygame.sprite.collide_mask(self,i) == None:
                     if self.attack == False:
                         self.collision_enemies= True
-                        if i.x > self.x and self.speed_y == 0:
-                            self.speed_x -= 10
-                        elif i.x < self.x and self.speed_y == 0:
-                            self.speed_x+=10
+                        if i.x > self.x and self.speed_y < 1:
+                            print("direita")
+                            self.x -= 100
+                        elif i.x < self.x and self.speed_y < 1:
+                            print("esquerda")
+                            self.x+=100
                         elif self.speed_y>1:
                             print("por cima")
                             self.speed_y = -8
@@ -265,9 +267,13 @@ class Player(pygame.sprite.Sprite):
                     else:
                         if self.rightface == True and i.x > self.x:
                             i.death = True
+                            if oi:
+                                soled.play()
                             print("Matei direita")
                         elif self.leftface == True and i.x < self.x:
                             i.death = True
+                            if oi:
+                                soled.play()
                             print("Matei esquerda")
                 else:
                     self.collision_enemies = False
@@ -278,11 +284,14 @@ class Player(pygame.sprite.Sprite):
         if self.collision_floor == False:
             self.aceleration = 0.4
         if self.collision_enemies == True:
-            addBg = 0
             self.life-=1
-            print(self.life)
-            if self.life <=0:
+            if self.life>0:
+                dmg01.play()
+            else:
                 print("you loose")
+                death01.play()
+            addBg = 0
+            print(self.life)
 
         if self.walkR == True:
             if self.x < screenPlayerAreaMax:
@@ -484,7 +493,14 @@ class Game():
             current_bg_frame=(current_bg_frame+1)%len(bgImages)
             current_bg_image = bgImages[current_bg_frame]
         return current_bg_image
-
+def yodao():
+    global death01,jump,atk01,soled,oi
+    death01 = pygame.mixer.Sound("Soundfx\\yoda_lago.wav")
+    jump = pygame.mixer.Sound("Soundfx\\yoda_fon.wav")
+    atk01 = pygame.mixer.Sound("Soundfx\\yoda_hi.wav")
+    soled = pygame.mixer.Sound("Soundfx\\yoda_solado.wav")
+    oi = True
+oi = False
 ######
 clock = pygame.time.Clock() #importando o timer
 ######
@@ -536,8 +552,11 @@ dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
 enemies = pygame.sprite.Group(slime2,dragon1)
 #################################
 ############
-jump = pygame.mixer.Sound("Jump10.wav")
-music1 = pygame.mixer.music.load("Heroic Demise (New).mp3")
+atk01 = pygame.mixer.Sound("Soundfx\\atk_01.wav")
+death01 = pygame.mixer.Sound("Soundfx\\death_01.wav")
+jump = pygame.mixer.Sound("Soundfx\\Jump_00.wav")
+dmg01 = pygame.mixer.Sound("Soundfx\\damage_01.wav")
+music1 = pygame.mixer.music.load("Soundfx\\Heroic Demise (New).mp3")
 ############
 kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 ############
@@ -602,8 +621,10 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = False #saindo do jogo apertano esc
             if event.key == pygame.K_SPACE and char1.jump==False:
+                jump.play()
                 char1.move("up")
-                #jump.play()
+            if event.key == pygame.K_y:
+                yodao()
             if event.key == pygame.K_w:
                 char1.move("look_up")
             if event.key == pygame.K_d:
@@ -612,6 +633,7 @@ while running:
                 char1.move("left")
             if event.key == pygame.K_j:
                 char1.move("attack")
+                atk01.play()
             if event.key == pygame.K_k:
                 background = kkkeae
                 background = pygame.transform.scale(background, (screen_x, screen_y))
