@@ -631,7 +631,7 @@ while running:
                 char1.move("right")
             if event.key == pygame.K_a:
                 char1.move("left")
-            if event.key == pygame.K_j:
+            if event.key == pygame.K_j and char1.attack == False:
                 char1.move("attack")
                 atk01.play()
             if event.key == pygame.K_k:
