@@ -279,8 +279,8 @@ class Player(pygame.sprite.Sprite):
 
         for i in water_list:
             if self.rect.colliderect(i.rect) == True:
+                self.speed_x = 0
                 if self.y > i.y:
-                    self.speed_x = 0
                     death01.play()
                     diescreen = True
         if self.collision_floor == False:
@@ -721,6 +721,10 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                     if event.key == pygame.K_ESCAPE:
                         diescreen = False
                         running = False #saindo do jogo apertano esc
+                        playLoop = False
+                    if event.type == pygame.QUIT:
+                        diescreen = False
+                        running=False #saindo do jogo fechando a janela
                         playLoop = False
         if restart == True:
             running = False
