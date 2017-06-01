@@ -49,14 +49,12 @@ class Player(pygame.sprite.Sprite):
         self.life = 3
         self.ignore = 0
         self.hurt = False
-        self.animVarL = 0 #Variavel para animacao de ataque para esquerda
-        self.xOriginalAnimATKL = 0 # Variavel para guardar x na animacao de ataque esquerda
-        self.animATK_LEFTloop = False
+        self.offset_x = 100
 
     def load_images(self):
         self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200,True)
         self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200,True)
-        self.attackingR_frames=Game.loadimages("Images\\Player\\ATTACK RIGHT\\sprite_ATKRIGHT{}.png",5,450,200,True)
+        self.attackingR_frames=Game.loadimages("Images\\Player\\ATTACK RIGHT\\sprite_ATKRIGHT{}.png",5,320,200,True)
         self.lookingR_up_frames=Game.loadimages("Images\\Player\\CIMA_RIGHT\\cima.png",1,200,200,True)
         self.standingL=Game.loadflipimages(self.standingR)
         self.lookingL_up_frames=Game.loadflipimages(self.lookingR_up_frames)
@@ -131,17 +129,18 @@ class Player(pygame.sprite.Sprite):
 
 
         elif self.attack==True and self.leftface==True:
+            if self.attackframe == 0:
+                atk01.play()
             if now - self.last_update>90:
                 if self.attackframe == 0:
-                    atk01.play()
-            if now - self.last_update>90 :
+                    self.x -= self.offset_x
                 self.last_update=now
                 self.attackframe=(self.attackframe+1)%len(self.attackingL_frames)
                 self.current_img=self.attackingL_frames[self.attackframe]
                 if self.attackframe==0:
+                    self.x = self.oldx + self.offset_x
                     self.attack=False
-
-
+        
         elif self.attack==True and self.rightface==True and self.jump==True:
             if now - self.last_update>90:
                 if self.attackframe == 0:
@@ -222,15 +221,17 @@ class Player(pygame.sprite.Sprite):
         self.animate()
         self.speed_y+=self.aceleration
         self.y += self.speed_y
+        if  self.attack == True and self.leftface == True:
+            self.hitbox = pygame.Rect(self.x+70+self.offset_x,self.y,60,192)
+        else:
+            self.hitbox = pygame.Rect(self.x+70,self.y,60,192)
         self.rect = self.current_img.get_rect(x=self.x,y=self.y)
-        self.hitbox = pygame.Rect(self.x+70,self.y,60,192)
         self.mask = pygame.mask.from_surface(self.current_img)
         self.ignore += 1
-        #print("vel",self.speed_y)
-
+        self.oldx = self.x
 
         for i in floor: #floor é a lista q contem todos os quadrados do chao do jogo
-            if self.hitbox.colliderect(i.rect) == True: #se o retangulo do player colidir com o da plataforma
+            if self.hitbox.colliderect(i.rect) == True : #se o retangulo do player colidir com o da plataforma
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
@@ -244,7 +245,7 @@ class Player(pygame.sprite.Sprite):
             #aero é a lista que contem todas as plataformas aéreas do jogo
             if self.speed_y > 0 :
                 ## se o player estiver caindo
-                if self.hitbox.colliderect(i.rect) == True and self.rect.midbottom[1] <= i.rect.center[1] - (i.height)/4 :
+                if self.hitbox.colliderect(i.rect) == True and self.rect.midbottom[1] <= i.rect.center[1] - (i.height)/4:
                     ##  se o player colidir com a plataforma e seu pé estiver entre 1/4 da altura da plataforma
                     self.collision_plat = True
                     self.speed_y = 0
@@ -253,6 +254,7 @@ class Player(pygame.sprite.Sprite):
                     self.y = i.rect.top - self.size[1]
                     ## player para e é mandado para o topo da plataforma
                     break
+
                 else:
                     self.collision_plat = False
                     #self.jump = True
@@ -752,7 +754,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
             screen.blit(a.current_img,(a.x,a.y))
         endBlock = Blocks(map_x-pygame.Surface.get_width(char1.current_img)-addBg,400,endBlockIMG)
         screen.blit(endBlock.image,(endBlock.x,endBlock.y))
-        screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
+        screen.blit(char1.current_img,(char1.x,char1.y))
         for i in water_list:
             screen.blit(i.image,(i.x,i.y))
         for event in pygame.event.get(): #pegando as açoes do usuario
