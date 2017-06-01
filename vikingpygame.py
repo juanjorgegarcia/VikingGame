@@ -49,6 +49,9 @@ class Player(pygame.sprite.Sprite):
         self.life = 3
         self.ignore = 0
         self.hurt = False
+        self.animVarL = 0 #Variavel para animacao de ataque para esquerda
+        self.xOriginalAnimATKL = 0 # Variavel para guardar x na animacao de ataque esquerda
+        self.animATK_LEFTloop = False
 
     def load_images(self):
         self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200,True)
@@ -131,6 +134,7 @@ class Player(pygame.sprite.Sprite):
             if now - self.last_update>90:
                 if self.attackframe == 0:
                     atk01.play()
+            if now - self.last_update>90 :
                 self.last_update=now
                 self.attackframe=(self.attackframe+1)%len(self.attackingL_frames)
                 self.current_img=self.attackingL_frames[self.attackframe]
@@ -158,8 +162,6 @@ class Player(pygame.sprite.Sprite):
                 self.current_img=self.attackingR_frames[self.attackframe]
                 if self.attackframe==0:
                     self.attack=False
-
-
 
         elif self.jump==True:
             if self.rightface==True:
@@ -278,12 +280,18 @@ class Player(pygame.sprite.Sprite):
                     if self.attack == False:
                         self.collision_enemies= True
                         self.hurt = True
-                        if i.x > self.x and self.speed_y < 1:
+                        if i.x > self.x:
                             print("direita")
                             self.x -= 100
-                        elif i.x < self.x and self.speed_y < 1:
+                            addBg += 100
+                            if addBg > 0:
+                                addBg -= 100
+                        elif i.x < self.x:
                             print("esquerda")
                             self.x+=100
+                            addBg -= 100
+                            if addBg > 0:
+                                addBg += 100
                         elif self.speed_y>1:
                             print("por cima")
                             self.speed_y = -8
@@ -325,7 +333,6 @@ class Player(pygame.sprite.Sprite):
                 print("you loose")
                 death01.play()
                 diescreen = True
-            addBg = 0
             print(self.life)
 
         if self.walkR == True and self.jump==False:
