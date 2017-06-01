@@ -47,7 +47,7 @@ class Player(pygame.sprite.Sprite):
         self.collision_plat = False
         self.life = 3
         self.ignore = 0
-
+        self.hurt = False
     def load_images(self):
         self.standingR=Game.loadimages("Images\\Player\\STAND_RIGHT\\stand.png",1,200,200,True)
         self.walkingR_frames=Game.loadimages("Images\\Player\\walk_right\\sprite_walkR{}.png",4,200,200,True)
@@ -57,16 +57,36 @@ class Player(pygame.sprite.Sprite):
         self.lookingL_up_frames=Game.loadflipimages(self.lookingR_up_frames)
         self.walkingl_frames=Game.loadflipimages(self.walkingR_frames)
         self.attackingL_frames=Game.loadflipimages(self.attackingR_frames)
+        self.hurtingR = Game.loadimages("Images\\Player\\OUCH_RIGHT\\sprite_{}.png",3,200,200,True)
+        self.hurtingL = Game.loadflipimages(self.hurtingR)
 
 
     def animate(self):
         now=pygame.time.get_ticks()
-
         if self.look_up==True and self.walkR==False and self.walkL==False and self.jump==False:
             if self.rightface==True:
                 self.current_img=self.lookingR_up_frames[0]
             if self.leftface==True:
                 self.current_img=self.lookingL_up_frames[0]
+
+        elif self.hurt == True and self.rightface == True:
+            if now - self.last_update>200:
+                self.last_update=now
+                self.current_frame=(self.current_frame+1)%len(self.hurtingR)
+                self.current_img=self.hurtingR[self.current_frame]
+                if self.current_frame==0:
+                    self.hurt = False
+                    self.current_frame=0
+
+        elif self.hurt == True and self.leftface == True:
+            if now - self.last_update>200:
+                self.last_update=now
+                self.current_frame=(self.current_frame+1)%len(self.hurtingL)
+                self.current_img=self.hurtingL[self.current_frame]
+                if self.current_frame==0:
+                    self.hurt = False
+                    self.current_frame=0
+
 
         elif self.walkR==True and self.walkL==True and self.jump==False:
             if self.leftface==True:
@@ -137,6 +157,7 @@ class Player(pygame.sprite.Sprite):
                 self.current_img=self.standingR[0]
             if self.leftface==True:
                 self.current_img=self.standingL[0]
+
 
     def move(self,direction):
         #movendo o player
@@ -249,6 +270,7 @@ class Player(pygame.sprite.Sprite):
                 if not pygame.sprite.collide_mask(self,i) == None:
                     if self.attack == False:
                         self.collision_enemies= True
+                        self.hurt = True
                         if i.x > self.x and self.speed_y < 1:
                             print("direita")
                             self.x -= 100
@@ -261,6 +283,7 @@ class Player(pygame.sprite.Sprite):
                         self.ignore = 0
                         break
                     else:
+                        #self.hurt = False
                         if self.rightface == True and i.x > self.x:
                             i.death = True
                             if oi:
@@ -272,6 +295,7 @@ class Player(pygame.sprite.Sprite):
                                 soled.play()
                             print("Matei esquerda")
                 else:
+                    #self.hurt = False
                     self.collision_enemies = False
 
             else:
@@ -283,8 +307,10 @@ class Player(pygame.sprite.Sprite):
                 if self.y > i.y:
                     death01.play()
                     diescreen = True
+
         if self.collision_floor == False:
             self.aceleration = 0.4
+            
         if self.collision_enemies == True:
             self.life-=1
             if self.life>0:
