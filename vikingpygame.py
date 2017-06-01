@@ -8,6 +8,7 @@ import pygame, os
 from random import randrange
 from numpy import arange
 from settings import *
+import time
 
 
 #######
@@ -15,7 +16,6 @@ from settings import *
 pygame.init()
 pygame.mixer.init()
 #####
-
 
 class Player(pygame.sprite.Sprite):
     #classe para Player
@@ -98,7 +98,6 @@ class Player(pygame.sprite.Sprite):
 
         elif self.attack==True and self.rightface==True:
             if now - self.last_update>90:
-                self.attack==False
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.attackingR_frames)
                 self.current_img=self.attackingR_frames[self.current_frame]
@@ -109,7 +108,6 @@ class Player(pygame.sprite.Sprite):
 
         elif self.attack==True and self.leftface==True:
             if now - self.last_update>90:
-                self.attack==False
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.attackingL_frames)
                 self.current_img=self.attackingL_frames[self.current_frame]
@@ -119,7 +117,6 @@ class Player(pygame.sprite.Sprite):
 
         elif self.attack==True and self.rightface==True and self.jump==True:
             if now - self.last_update>90:
-                self.attack==False
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.attackingL_frames)
                 self.current_img=self.attackingL_frames[self.current_frame]
@@ -129,7 +126,6 @@ class Player(pygame.sprite.Sprite):
 
         elif self.attack==True and self.leftface==True and self.jump==True:
             if now - self.last_update>90:
-                self.attack==False
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.attackingR_frames)
                 self.current_img=self.attackingR_frames[self.current_frame]
@@ -239,14 +235,14 @@ class Player(pygame.sprite.Sprite):
                     self.jump = False
                     self.y = i.rect.top - self.size[1]
                     break
-                elif self.aceleration == 0 and self.x > i.x:
+                elif self.aceleration == 0 and self.x > i.x and self.walkR==False:
                     self.speed_y = 0
-                    if self.leftface == True:
-                        self.speed_x = 0
-                elif self.aceleration == 0 and self.x  < i.x:
+
+                    self.speed_x = 0
+                elif self.aceleration == 0 and self.x < i.x and self.walkL==False:
                     self.speed_y = 0
-                    if self.rightface == True:
-                        self.speed_x = 0
+                    self.speed_x = 0
+
         for i in enemies:
             #enemies é uma lista que contem todos os inimigos do player
             if self.rect.colliderect(i.rect) ==  True and self.ignore >=120 : #2 segundos de invulnerabilidade
@@ -290,6 +286,7 @@ class Player(pygame.sprite.Sprite):
             else:
                 print("you loose")
                 death01.play()
+                diescreen == True
             addBg = 0
             print(self.life)
 
@@ -300,10 +297,15 @@ class Player(pygame.sprite.Sprite):
                 addBg = addBg + self.speed_x
 
         if self.walkL == True:
-            if self.x > screenPlayerAreaMin:
+            if self.x <= screenPlayerAreaMin and addBg <= 0 and self.x >= 0:
                 self.x -= self.speed_x
-            if self.x <= screenPlayerAreaMin and addBg > 0:
+            elif self.x > screenPlayerAreaMin and addBg > 0:
+                self.x -= self.speed_x
+            elif self.x > screenPlayerAreaMin and addBg <= 0:
+                self.x -= self.speed_x
+            elif self.x <= screenPlayerAreaMin and addBg > 0:
                 addBg = addBg - self.speed_x
+
 
 class Enemy(pygame.sprite.Sprite):
  #     #classe para os minions/mobs
@@ -493,6 +495,14 @@ class Game():
             current_bg_frame=(current_bg_frame+1)%len(bgImages)
             current_bg_image = bgImages[current_bg_frame]
         return current_bg_image
+
+    def goal(charHitbox,blockHitbox):
+        if charHitbox.colliderect(blockHitbox) == True:
+            return True
+        else:
+            return False
+playLoop = True
+
 def yodao():
     global death01,jump,atk01,soled,oi
     death01 = pygame.mixer.Sound("Soundfx\\yoda_lago.wav")
@@ -571,84 +581,127 @@ obstaculoDEFAULT = Blocks(300,300,obstaculo0)
 #obs = pygame.sprite.Group()
 ########
 groundRange = arange(0,map_x,pygame.Surface.get_width(ground0))
+###
+endBlockIMG = pygame.image.load("Images\\end_block.png").convert_alpha()#Bloco final do mapa
+endBlockIMG = pygame.transform.scale(endBlockIMG,(100,100)).convert_alpha()
+#####
+diedIMG = pygame.image.load("Images\\menu\\you_died.png").convert()#Bloco final do mapa
+diescreen = False
+#####
+restart = False #Variavel para recomeçar o jogo do zero
+#####################################FIM DAS VARIAVEIS ------> LEMBRAR DE COPIAR E COLAR NO DPLAYLOOP O QUE FOR VARIAVEL##################################
 
 pygame.display.set_caption(title) #Titulo da janela do jogo
-running=True
-############
-while running:
-    if background == kkkeae:
-        screen.blit(background, (0, 0))
-    else:
-        screen.blit(Game.animateBG(bgImages), (0, 0)) ### pintando o background
-    cloudi.move(2)
-    cloudi2.move(1.5)
-    screen.blit(cloudi.image,(cloudi.x,cloudi.y))
-    screen.blit(cloudi2.image,(cloudi2.x,cloudi2.y))
 
-    #######LISTA DOS CHAOS NO MAPA
-    ground10 = Blocks(300-addBg,300,ground0)
-    ground11 = Blocks(300+groundDEFAULT.width-addBg,300,ground0)
-    ground12 = Blocks(300+groundDEFAULT.width*2-addBg,300,ground0)
-    ground20 = Blocks(800-addBg,200,ground0)
-    ground21 = Blocks(800+groundDEFAULT.width-addBg,200,ground0)
-    ground22 = Blocks(800+groundDEFAULT.width*2-addBg,200,ground0)
-    obstacle1 = Blocks(1400-addBg,390+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
-    #obs.add(obstacle1)
-    obs=[obstacle1]
-    for i in obs:
-        screen.blit(i.image,(i.x,i.y))
-    aero=[ground10,ground11,ground12,ground20,ground21,ground22] #LISTA COM OS CHAOS
-    for i in aero:
-        screen.blit(i.image,(i.x,i.y))
+while playLoop: ######LOOP DO RESTART DO JOGO
+    clouds = [cloud,cloud2,cloud3]
+    addBg = 0
+    last_bg_update = 0
+    current_bg_frame = 0
+    current_bg_image = 0
+    slime2=Enemy(1100,500,1100,0,0,0,slime11,True,False,"Slime")
+    dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
+    slime3=Enemy(1400 + 100,500,1100,2000-100,0,0,slime11,True,False,"Slime")
+    enemies = pygame.sprite.Group(slime2,dragon1,slime3)
+    diescreen = False
+    restart = False
+    char1.walkR = False
+    char1.walkL = False
 
-    floor=[]
-    for i in groundRange:
-        chao = Blocks(i-addBg,390+char1.size[1],groundDEFAULT.image)
-        floor.append(chao)
-        screen.blit(chao.image,(i-addBg,390+(char1.size[1])))
-    for i in enemies:
-        if i.death == False:
-            screen.blit(i.current_img,(i.x,i.y))
-    for a in enemies:
-        screen.blit(a.current_img,(a.x,a.y))
-    screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
-    for event in pygame.event.get(): #pegando as açoes do usuario
-        if event.type == pygame.QUIT:
-            running=False #saindo do jogo fechando a janela
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_m:
-                pygame.mixer.music.play(loops=-1)
-            if event.key == pygame.K_ESCAPE:
-                running = False #saindo do jogo apertano esc
-            if event.key == pygame.K_SPACE and char1.jump==False:
-                jump.play()
-                char1.move("up")
-            if event.key == pygame.K_y:
-                yodao()
-            if event.key == pygame.K_w:
-                char1.move("look_up")
-            if event.key == pygame.K_d:
-                char1.move("right")
-            if event.key == pygame.K_a:
-                char1.move("left")
-            if event.key == pygame.K_j and char1.attack == False:
-                char1.move("attack")
-                atk01.play()
-            if event.key == pygame.K_k:
-                background = kkkeae
-                background = pygame.transform.scale(background, (screen_x, screen_y))
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_d:
-                char1.move("stopright")
-            if event.key == pygame.K_a:
-                char1.move("stopleft")
-            if event.key == pygame.K_w:
-                char1.move("stoplook_up")
-            if event.key == pygame.K_k:
-                background = vapor
-                background = pygame.transform.scale(background, (screen_x, screen_y))
-     ## atualizando a posicao do personagem
-    Game.update()
-############
+    running=True
+    ############
+    while running:
+        if background == kkkeae:
+            screen.blit(background, (0, 0))
+        else:
+            screen.blit(Game.animateBG(bgImages), (0, 0)) ### pintando o background
+        cloudi.move(2)
+        cloudi2.move(1.5)
+        screen.blit(cloudi.image,(cloudi.x,cloudi.y))
+        screen.blit(cloudi2.image,(cloudi2.x,cloudi2.y))
+
+        #######LISTA DOS CHAOS NO MAPA
+        ground10 = Blocks(300-addBg,300,ground0)
+        ground11 = Blocks(300+groundDEFAULT.width-addBg,300,ground0)
+        ground12 = Blocks(300+groundDEFAULT.width*2-addBg,300,ground0)
+        ground20 = Blocks(800-addBg,200,ground0)
+        ground21 = Blocks(800+groundDEFAULT.width-addBg,200,ground0)
+        ground22 = Blocks(800+groundDEFAULT.width*2-addBg,200,ground0)
+        obs_1 = Blocks(1400-addBg,390+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
+        obs_2 = Blocks(2000-addBg,390+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
+        obs_3 = Blocks(2000-addBg,-obs_1.height+390+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
+        #obs.add(obs_1)
+        obs=[obs_1,obs_2,obs_3]
+        for i in obs:
+            screen.blit(i.image,(i.x,i.y))
+        aero=[ground10,ground11,ground12,ground20,ground21,ground22] #LISTA COM OS CHAOS
+        for i in aero:
+            screen.blit(i.image,(i.x,i.y))
+
+        floor=[]
+        for i in groundRange:
+            chao = Blocks(i-addBg,390+char1.size[1],groundDEFAULT.image)
+            floor.append(chao)
+            screen.blit(chao.image,(i-addBg,390+(char1.size[1])))
+        for i in enemies:
+            if i.death == False:
+                screen.blit(i.current_img,(i.x,i.y))
+        for a in enemies:
+            screen.blit(a.current_img,(a.x,a.y))
+        endBlock = Blocks(map_x-pygame.Surface.get_width(char1.current_img)-addBg,400,endBlockIMG)
+        screen.blit(endBlock.image,(endBlock.x,endBlock.y))
+        screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
+        for event in pygame.event.get(): #pegando as açoes do usuario
+            if event.type == pygame.QUIT:
+                running=False #saindo do jogo fechando a janela
+                playLoop = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_m:
+                    pygame.mixer.music.play(loops=-1)
+                if event.key == pygame.K_ESCAPE:
+                    running = False #saindo do jogo apertano esc
+                    playLoop = False
+                if event.key == pygame.K_SPACE and char1.jump==False:
+                    jump.play()
+                    char1.move("up")
+                if event.key == pygame.K_y:
+                    yodao()
+                if event.key == pygame.K_w:
+                    char1.move("look_up")
+                if event.key == pygame.K_d:
+                    char1.move("right")
+                if event.key == pygame.K_a:
+                    char1.move("left")
+                if event.key == pygame.K_j:
+                    char1.move("attack")
+                    atk01.play()
+                if event.key == pygame.K_k:
+                    background = kkkeae
+                    background = pygame.transform.scale(background, (screen_x, screen_y))
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_d:
+                    char1.move("stopright")
+                if event.key == pygame.K_a:
+                    char1.move("stopleft")
+                if event.key == pygame.K_w:
+                    char1.move("stoplook_up")
+                if event.key == pygame.K_k:
+                    background = vapor
+                    background = pygame.transform.scale(background, (screen_x, screen_y))
+        Game.update()
+        if Game.goal(char1.hitbox,endBlock.rect) == True:
+            diescreen = True
+            while diescreen == True:
+                screen.blit(diedIMG,(0,0))
+                Game.update()
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_RETURN:
+                            diescreen = False
+                            restart = True
+        if restart == True:
+            running = False
+            restart = False
+    ############
 pygame.quit() #fechando o pygame
 quit() # fechandoo python
