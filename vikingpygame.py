@@ -187,7 +187,7 @@ class Player(pygame.sprite.Sprite):
                 self.current_frame=0
 
     def updatepos(self):
-        global addBg
+        global addBg,diescreen
         #atualizando a posicao do player
         self.animate()
         self.speed_y+=self.aceleration
@@ -277,6 +277,12 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.collision_enemies = False
 
+        for i in water_list:
+            if self.rect.colliderect(i.rect) == True:
+                if self.y > i.y:
+                    self.speed_x = 0
+                    death01.play()
+                    diescreen = True
         if self.collision_floor == False:
             self.aceleration = 0.4
         if self.collision_enemies == True:
@@ -286,7 +292,7 @@ class Player(pygame.sprite.Sprite):
             else:
                 print("you loose")
                 death01.play()
-                diescreen == True
+                diescreen = True
             addBg = 0
             print(self.life)
 
@@ -550,7 +556,7 @@ player1="Images\\Player\\STAND_RIGHT\\stand.png"
 char1=Player(400,400,player1)
 char_spritedata = {}
 ####################
-enemies = []
+
 dragon=pygame.image.load("Images\\Inimigos\\Flying demon\\sprite_0.png").convert()
 Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png").convert()
 slime11=pygame.transform.scale(Slime1,(100,100))
@@ -570,6 +576,8 @@ music1 = pygame.mixer.music.load("Soundfx\\Heroic Demise (New).mp3")
 ############
 kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 ############
+water = pygame.image.load("Images\\Plataforma\\Agua\\Agua clone\\sprite_0.png").convert_alpha()
+water = pygame.transform.scale(water,(100,100))
 
 ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
@@ -594,14 +602,15 @@ restart = False #Variavel para recomeçar o jogo do zero
 pygame.display.set_caption(title) #Titulo da janela do jogo
 
 while playLoop: ######LOOP DO RESTART DO JOGO
+    char1=Player(400,400,player1)
     clouds = [cloud,cloud2,cloud3]
     addBg = 0
     last_bg_update = 0
     current_bg_frame = 0
     current_bg_image = 0
-    slime2=Enemy(1100,500,1100,0,0,0,slime11,True,False,"Slime")
+    slime2=Enemy(1100,530,1100,0,0,0,slime11,True,False,"Slime")
     dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
-    slime3=Enemy(1400 + 100,500,1100,2000-100,0,0,slime11,True,False,"Slime")
+    slime3=Enemy(1400 + 100,430,1100,2000-100,0,0,slime11,True,False,"Slime")
     enemies = pygame.sprite.Group(slime2,dragon1,slime3)
     diescreen = False
     restart = False
@@ -621,15 +630,20 @@ while playLoop: ######LOOP DO RESTART DO JOGO
         screen.blit(cloudi2.image,(cloudi2.x,cloudi2.y))
 
         #######LISTA DOS CHAOS NO MAPA
-        ground10 = Blocks(300-addBg,300,ground0)
-        ground11 = Blocks(300+groundDEFAULT.width-addBg,300,ground0)
-        ground12 = Blocks(300+groundDEFAULT.width*2-addBg,300,ground0)
+        ground10 = Blocks(300-addBg,350,ground0)
+        ground11 = Blocks(300+groundDEFAULT.width-addBg,350,ground0)
+        ground12 = Blocks(300+groundDEFAULT.width*2-addBg,350,ground0)
         ground20 = Blocks(800-addBg,200,ground0)
         ground21 = Blocks(800+groundDEFAULT.width-addBg,200,ground0)
         ground22 = Blocks(800+groundDEFAULT.width*2-addBg,200,ground0)
-        obs_1 = Blocks(1400-addBg,390+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
-        obs_2 = Blocks(2000-addBg,390+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
-        obs_3 = Blocks(2000-addBg,-obs_1.height+390+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
+        obs_1 = Blocks(1400-addBg,430+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
+        obs_2 = Blocks(2000-addBg,430+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
+        obs_3 = Blocks(2000-addBg,-obs_1.height+430+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
+        water0 = Blocks(3100-addBg,635,water)
+        water1 = Blocks(3200-addBg,635,water)
+        water2 = Blocks(3300-addBg,635,water)
+        water_list=[water0,water1,water2]
+
         #obs.add(obs_1)
         obs=[obs_1,obs_2,obs_3]
         for i in obs:
@@ -640,9 +654,12 @@ while playLoop: ######LOOP DO RESTART DO JOGO
 
         floor=[]
         for i in groundRange:
-            chao = Blocks(i-addBg,390+char1.size[1],groundDEFAULT.image)
-            floor.append(chao)
-            screen.blit(chao.image,(i-addBg,390+(char1.size[1])))
+            if i > 3000 and i <3400:
+                continue
+            else:
+                chao = Blocks(i-addBg,430+char1.size[1],groundDEFAULT.image)
+                floor.append(chao)
+                screen.blit(chao.image,(i-addBg,430+(char1.size[1])))
         for i in enemies:
             if i.death == False:
                 screen.blit(i.current_img,(i.x,i.y))
@@ -651,6 +668,8 @@ while playLoop: ######LOOP DO RESTART DO JOGO
         endBlock = Blocks(map_x-pygame.Surface.get_width(char1.current_img)-addBg,400,endBlockIMG)
         screen.blit(endBlock.image,(endBlock.x,endBlock.y))
         screen.blit(char1.current_img,(char1.x,char1.y)) ### pintando o player
+        for i in water_list:
+            screen.blit(i.image,(i.x,i.y))
         for event in pygame.event.get(): #pegando as açoes do usuario
             if event.type == pygame.QUIT:
                 running=False #saindo do jogo fechando a janela
@@ -691,14 +710,18 @@ while playLoop: ######LOOP DO RESTART DO JOGO
         Game.update()
         if Game.goal(char1.hitbox,endBlock.rect) == True:
             diescreen = True
-            while diescreen == True:
-                screen.blit(diedIMG,(0,0))
-                Game.update()
-                for event in pygame.event.get():
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_RETURN:
-                            diescreen = False
-                            restart = True
+        while diescreen == True:
+            screen.blit(diedIMG,(0,0))
+            Game.update()
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        diescreen = False
+                        restart = True
+                    if event.key == pygame.K_ESCAPE:
+                        diescreen = False
+                        running = False #saindo do jogo apertano esc
+                        playLoop = False
         if restart == True:
             running = False
             restart = False
