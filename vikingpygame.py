@@ -408,6 +408,8 @@ class Enemy(pygame.sprite.Sprite):
         self.slimeRD=Game.loadflipimages(self.slimeLD)
         self.dragonL=Game.loadimages("Images\\Inimigos\\Flying demon\\sprite_{}.png",2,300,300,True)
         self.dragonR=Game.loadflipimages(self.dragonL)
+        self.dragonLD=Game.loadimages("Images\\Inimigos\\Flying demon\\Death\\sprite_{}.png",6,300,300,True)
+        self.dragonRD=Game.loadflipimages(self.dragonLD)
         self.minidemonL=Game.loadimages("Images\\Inimigos\\MIni Demon\\sprite_{}.png",4,150,150,True)
         self.minidemonR=Game.loadflipimages(self.minidemonL)
         self.minidemonLD=Game.loadimages("Images\\Inimigos\\MIni Demon\\Demon Death\\sprite_{}.png",5,150,150,True)
@@ -459,8 +461,24 @@ class Enemy(pygame.sprite.Sprite):
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.dragonL)
                 self.current_img=self.dragonL[self.current_frame]
+
             if self.death == True:
-                self.kill()
+                self.speed_x=0
+                self.speed_y=0
+                if self.leftface==True:
+                    if now - self.last_update>190:
+                        self.last_update=now
+                        self.death_frame=(self.death_frame+1)%len(self.dragonLD)
+                        self.current_img=self.dragonLD[self.death_frame]
+                        if self.death_frame==0:
+                            self.kill()
+                if self.rightface==True:
+                    if now - self.last_update>190:
+                        self.last_update=now
+                        self.death_frame=(self.death_frame+1)%len(dragonRD)
+                        self.current_img=self.dragonRD[self.death_frame]
+                        if self.death_frame==0:
+                            self.kill()
 
         if self.race=="Minidemon":
             if self.leftface==True and self.rightface==False and self.death==False:
