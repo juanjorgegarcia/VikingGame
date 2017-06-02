@@ -460,7 +460,7 @@ class Enemy(pygame.sprite.Sprite):
 
         if self.race=="Dragon":
 
-            if now - self.last_update>200:
+            if now - self.last_update>200 and self.death==False:
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.dragonL)
                 self.current_img=self.dragonL[self.current_frame]
@@ -468,6 +468,7 @@ class Enemy(pygame.sprite.Sprite):
             if self.death == True:
                 self.speed_x=0
                 self.speed_y=0
+                self.moveUP=False
                 if self.leftface==True:
                     if now - self.last_update>190:
                         self.last_update=now
