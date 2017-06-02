@@ -693,8 +693,8 @@ ground0 = pygame.image.load("Images\\Plataforma\\Ice\\Chao gelo.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
 groundDEFAULT = Blocks(300,300,ground0)
 
-obstaculo0 = pygame.image.load("Images\\Plataforma\\Ice\\Platform Ice.png").convert()
-obstaculo0 = pygame.transform.scale(obstaculo0,(100,100)).convert()
+obstaculo0 = pygame.image.load("Images\\Plataforma\\Ice\\Platform Ice.png").convert_alpha()
+obstaculo0 = pygame.transform.scale(obstaculo0,(100,100)).convert_alpha()
 obstaculoDEFAULT = Blocks(300,300,obstaculo0)
 #obs = pygame.sprite.Group()
 ########
@@ -762,7 +762,10 @@ while playLoop: ######LOOP DO RESTART DO JOGO
         floor=[]
         water_list = []
         for i in groundRange:
-            if i > 3000 and i <4200:
+            if i > 2000 and i < 2800:
+                water0 = Blocks(i-addBg,635,water)
+                water_list.append(water0)
+            elif i > 3000 and i <4200:
                 water0 = Blocks(i-addBg,635,water)
                 water_list.append(water0)
                 if i > 3200 and i <4000:
