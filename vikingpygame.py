@@ -284,7 +284,29 @@ class Player(pygame.sprite.Sprite):
             #enemies é uma lista que contem todos os inimigos do player
             if self.rect.colliderect(i.rect) ==  True and self.ignore >=120 : #2 segundos de invulnerabilidade
                 if not pygame.sprite.collide_mask(self,i) == None:
-                    if self.attack == False and i.death == False:
+                    if i.race == "Skeleton":
+                        if self.attack == False and i.death == False:
+                            self.life = 0
+                            death01.play()
+                            diescreen = True
+                        else:
+                            if self.rightface == True and i.x > self.x:
+                                self.ignore = 0
+                                print(oi)
+                                i.life -= 1
+                                print(i.life)
+                                if i.life == 0:
+                                    i.death = True
+                                    if oi:
+                                        soled.play()
+                            elif self.leftface == True and i.x < self.x:
+                                self.ignore = 0
+                                i.life -= 1
+                                if i.life == 0:
+                                    i.death = True
+                                    if oi:
+                                        soled.play()
+                    elif self.attack == False and i.death == False:
                         self.collision_enemies= True
                         self.hurt = True
                         if i.x > self.x:
@@ -301,7 +323,7 @@ class Player(pygame.sprite.Sprite):
                             self.speed_y = -8
                         self.ignore = 0
                         break
-                    else:
+                    elif not i.race == "Skeleton":
                         #self.hurt = False
                         if self.rightface == True and i.x > self.x:
                             i.death = True
@@ -329,6 +351,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.hitbox.colliderect(caindo.rect) == True:
             self.life = 0
+            death01.play()
             diescreen = True
         if self.collision_enemies == True:
             self.life-=1
@@ -407,7 +430,7 @@ class Enemy(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.current_img)
         self.traveledDistance = 0#Marca quantos pixels o inimigo andou em relação ao offset (addBg)
         self.death = False
-
+        self.life = 3
     def load_images(self):
         #self.slimeL=[pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_1.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_2.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_3.png"),pygame.image.load("Images\\Inimigos\\Slime\\slime_4.png")]
         self.slimeL=Game.loadimages("Images\\Inimigos\\Slime\\slime_{}.png",5,100,100,True)
