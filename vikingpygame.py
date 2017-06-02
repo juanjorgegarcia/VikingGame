@@ -235,7 +235,7 @@ class Player(pygame.sprite.Sprite):
         for i in floor: #floor é a lista q contem todos os quadrados do chao do jogo
             if self.hitbox.colliderect(i.rect) == True : #se o retangulo do player colidir com o da plataforma
                     if i.trap == True:
-                        caindo.falling(15)
+                        caindo.fall = True
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
@@ -613,7 +613,7 @@ class Blocks(pygame.sprite.Sprite):
         self.width,self.height = pygame.Surface.get_size(self.image)
         self.rect = self.image.get_rect(x = self.x, y = self.y)
         self.trap = trap
-
+        self.fall = False
     def move(self,speed):
         if char1.walkR == True and addBg > 0:
             self.x+= -speed - char1.speed_x*0.1
@@ -625,7 +625,7 @@ class Blocks(pygame.sprite.Sprite):
             self.x = 1280
             self.y = randrange(0,300)
     def falling(self,speed):
-        self.y += 70
+        self.y += speed
         self.rect = self.image.get_rect(x = self.x - addBg, y = self.y)
 
 class Game():
@@ -655,6 +655,8 @@ class Game():
         return lista
 
     def update():
+        if caindo.y < 750 and caindo.fall == True:
+            caindo.falling(50)
         dragon1.update()
         dragon1.move(0,3)
         slime2.move(5,0)
