@@ -410,6 +410,10 @@ class Enemy(pygame.sprite.Sprite):
         self.minidemonR=Game.loadflipimages(self.minidemonL)
         self.minidemonLD=Game.loadimages("Images\\Inimigos\\MIni Demon\\Demon Death\\sprite_{}.png",5,150,150,True)
         self.minidemonRD=Game.loadflipimages(self.minidemonLD)
+        self.skeletonL=Game.loadimages("Images\\Inimigos\\Skeleton\\sprite_{}.png",4,200,200,True)
+        self.skeletonR=Game.loadflipimages(self.skeletonL)
+        self.skeletonLD=Game.loadimages("Images\\Inimigos\\Skeleton\\Death\\sprite_{}.png",7,200,200,True)
+        self.skeletonRD=Game.loadflipimages(self.skeletonLD)
 
 
     def animate(self):
@@ -457,6 +461,37 @@ class Enemy(pygame.sprite.Sprite):
                 self.kill()
 
         if self.race=="Minidemon":
+            if self.leftface==True and self.rightface==False and self.death==False:
+                if now - self.last_update>120:
+                    self.last_update=now
+                    self.current_frame=(self.current_frame+1)%len(self.minidemonL)
+                    self.current_img=self.minidemonL[self.current_frame]
+
+            elif self.rightface==True and self.leftface==False and self.death==False:
+                if now - self.last_update>120:
+                    self.last_update=now
+                    self.current_frame=(self.current_frame+1)%len(self.minidemonR)
+                    self.current_img=self.minidemonR[self.current_frame]
+
+            if self.death == True:
+                self.speed_x=0
+                self.speed_y=0
+                if self.leftface==True:
+                    if now - self.last_update>190:
+                        self.last_update=now
+                        self.death_frame=(self.death_frame+1)%len(self.minidemonLD)
+                        self.current_img=self.minidemonLD[self.death_frame]
+                        if self.death_frame==0:
+                            self.kill()
+                if self.rightface==True:
+                    if now - self.last_update>190:
+                        self.last_update=now
+                        self.death_frame=(self.death_frame+1)%len(self.minidemonRD)
+                        self.current_img=self.minidemonRD[self.death_frame]
+                        if self.death_frame==0:
+                            self.kill()
+
+        if self.race=="Skeleton":
             if self.leftface==True and self.rightface==False and self.death==False:
                 if now - self.last_update>120:
                     self.last_update=now
