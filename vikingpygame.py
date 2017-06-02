@@ -234,8 +234,10 @@ class Player(pygame.sprite.Sprite):
 
         for i in floor: #floor é a lista q contem todos os quadrados do chao do jogo
             if self.hitbox.colliderect(i.rect) == True : #se o retangulo do player colidir com o da plataforma
-                    if i.trap == True:
+                    if i.trap == True :
                         caindo.fall = True
+                    if i.trap2 == True :
+                        stalag[3].fall = True
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
@@ -322,7 +324,6 @@ class Player(pygame.sprite.Sprite):
                         self.ignore = 0
                         break
                     elif not i.race == "Skeleton":
-                        #self.hurt = False
                         if self.rightface == True and i.x > self.x:
                             i.death = True
                             if oi:
@@ -624,7 +625,7 @@ class Enemy(pygame.sprite.Sprite):
 class Blocks(pygame.sprite.Sprite):
     # classe para elementos estáticos do jogo
 
-    def __init__(self,x,y,sprite,trap = False):
+    def __init__(self,x,y,sprite,trap = False,trap2 = False):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
@@ -633,6 +634,7 @@ class Blocks(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(x = self.x, y = self.y)
         self.trap = trap
         self.fall = False
+        self.trap2 = trap2
     def move(self,speed):
         if char1.walkR == True and addBg > 0:
             self.x+= -speed - char1.speed_x*0.1
@@ -675,7 +677,9 @@ class Game():
 
     def update():
         if caindo.y < 750 and caindo.fall == True:
-            caindo.falling(50)
+            caindo.falling(25)
+        if stalag[3].y < 750 and stalag[3].fall == True:
+            stalag[3].falling(10)
         dragon1.update()
         dragon1.move(0,3)
         slime2.move(5,0)
@@ -799,7 +803,8 @@ water = pygame.transform.scale(water,(100,100))
 ground0 = pygame.image.load("Images\\Plataforma\\Ice\\Chao gelo.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
 groundDEFAULT = Blocks(300,300,ground0)
-
+fallspike = pygame.image.load("Images\\Plataforma\\fallspike.png").convert_alpha()
+fallspike =  pygame.transform.scale(fallspike,(100,100))
 
 
 obstaculo0 = pygame.image.load("Images\\Plataforma\\Ice\\Platform Ice.png").convert_alpha()
@@ -857,7 +862,12 @@ while playLoop: ######LOOP DO RESTART DO JOGO
     restart = False
     char1.walkR = False
     char1.walkL = False
-    caindo = Blocks(4300,0,ground0)
+    caindo = Blocks(4300,180,fallspike)
+    fallspike0 = Blocks(4400,180,fallspike)
+    fallspike1 = Blocks(4500,180,fallspike)
+    fallspike2 = Blocks(4600,180,fallspike)
+    fallspike3 = Blocks(4700,180,fallspike)
+    stalag = [fallspike0,fallspike1,fallspike2,fallspike3]
     #trap1 = Blocks(3900,400+char1.size[1],groundDEFAULT.image,True)
     #floor.append(trap1)
 
@@ -892,7 +902,6 @@ while playLoop: ######LOOP DO RESTART DO JOGO
         aero=[ground10,ground11,ground12,ground20,ground21,ground22] #LISTA COM OS CHAOS
         for i in aero:
             screen.blit(i.image,(i.x,i.y))
-
         floor=[]
         water_list = []
         for i in groundRange:
@@ -909,10 +918,22 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                     screen.blit(obstaculo0,(i-addBg,200+(char1.size[1])))
                 continue
             else:
-                if i==4300:
-                    trap = Blocks(i-addBg,635,obstaculo0,True)
-                    floor.append(trap)
-                    screen.blit(trap.image,(i-addBg,430+(char1.size[1])))
+                if i>4200 and i < 4800:
+                    top_plat0 = Blocks(i-addBg,100,obstaculo0)
+                    if i in [4300,4500]:
+                        if i == 4500:
+                            trap = Blocks(i-addBg,635,obstaculo0,trap2=True)
+                            floor.append(trap)
+                            screen.blit(trap.image,(i-addBg,430+(char1.size[1])))
+                        else:
+                            trap = Blocks(i-addBg,635,obstaculo0,trap=True)
+                            floor.append(trap)
+                            screen.blit(trap.image,(i-addBg,430+(char1.size[1])))
+                    else:
+                        chao = Blocks(i-addBg,430+char1.size[1],groundDEFAULT.image)
+                        floor.append(chao)
+                        screen.blit(chao.image,(i-addBg,430+(char1.size[1])))
+                    screen.blit(top_plat0.image,(i-addBg,100))
                 else:
                     chao = Blocks(i-addBg,430+char1.size[1],groundDEFAULT.image)
                     floor.append(chao)
@@ -922,13 +943,16 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                 screen.blit(i.current_img,(i.x,i.y))
         for a in enemies:
             screen.blit(a.current_img,(a.x,a.y))
-
+        for i in stalag:
+            screen.blit(i.image,(i.x - addBg,i.y))
         screen.blit(caindo.image,(caindo.x -addBg,caindo.y))
         #screen.blit(trap1.image,(3900-addBg,200+(char1.size[1])))
         #screen.blit(trap1.image,(trap1.x-addBg,trap1.y))
         endBlock = Blocks(map_x-100-addBg,500-128,Game.animateFlag(endBlockIMG))
         screen.blit(Game.animateFlag(endBlockIMG),(endBlock.x,endBlock.y))
         screen.blit(caindo.image,(caindo.x,caindo.y))
+        for i in stalag:
+            screen.blit(i.image,(i.x,i.y))
         screen.blit(char1.current_img,(char1.x,char1.y))
         for i in water_list:
             screen.blit(i.image,(i.x,i.y))
