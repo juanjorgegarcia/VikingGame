@@ -774,7 +774,7 @@ music1 = pygame.mixer.music.load("Soundfx\\Immigrant Song_8bit.mp3")
 ############
 kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 ############
-water = pygame.image.load("Images\\Plataforma\\Agua\\Agua clone\\sprite_0.png").convert_alpha()
+water = pygame.image.load("Images\\Plataforma\\espetos.png").convert_alpha()
 water = pygame.transform.scale(water,(100,100))
 
 ground0 = pygame.image.load("Images\\Plataforma\\Ice\\Chao gelo.png").convert()
