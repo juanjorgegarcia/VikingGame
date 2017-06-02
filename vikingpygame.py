@@ -292,9 +292,7 @@ class Player(pygame.sprite.Sprite):
                         else:
                             if self.rightface == True and i.x > self.x:
                                 self.ignore = 0
-                                print(oi)
                                 i.life -= 1
-                                print(i.life)
                                 if i.life == 0:
                                     i.death = True
                                     if oi:
@@ -358,10 +356,8 @@ class Player(pygame.sprite.Sprite):
             if self.life>0:
                 dmg01.play()
             else:
-                print("you loose")
                 death01.play()
                 diescreen = True
-            print(self.life)
 
         if self.walkR == True and self.jump==False:
             if self.attack==False:
