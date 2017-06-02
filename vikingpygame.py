@@ -282,7 +282,7 @@ class Player(pygame.sprite.Sprite):
             #enemies é uma lista que contem todos os inimigos do player
             if self.rect.colliderect(i.rect) ==  True and self.ignore >=120 : #2 segundos de invulnerabilidade
                 if not pygame.sprite.collide_mask(self,i) == None:
-                    if self.attack == False:
+                    if self.attack == False and i.death == False:
                         self.collision_enemies= True
                         self.hurt = True
                         if i.x > self.x:
@@ -342,7 +342,7 @@ class Player(pygame.sprite.Sprite):
                 elif self.x >= screenPlayerAreaMax and self.x+addBg+pygame.Surface.get_width(self.current_img) <= map_x:
                     addBg = addBg + self.speed_x
 
-        if self.walkL == True and self.jump==False:
+        if self.walkL == True:
             if self.attack==False:
                 if self.x <= screenPlayerAreaMin and addBg <= 0 and self.x >= 0:
                     self.x -= self.speed_x
@@ -353,7 +353,7 @@ class Player(pygame.sprite.Sprite):
                 elif self.x <= screenPlayerAreaMin and addBg > 0:
                     addBg = addBg - self.speed_x
 
-        if self.walkR == True and self.jump==True:
+        elif self.walkR == True and self.jump==True:
             if self.attack==False:
                 if self.x < screenPlayerAreaMax:
                     self.x += self.speed_x
@@ -650,6 +650,14 @@ class Game():
             current_bg_image = bgImages[current_bg_frame]
         return current_bg_image
 
+    def animateBeer(beerImages):
+        global last_beer_update, current_beer_frame, current_beer_image
+        beerAnimationNOW = pygame.time.get_ticks()
+        if beerAnimationNOW - last_beer_update > 200:
+            last_beer_update = beerAnimationNOW
+            current_beer_frame=(current_beer_frame+1)%len(beerImages)
+            current_beer_image = beerImages[current_beer_frame]
+        return current_beer_image
     def goal(charHitbox,blockHitbox):
         if charHitbox.colliderect(blockHitbox) == True:
             return True
@@ -714,8 +722,10 @@ slime11=pygame.transform.scale(Slime1,(100,100))
 # minidemon1=Enemy(1100,440,1100,0,0,0,minidemon11,True,False,"Minidemon")
 # enemies = pygame.sprite.Group(slime2,dragon1,minidemon1)
 #################################
+myfont = pygame.font.SysFont("monospace", 35) #Fonte para texto
 ############
-
+#CERVEJAAAAAA!!!!!!!!
+beerImages = Game.loadimages("Images\\beer\\sprite_{}.png",5,50,50,True)
 
 atk01 = pygame.mixer.Sound("Soundfx\\atk_01.wav")
 death01 = pygame.mixer.Sound("Soundfx\\death_01.wav")
@@ -758,9 +768,14 @@ while playLoop: ######LOOP DO RESTART DO JOGO
     char1=Player(400,400,player1)
     clouds = [cloud,cloud2,cloud3]
     addBg = 0
+    #PARA ANIMACAO DO BG
     last_bg_update = 0
     current_bg_frame = 0
     current_bg_image = 0
+    #PARA ANIUMACAO DA CERVEJA
+    last_beer_update = 0
+    current_beer_frame = 0
+    current_beer_image = 0
     #(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
     slime2=Enemy(1100,530,1100,0,0,0,slime11,True,False,"Slime")
     minidemon1=Enemy(3200,250,3900,3300,0,0,minidemon11,True,False,"Minidemon")
@@ -830,12 +845,17 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                 screen.blit(i.current_img,(i.x,i.y))
         for a in enemies:
             screen.blit(a.current_img,(a.x,a.y))
-        endBlock = Blocks(map_x-pygame.Surface.get_width(char1.current_img)-addBg,400,endBlockIMG)
+        endBlock = Blocks(map_x-100-addBg,400,endBlockIMG)
         screen.blit(endBlock.image,(endBlock.x,endBlock.y))
         screen.blit(caindo.image,(caindo.x,caindo.y))
         screen.blit(char1.current_img,(char1.x,char1.y))
         for i in water_list:
             screen.blit(i.image,(i.x,i.y))
+        #IMPRIME A VIDA DO PERSONAGEM
+        for i in range(char1.life):
+            screen.blit(Game.animateBeer(beerImages),(50+i*50,50))
+        # label = myfont.render("HEALTH:", 1, (255,255,0))
+        # screen.blit(label, (50, 50))
         for event in pygame.event.get(): #pegando as açoes do usuario
             if event.type == pygame.QUIT:
                 running=False #saindo do jogo fechando a janela
