@@ -782,7 +782,7 @@ groundRange = arange(0,map_x,pygame.Surface.get_width(ground0))
 ###
 endBlockIMG = Game.loadimages("Images\\Flag\\sprite_{}.png",2,64,128,True)
 #####
-diedIMG = pygame.image.load("Images\\menu\\you_died.png").convert()#Bloco final do mapa
+diedIMG = pygame.image.load("Images\\menu\\Menu 1.jpg").convert()#Bloco final do mapa
 diedIMG = pygame.transform.scale(diedIMG, (screen_x, screen_y))
 diescreen = False
 #####
