@@ -297,7 +297,7 @@ class Player(pygame.sprite.Sprite):
                         self.ignore = 0
                         break
                     else:
-                        self.hurt = False
+                        #self.hurt = False
                         if self.rightface == True and i.x > self.x:
                             i.death = True
                             if oi:
@@ -657,7 +657,7 @@ clouds = [cloud,cloud2,cloud3]
 last_bg_update = 0
 current_bg_frame = 0
 current_bg_image = 0
-bgImages = Game.loadimages("Images\\Background_fire\\sprite_{}.png",14,screen_x,screen_y,True)
+bgImages = Game.loadimages("Images\\Background_Ice\\sprite_{}.png",6,screen_x,screen_y,True)
 
 ############ carregando as sprites do player
 player1="Images\\Player\\STAND_RIGHT\\stand.png"
@@ -689,11 +689,11 @@ kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
 water = pygame.image.load("Images\\Plataforma\\Agua\\Agua clone\\sprite_0.png").convert_alpha()
 water = pygame.transform.scale(water,(100,100))
 
-ground0 = pygame.image.load("Images\\Plataforma\\CHÃO\\ground_middle.png").convert()
+ground0 = pygame.image.load("Images\\Plataforma\\Ice\\Chao gelo.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
 groundDEFAULT = Blocks(300,300,ground0)
 
-obstaculo0 = pygame.image.load("Images\\Plataforma\\CHÃO\\sprite_0.png").convert()
+obstaculo0 = pygame.image.load("Images\\Plataforma\\Ice\\Platform Ice.png").convert()
 obstaculo0 = pygame.transform.scale(obstaculo0,(100,100)).convert()
 obstaculoDEFAULT = Blocks(300,300,obstaculo0)
 #obs = pygame.sprite.Group()
@@ -742,15 +742,15 @@ while playLoop: ######LOOP DO RESTART DO JOGO
         screen.blit(cloudi2.image,(cloudi2.x,cloudi2.y))
 
         #######LISTA DOS CHAOS NO MAPA
-        ground10 = Blocks(300-addBg,350,ground0)
-        ground11 = Blocks(300+groundDEFAULT.width-addBg,350,ground0)
-        ground12 = Blocks(300+groundDEFAULT.width*2-addBg,350,ground0)
-        ground20 = Blocks(800-addBg,200,ground0)
-        ground21 = Blocks(800+groundDEFAULT.width-addBg,200,ground0)
-        ground22 = Blocks(800+groundDEFAULT.width*2-addBg,200,ground0)
-        obs_1 = Blocks(1400-addBg,430+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
-        obs_2 = Blocks(2000-addBg,430+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
-        obs_3 = Blocks(2000-addBg,-obs_1.height+430+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
+        ground10 = Blocks(300-addBg,350,obstaculo0)
+        ground11 = Blocks(300+groundDEFAULT.width-addBg,350,obstaculo0)
+        ground12 = Blocks(300+groundDEFAULT.width*2-addBg,350,obstaculo0)
+        ground20 = Blocks(800-addBg,200,obstaculo0)
+        ground21 = Blocks(800+groundDEFAULT.width-addBg,200,obstaculo0)
+        ground22 = Blocks(800+groundDEFAULT.width*2-addBg,200,obstaculo0)
+        obs_1 = Blocks(1400-addBg,430+char1.size[1]-groundDEFAULT.height,obstaculo0)
+        obs_2 = Blocks(2000-addBg,430+char1.size[1]-groundDEFAULT.height,obstaculo0)
+        obs_3 = Blocks(2000-addBg,-obs_1.height+430+char1.size[1]-groundDEFAULT.height,obstaculo0)
         #obs.add(obs_1)
         obs=[obs_1,obs_2,obs_3]
         for i in obs:
@@ -768,7 +768,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                 if i > 3200 and i <4000:
                     chao = Blocks(i-addBg,200+char1.size[1],groundDEFAULT.image)
                     floor.append(chao)
-                    screen.blit(chao.image,(i-addBg,200+(char1.size[1])))
+                    screen.blit(obstaculo0,(i-addBg,200+(char1.size[1])))
                 continue
             else:
                 chao = Blocks(i-addBg,430+char1.size[1],groundDEFAULT.image)
