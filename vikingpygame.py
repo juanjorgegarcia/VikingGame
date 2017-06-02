@@ -422,9 +422,9 @@ class Enemy(pygame.sprite.Sprite):
         self.minidemonR=Game.loadflipimages(self.minidemonL)
         self.minidemonLD=Game.loadimages("Images\\Inimigos\\MIni Demon\\Demon Death\\sprite_{}.png",5,150,150,True)
         self.minidemonRD=Game.loadflipimages(self.minidemonLD)
-        self.skeletonL=Game.loadimages("Images\\Inimigos\\Skeleton\\sprite_{}.png",4,200,200,True)
+        self.skeletonL=Game.loadimages("Images\\Inimigos\\Skeleton\\sprite_{}.png",4,500,500,True)
         self.skeletonR=Game.loadflipimages(self.skeletonL)
-        self.skeletonLD=Game.loadimages("Images\\Inimigos\\Skeleton\\Death\\sprite_{}.png",7,200,200,True)
+        self.skeletonLD=Game.loadimages("Images\\Inimigos\\Skeleton\\Death\\sprite_{}.png",7,500,500,True)
         self.skeletonRD=Game.loadflipimages(self.skeletonLD)
 
 
@@ -524,14 +524,14 @@ class Enemy(pygame.sprite.Sprite):
             if self.leftface==True and self.rightface==False and self.death==False:
                 if now - self.last_update>120:
                     self.last_update=now
-                    self.current_frame=(self.current_frame+1)%len(self.minidemonL)
-                    self.current_img=self.minidemonL[self.current_frame]
+                    self.current_frame=(self.current_frame+1)%len(self.skeletonL)
+                    self.current_img=self.skeletonL[self.current_frame]
 
             elif self.rightface==True and self.leftface==False and self.death==False:
                 if now - self.last_update>120:
                     self.last_update=now
-                    self.current_frame=(self.current_frame+1)%len(self.minidemonR)
-                    self.current_img=self.minidemonR[self.current_frame]
+                    self.current_frame=(self.current_frame+1)%len(self.skeletonL)
+                    self.current_img=self.skeletonL[self.current_frame]
 
             if self.death == True:
                 self.speed_x=0
@@ -539,15 +539,15 @@ class Enemy(pygame.sprite.Sprite):
                 if self.leftface==True:
                     if now - self.last_update>190:
                         self.last_update=now
-                        self.death_frame=(self.death_frame+1)%len(self.minidemonLD)
-                        self.current_img=self.minidemonLD[self.death_frame]
+                        self.death_frame=(self.death_frame+1)%len(self.skeletonLD)
+                        self.current_img=self.skeletonLD[self.death_frame]
                         if self.death_frame==0:
                             self.kill()
                 if self.rightface==True:
                     if now - self.last_update>190:
                         self.last_update=now
-                        self.death_frame=(self.death_frame+1)%len(self.minidemonRD)
-                        self.current_img=self.minidemonRD[self.death_frame]
+                        self.death_frame=(self.death_frame+1)%len(self.skeletonLD)
+                        self.current_img=self.skeletonLD[self.death_frame]
                         if self.death_frame==0:
                             self.kill()
 
@@ -665,6 +665,8 @@ class Game():
         slime3.update()
         minidemon1.move(3,0)
         minidemon1.update()
+        skeleton1.move(2,0)
+        skeleton1.update()
         char1.updatepos()
         clock.tick(fps) # ajustando o fps
         pygame.display.update()### atualizando o display
@@ -755,10 +757,8 @@ minidemon11=pygame.transform.scale(Mdemon,(200,200))
 dragon=pygame.image.load("Images\\Inimigos\\Flying demon\\sprite_0.png").convert()
 Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png").convert()
 slime11=pygame.transform.scale(Slime1,(100,100))
-# slime2=Enemy(1100,500,1100,0,0,0,slime11,True,False,"Slime")
-# dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
-# minidemon1=Enemy(1100,440,1100,0,0,0,minidemon11,True,False,"Minidemon")
-# enemies = pygame.sprite.Group(slime2,dragon1,minidemon1)
+ske=pygame.image.load("Images\\Inimigos\\Skeleton\\sprite_0.png").convert
+
 #################################
 myfont = pygame.font.SysFont("monospace", 35,True) #Fonte para texto
 ############
@@ -822,7 +822,8 @@ while playLoop: ######LOOP DO RESTART DO JOGO
     minidemon1=Enemy(3200,250,3900,3300,0,0,minidemon11,True,False,"Minidemon")
     dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
     slime3=Enemy(1400 + 100,530,2000-100,1400+100,0,0,slime11,True,False,"Slime")
-    enemies = pygame.sprite.Group(slime2,dragon1,slime3,minidemon1)
+    skeleton1=Enemy(5100,143,5600,5200,0,0,dragon,True,False,"Skeleton")
+    enemies = pygame.sprite.Group(slime2,dragon1,slime3,minidemon1,skeleton1)
     diescreen = False
     restart = False
     char1.walkR = False
