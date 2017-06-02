@@ -676,6 +676,16 @@ class Game():
             current_beer_frame=(current_beer_frame+1)%len(beerImages)
             current_beer_image = beerImages[current_beer_frame]
         return current_beer_image
+
+    def animateFlag(beerImages):
+        global last_flag_update, current_flag_frame, current_flag_image
+        flagAnimationNOW = pygame.time.get_ticks()
+        if flagAnimationNOW - last_flag_update > 200:
+            last_flag_update = flagAnimationNOW
+            current_flag_frame=(current_flag_frame+1)%len(endBlockIMG)
+            current_flag_image = endBlockIMG[current_flag_frame]
+        return current_flag_image
+
     def goal(charHitbox,blockHitbox):
         if charHitbox.colliderect(blockHitbox) == True:
             return True
@@ -770,8 +780,7 @@ obstaculoDEFAULT = Blocks(300,300,obstaculo0)
 ########
 groundRange = arange(0,map_x,pygame.Surface.get_width(ground0))
 ###
-endBlockIMG = pygame.image.load("Images\\end_block.png").convert_alpha()#Bloco final do mapa
-endBlockIMG = pygame.transform.scale(endBlockIMG,(100,100)).convert_alpha()
+endBlockIMG = Game.loadimages("Images\\Flag\\sprite_{}.png",2,64,128,True)
 #####
 diedIMG = pygame.image.load("Images\\menu\\you_died.png").convert()#Bloco final do mapa
 diedIMG = pygame.transform.scale(diedIMG, (screen_x, screen_y))
@@ -794,6 +803,10 @@ while playLoop: ######LOOP DO RESTART DO JOGO
     last_beer_update = 0
     current_beer_frame = 0
     current_beer_image = 0
+    #PARA ANIUMACAO DA BANDEIRA FINAL
+    last_flag_update = 0
+    current_flag_frame = 0
+    current_flag_image = 0
     #(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
     slime2=Enemy(1100,530,1100,0,0,0,slime11,True,False,"Slime")
     minidemon1=Enemy(3200,250,3900,3300,0,0,minidemon11,True,False,"Minidemon")
@@ -863,8 +876,8 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                 screen.blit(i.current_img,(i.x,i.y))
         for a in enemies:
             screen.blit(a.current_img,(a.x,a.y))
-        endBlock = Blocks(map_x-100-addBg,400,endBlockIMG)
-        screen.blit(endBlock.image,(endBlock.x,endBlock.y))
+        endBlock = Blocks(map_x-100-addBg,500,Game.animateFlag(endBlockIMG))
+        screen.blit(Game.animateFlag(endBlockIMG),(endBlock.x,endBlock.y))
         screen.blit(caindo.image,(caindo.x,caindo.y))
         screen.blit(char1.current_img,(char1.x,char1.y))
         for i in water_list:
