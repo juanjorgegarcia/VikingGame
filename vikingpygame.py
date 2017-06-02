@@ -351,16 +351,18 @@ class Player(pygame.sprite.Sprite):
                     addBg = addBg - self.speed_x
 
         if self.walkR == True and self.jump==True:
-            if self.x < screenPlayerAreaMax:
-                self.x += self.speed_x
-            elif self.x >= screenPlayerAreaMax and self.x+addBg+pygame.Surface.get_width(self.current_img) <= map_x:
-                addBg = addBg + self.speed_x
+            if self.attack==False:
+                if self.x < screenPlayerAreaMax:
+                    self.x += self.speed_x
+                elif self.x >= screenPlayerAreaMax and self.x+addBg+pygame.Surface.get_width(self.current_img) <= map_x:
+                    addBg = addBg + self.speed_x
 
         elif self.walkL == True and self.jump==True:
-            if self.x > screenPlayerAreaMin:
-                self.x -= self.speed_x
-            if self.x <= screenPlayerAreaMin and addBg > 0:
-                addBg = addBg - self.speed_x
+            if self.attack==False:
+                if self.x > screenPlayerAreaMin:
+                    self.x -= self.speed_x
+                if self.x <= screenPlayerAreaMin and addBg > 0:
+                    addBg = addBg - self.speed_x
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -488,9 +490,6 @@ class Enemy(pygame.sprite.Sprite):
                             self.kill()
 
 
-
-
-
     def move(self,speed_x,speed_y):
 
         if self.walkR==True:
@@ -498,13 +497,13 @@ class Enemy(pygame.sprite.Sprite):
             self.rightface=True
             self.leftface=False
 
-        if self.x==self.limitx1-addBg and self.walkR == True:
+        if self.x>=self.limitx1-addBg and self.walkR == True:
             self.speed_x=-speed_x
             self.leftface=True
             self.rightface=False
             self.walkR=False
 
-        elif self.x == self.limitx2-addBg:
+        elif self.x <= self.limitx2-addBg:
             self.walkR=True
 
         if self.moveUP==True:
@@ -664,15 +663,15 @@ player1="Images\\Player\\STAND_RIGHT\\stand.png"
 char1=Player(400,400,player1)
 char_spritedata = {}
 ####################
-Mdemon=pygame.image.load("Images\\Inimigos\\MIni Demon\\sprite_0.png")
+Mdemon=pygame.image.load("Images\\Inimigos\\MIni Demon\\sprite_0.png").convert()
 minidemon11=pygame.transform.scale(Mdemon,(200,200))
 dragon=pygame.image.load("Images\\Inimigos\\Flying demon\\sprite_0.png").convert()
 Slime1=pygame.image.load("Images\\Inimigos\\Slime\\slime_0.png").convert()
 slime11=pygame.transform.scale(Slime1,(100,100))
-slime2=Enemy(1100,500,1100,0,0,0,slime11,True,False,"Slime")
-dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
-minidemon1=Enemy(1100,440,1100,0,0,0,minidemon11,True,False,"Minidemon")
-enemies = pygame.sprite.Group(slime2,dragon1,minidemon1)
+# slime2=Enemy(1100,500,1100,0,0,0,slime11,True,False,"Slime")
+# dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
+# minidemon1=Enemy(1100,440,1100,0,0,0,minidemon11,True,False,"Minidemon")
+# enemies = pygame.sprite.Group(slime2,dragon1,minidemon1)
 #################################
 ############
 
@@ -704,6 +703,7 @@ endBlockIMG = pygame.image.load("Images\\end_block.png").convert_alpha()#Bloco f
 endBlockIMG = pygame.transform.scale(endBlockIMG,(100,100)).convert_alpha()
 #####
 diedIMG = pygame.image.load("Images\\menu\\you_died.png").convert()#Bloco final do mapa
+diedIMG = pygame.transform.scale(diedIMG, (screen_x, screen_y))
 diescreen = False
 #####
 restart = False #Variavel para recomeçar o jogo do zero
@@ -720,7 +720,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
     current_bg_image = 0
     #(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
     slime2=Enemy(1100,530,1100,0,0,0,slime11,True,False,"Slime")
-    minidemon1=Enemy(3200,300+char1.size[1],4000,3200,0,0,minidemon11,True,False,"Minidemon")
+    minidemon1=Enemy(3200,250,3900,3300,0,0,minidemon11,True,False,"Minidemon")
     dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
     slime3=Enemy(1400 + 100,530,2000-100,1400+100,0,0,slime11,True,False,"Slime")
     enemies = pygame.sprite.Group(slime2,dragon1,slime3,minidemon1)
@@ -809,7 +809,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                     char1.move("attack")
                 if event.key == pygame.K_k:
                     background = kkkeae
-                    background = pygame.transform.scale(background, (screen_x, screen_y))
+                    background = pygame.transform.scale(background,(screen_x, screen_y))
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d:
                     char1.move("stopright")
