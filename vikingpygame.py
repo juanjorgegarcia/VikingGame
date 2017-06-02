@@ -770,7 +770,7 @@ atk01 = pygame.mixer.Sound("Soundfx\\atk_01.wav")
 death01 = pygame.mixer.Sound("Soundfx\\death_01.wav")
 jump = pygame.mixer.Sound("Soundfx\\Jump_00.wav")
 dmg01 = pygame.mixer.Sound("Soundfx\\damage_01.wav")
-music1 = pygame.mixer.music.load("Soundfx\\Heroic Demise (New).mp3")
+music1 = pygame.mixer.music.load("Soundfx\\Immigrant Song_8bit.mp3")
 
 ############
 kkkeae = pygame.image.load("kkkeaeman.jpg").convert()
@@ -908,7 +908,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
         label1 = myfont.render("USE *WASD* TO MOVE", 1, (255,255,0))
         label2 = myfont.render("PPRESS *J* TO ATTACK", 1, (255,255,0))
         label3 = myfont.render("PRESS *SPACE* TO JUMP", 1, (255,255,0))
-        label4 = myfont.render("PRESS *M* TO RESTART THE SONG", 1, (255,255,0))
+        label4 = myfont.render("PRESS *M* TO START/RESTART THE SONG", 1, (255,255,0))
         labelList = [label1,label2,label3,label4]
         for i in range(len(labelList)):
             screen.blit(labelList[i], (50-addBg, 150+i*50))
@@ -919,6 +919,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_m:
                     pygame.mixer.music.play(loops=-1)
+                    pygame.mixer.music.set_volume(0.3)
                 if event.key == pygame.K_ESCAPE:
                     running = False #saindo do jogo apertano esc
                     playLoop = False
