@@ -279,7 +279,7 @@ class Player(pygame.sprite.Sprite):
             #enemies é uma lista que contem todos os inimigos do player
             if self.rect.colliderect(i.rect) ==  True and self.ignore >=120 : #2 segundos de invulnerabilidade
                 if not pygame.sprite.collide_mask(self,i) == None:
-                    if self.attack == False:
+                    if self.attack == False and i.death == False:
                         self.collision_enemies= True
                         self.hurt = True
                         if i.x > self.x:
