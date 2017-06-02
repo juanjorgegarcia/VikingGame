@@ -819,11 +819,14 @@ endBlockIMG = Game.loadimages("Images\\Flag\\sprite_{}.png",2,128,256,True)
 diedIMG = pygame.image.load("Images\\menu\\Menu 1.jpg").convert()#Bloco final do mapa
 diedIMG = pygame.transform.scale(diedIMG, (screen_x, screen_y))
 diescreen = False
+music_on = True
 #####
 restart = False #Variavel para recomeçar o jogo do zero
 #####################################FIM DAS VARIAVEIS ------> LEMBRAR DE COPIAR E COLAR NO DPLAYLOOP O QUE FOR VARIAVEL##################################
 oi = True
 pygame.display.set_caption(title) #Titulo da janela do jogo
+pygame.mixer.music.play(loops=-1)
+pygame.mixer.music.set_volume(0.3)
 while oi:
     screen.blit(diedIMG,(0,0))
     pygame.display.update()
@@ -971,9 +974,12 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                 running=False #saindo do jogo fechando a janela
                 playLoop = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_m:
-                    pygame.mixer.music.play(loops=-1)
-                    pygame.mixer.music.set_volume(0.3)
+                if event.key == pygame.K_m and music_on == True:
+                    pygame.mixer.music.pause()
+                    music_on = False
+                elif event.key == pygame.K_m and music_on == False:
+                    pygame.mixer.music.unpause()
+                    music_on = True
                 if event.key == pygame.K_ESCAPE:
                     running = False #saindo do jogo apertano esc
                     playLoop = False
