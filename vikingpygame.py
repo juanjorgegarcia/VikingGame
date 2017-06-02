@@ -714,7 +714,7 @@ clock = pygame.time.Clock() #importando o timer
 ######
 ######
 #char1=Player(400,400,player1)
-map_x = 5000
+map_x = 7000
 map_y = 720
 screen=pygame.display.set_mode((screen_x,screen_y)) #criando o display do jogo
 screenPlayerAreaMin = 400
