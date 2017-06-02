@@ -781,7 +781,7 @@ obstaculoDEFAULT = Blocks(300,300,obstaculo0)
 ########
 groundRange = arange(0,map_x,pygame.Surface.get_width(ground0))
 ###
-endBlockIMG = Game.loadimages("Images\\Flag\\sprite_{}.png",2,64,128,True)
+endBlockIMG = Game.loadimages("Images\\Flag\\sprite_{}.png",2,128,256,True)
 #####
 diedIMG = pygame.image.load("Images\\menu\\Menu 1.jpg").convert()#Bloco final do mapa
 diedIMG = pygame.transform.scale(diedIMG, (screen_x, screen_y))
@@ -877,7 +877,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                 screen.blit(i.current_img,(i.x,i.y))
         for a in enemies:
             screen.blit(a.current_img,(a.x,a.y))
-        endBlock = Blocks(map_x-100-addBg,500,Game.animateFlag(endBlockIMG))
+        endBlock = Blocks(map_x-100-addBg,500-128,Game.animateFlag(endBlockIMG))
         screen.blit(Game.animateFlag(endBlockIMG),(endBlock.x,endBlock.y))
         screen.blit(caindo.image,(caindo.x,caindo.y))
         screen.blit(char1.current_img,(char1.x,char1.y))
