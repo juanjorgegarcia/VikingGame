@@ -720,7 +720,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
     current_bg_image = 0
     #(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
     slime2=Enemy(1100,530,1100,0,0,0,slime11,True,False,"Slime")
-    minidemon1=Enemy(3000,300+char1.size[1],4200,3000,0,0,minidemon11,True,False,"Minidemon")
+    minidemon1=Enemy(3200,300+char1.size[1],4000,3200,0,0,minidemon11,True,False,"Minidemon")
     dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
     slime3=Enemy(1400 + 100,530,2000-100,1400+100,0,0,slime11,True,False,"Slime")
     enemies = pygame.sprite.Group(slime2,dragon1,slime3,minidemon1)
