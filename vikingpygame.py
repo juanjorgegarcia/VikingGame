@@ -485,7 +485,7 @@ class Enemy(pygame.sprite.Sprite):
                 if self.rightface==True:
                     if now - self.last_update>190:
                         self.last_update=now
-                        self.death_frame=(self.death_frame+1)%len(dragonRD)
+                        self.death_frame=(self.death_frame+1)%len(self.dragonRD)
                         self.current_img=self.dragonRD[self.death_frame]
                         if self.death_frame==0:
                             self.kill()
