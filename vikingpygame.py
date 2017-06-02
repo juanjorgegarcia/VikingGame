@@ -232,9 +232,10 @@ class Player(pygame.sprite.Sprite):
 
         for i in floor: #floor é a lista q contem todos os quadrados do chao do jogo
             if self.hitbox.colliderect(i.rect) == True : #se o retangulo do player colidir com o da plataforma
-                    # if i.trap == True:
-                    #     print("oi")
-                    #     caindo.falling(10000)
+                    if i.trap == True:
+                        print("oi")
+                        caindo.falling(15)
+                        #print(i.y)
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
@@ -243,13 +244,14 @@ class Player(pygame.sprite.Sprite):
                     break
             else:
                 self.collision_floor=False
-
         for i in aero:
             #aero é a lista que contem todas as plataformas aéreas do jogo
             if self.speed_y > 0 :
                 ## se o player estiver caindo
                 if self.hitbox.colliderect(i.rect) == True and self.rect.midbottom[1] <= i.rect.center[1] - (i.height)/4:
                     ##  se o player colidir com a plataforma e seu pé estiver entre 1/4 da altura da plataforma
+                    # if i.trap == True:
+                    #     print("cuidado")
                     self.collision_plat = True
                     self.speed_y = 0
                     self.aceleration = 0
@@ -325,6 +327,10 @@ class Player(pygame.sprite.Sprite):
         if self.collision_floor == False:
             self.aceleration = 0.4
 
+        if self.hitbox.colliderect(caindo.rect) == True:
+            print("eh uma cilada")
+            self.life = 0
+            diescreen = True
         if self.collision_enemies == True:
             self.life-=1
             if self.life>0:
@@ -601,7 +607,9 @@ class Blocks(pygame.sprite.Sprite):
             self.x = 1280
             self.y = randrange(0,300)
     def falling(self,speed):
-        self.y = 400
+        self.y += 40
+        #self.x -= addBg
+        self.rect = self.image.get_rect(x = self.x, y = self.y)
 class Game():
     #classe para o menu o jogo
     #devera conter funções como, start, savegame, highscore, creditos e customizaçao (posivelmente)
@@ -743,7 +751,7 @@ ground0 = pygame.image.load("Images\\Plataforma\\Ice\\Chao gelo.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
 groundDEFAULT = Blocks(300,300,ground0)
 
-caindo = Blocks(4300,-10,ground0)
+caindo = Blocks(4300,0,ground0)
 
 obstaculo0 = pygame.image.load("Images\\Plataforma\\Ice\\Platform Ice.png").convert_alpha()
 obstaculo0 = pygame.transform.scale(obstaculo0,(100,100)).convert_alpha()
@@ -786,10 +794,15 @@ while playLoop: ######LOOP DO RESTART DO JOGO
     restart = False
     char1.walkR = False
     char1.walkL = False
+    #trap1 = Blocks(3900,400+char1.size[1],groundDEFAULT.image,True)
+    #floor.append(trap1)
 
     running=True
     ############
     while running:
+
+        #print(trap1.rect)
+
         if background == kkkeae:
             screen.blit(background, (0, 0))
         else:
@@ -847,7 +860,9 @@ while playLoop: ######LOOP DO RESTART DO JOGO
             screen.blit(a.current_img,(a.x,a.y))
         endBlock = Blocks(map_x-100-addBg,400,endBlockIMG)
         screen.blit(endBlock.image,(endBlock.x,endBlock.y))
-        screen.blit(caindo.image,(caindo.x,caindo.y))
+        screen.blit(caindo.image,(caindo.x -addBg,caindo.y))
+        #screen.blit(trap1.image,(3900-addBg,200+(char1.size[1])))
+        #screen.blit(trap1.image,(trap1.x-addBg,trap1.y))
         screen.blit(char1.current_img,(char1.x,char1.y))
         for i in water_list:
             screen.blit(i.image,(i.x,i.y))
