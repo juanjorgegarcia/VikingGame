@@ -798,9 +798,19 @@ diescreen = False
 #####
 restart = False #Variavel para recomeçar o jogo do zero
 #####################################FIM DAS VARIAVEIS ------> LEMBRAR DE COPIAR E COLAR NO DPLAYLOOP O QUE FOR VARIAVEL##################################
-
+oi = True
 pygame.display.set_caption(title) #Titulo da janela do jogo
-
+while oi:
+    screen.blit(diedIMG,(0,0))
+    pygame.display.update()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                oi = False
+            if event.key == pygame.K_ESCAPE:
+                pygame.quit()
 while playLoop: ######LOOP DO RESTART DO JOGO
     char1=Player(400,400,player1)
     clouds = [cloud,cloud2,cloud3]
