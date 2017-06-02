@@ -232,6 +232,9 @@ class Player(pygame.sprite.Sprite):
 
         for i in floor: #floor é a lista q contem todos os quadrados do chao do jogo
             if self.hitbox.colliderect(i.rect) == True : #se o retangulo do player colidir com o da plataforma
+                    # if i.trap == True:
+                    #     print("oi")
+                    #     caindo.falling(10000)
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
@@ -578,13 +581,14 @@ class Enemy(pygame.sprite.Sprite):
 class Blocks(pygame.sprite.Sprite):
     # classe para elementos estáticos do jogo
 
-    def __init__(self,x,y,sprite):
+    def __init__(self,x,y,sprite,trap = False):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
         self.image = sprite
         self.width,self.height = pygame.Surface.get_size(self.image)
         self.rect = self.image.get_rect(x = self.x, y = self.y)
+        self.trap = trap
 
     def move(self,speed):
         if char1.walkR == True and addBg > 0:
@@ -596,6 +600,8 @@ class Blocks(pygame.sprite.Sprite):
         if self.x<(0-self.width):
             self.x = 1280
             self.y = randrange(0,300)
+    def falling(self,speed):
+        self.y = 400
 class Game():
     #classe para o menu o jogo
     #devera conter funções como, start, savegame, highscore, creditos e customizaçao (posivelmente)
@@ -727,6 +733,8 @@ ground0 = pygame.image.load("Images\\Plataforma\\Ice\\Chao gelo.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
 groundDEFAULT = Blocks(300,300,ground0)
 
+caindo = Blocks(4300,-10,ground0)
+
 obstaculo0 = pygame.image.load("Images\\Plataforma\\Ice\\Platform Ice.png").convert_alpha()
 obstaculo0 = pygame.transform.scale(obstaculo0,(100,100)).convert_alpha()
 obstaculoDEFAULT = Blocks(300,300,obstaculo0)
@@ -775,7 +783,6 @@ while playLoop: ######LOOP DO RESTART DO JOGO
         cloudi2.move(1.5)
         screen.blit(cloudi.image,(cloudi.x,cloudi.y))
         screen.blit(cloudi2.image,(cloudi2.x,cloudi2.y))
-
         #######LISTA DOS CHAOS NO MAPA
         ground10 = Blocks(300-addBg,350,obstaculo0)
         ground11 = Blocks(300+groundDEFAULT.width-addBg,350,obstaculo0)
@@ -800,7 +807,8 @@ while playLoop: ######LOOP DO RESTART DO JOGO
             if i > 2000 and i < 2800:
                 water0 = Blocks(i-addBg,635,water)
                 water_list.append(water0)
-            elif i > 3000 and i <4200:
+
+            elif i > 3000 and i < 4200:
                 water0 = Blocks(i-addBg,635,water)
                 water_list.append(water0)
                 if i > 3200 and i <4000:
@@ -809,9 +817,14 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                     screen.blit(obstaculo0,(i-addBg,200+(char1.size[1])))
                 continue
             else:
-                chao = Blocks(i-addBg,430+char1.size[1],groundDEFAULT.image)
-                floor.append(chao)
-                screen.blit(chao.image,(i-addBg,430+(char1.size[1])))
+                if i==4300:
+                    trap = Blocks(i-addBg,635,obstaculo0,True)
+                    floor.append(trap)
+                    screen.blit(trap.image,(i-addBg,430+(char1.size[1])))
+                else:
+                    chao = Blocks(i-addBg,430+char1.size[1],groundDEFAULT.image)
+                    floor.append(chao)
+                    screen.blit(chao.image,(i-addBg,430+(char1.size[1])))
         for i in enemies:
             if i.death == False:
                 screen.blit(i.current_img,(i.x,i.y))
@@ -819,6 +832,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
             screen.blit(a.current_img,(a.x,a.y))
         endBlock = Blocks(map_x-pygame.Surface.get_width(char1.current_img)-addBg,400,endBlockIMG)
         screen.blit(endBlock.image,(endBlock.x,endBlock.y))
+        screen.blit(caindo.image,(caindo.x,caindo.y))
         screen.blit(char1.current_img,(char1.x,char1.y))
         for i in water_list:
             screen.blit(i.image,(i.x,i.y))
