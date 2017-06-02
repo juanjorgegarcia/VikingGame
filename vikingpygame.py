@@ -140,7 +140,7 @@ class Player(pygame.sprite.Sprite):
                 if self.attackframe==0:
                     self.x = self.oldx + self.offset_x
                     self.attack=False
-        
+
         elif self.attack==True and self.rightface==True and self.jump==True:
             if now - self.last_update>90:
                 if self.attackframe == 0:
@@ -283,19 +283,16 @@ class Player(pygame.sprite.Sprite):
                         self.collision_enemies= True
                         self.hurt = True
                         if i.x > self.x:
-                            print("direita")
                             self.x -= 100
                             addBg += 100
                             if addBg > 0:
                                 addBg -= 100
                         elif i.x < self.x:
-                            print("esquerda")
                             self.x+=100
                             addBg -= 100
                             if addBg > 0:
                                 addBg += 100
                         elif self.speed_y>1:
-                            print("por cima")
                             self.speed_y = -8
                         self.ignore = 0
                         break
@@ -305,12 +302,10 @@ class Player(pygame.sprite.Sprite):
                             i.death = True
                             if oi:
                                 soled.play()
-                            print("Matei direita")
                         elif self.leftface == True and i.x < self.x:
                             i.death = True
                             if oi:
                                 soled.play()
-                            print("Matei esquerda")
                 else:
                     self.collision_enemies = False
 
@@ -527,14 +522,14 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         self.animate()
         self.x+=self.speed_x
-        if char1.walkR == True and addBg > 0 and char1.x >= screenPlayerAreaMax:
+        if char1.walkR == True and addBg > 0 and char1.x >= screenPlayerAreaMax and char1.attack == False:
             self.x = self.x - char1.speed_x
             self.traveledDistance += char1.speed_x
         elif addBg <= 0:
             self.x = self.x + self.traveledDistance
             self.traveledDistance = 0
 
-        if char1.walkL == True and addBg > 0 and char1.x <= screenPlayerAreaMin:
+        if char1.walkL == True and addBg > 0 and char1.x <= screenPlayerAreaMin and char1.attack == False:
             self.x = self.x + char1.speed_x
             self.traveledDistance -= char1.speed_x
         elif addBg <= 0:
@@ -725,7 +720,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
     current_bg_image = 0
     #(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
     slime2=Enemy(1100,530,1100,0,0,0,slime11,True,False,"Slime")
-    minidemon1=Enemy(1400+100,470,2000-100,1400+100,0,0,minidemon11,True,False,"Minidemon")
+    minidemon1=Enemy(3200,300+char1.size[1],4000,3200,0,0,minidemon11,True,False,"Minidemon")
     dragon1=Enemy(1200,200,0,0,-90,200,dragon,False,True,"Dragon")
     slime3=Enemy(1400 + 100,530,2000-100,1400+100,0,0,slime11,True,False,"Slime")
     enemies = pygame.sprite.Group(slime2,dragon1,slime3,minidemon1)
@@ -756,11 +751,6 @@ while playLoop: ######LOOP DO RESTART DO JOGO
         obs_1 = Blocks(1400-addBg,430+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
         obs_2 = Blocks(2000-addBg,430+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
         obs_3 = Blocks(2000-addBg,-obs_1.height+430+char1.size[1]-groundDEFAULT.height,obstaculoDEFAULT.image)
-        water0 = Blocks(3100-addBg,635,water)
-        water1 = Blocks(3200-addBg,635,water)
-        water2 = Blocks(3300-addBg,635,water)
-        water_list=[water0,water1,water2]
-
         #obs.add(obs_1)
         obs=[obs_1,obs_2,obs_3]
         for i in obs:
@@ -770,8 +760,15 @@ while playLoop: ######LOOP DO RESTART DO JOGO
             screen.blit(i.image,(i.x,i.y))
 
         floor=[]
+        water_list = []
         for i in groundRange:
-            if i > 3000 and i <3400:
+            if i > 3000 and i <4200:
+                water0 = Blocks(i-addBg,635,water)
+                water_list.append(water0)
+                if i > 3200 and i <4000:
+                    chao = Blocks(i-addBg,200+char1.size[1],groundDEFAULT.image)
+                    floor.append(chao)
+                    screen.blit(chao.image,(i-addBg,200+(char1.size[1])))
                 continue
             else:
                 chao = Blocks(i-addBg,430+char1.size[1],groundDEFAULT.image)
