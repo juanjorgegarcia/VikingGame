@@ -235,9 +235,7 @@ class Player(pygame.sprite.Sprite):
         for i in floor: #floor é a lista q contem todos os quadrados do chao do jogo
             if self.hitbox.colliderect(i.rect) == True : #se o retangulo do player colidir com o da plataforma
                     if i.trap == True:
-                        print("oi")
                         caindo.falling(15)
-                        #print(i.y)
                     self.speed_y = 0
                     self.aceleration = 0
                     self.jump = False
@@ -330,7 +328,6 @@ class Player(pygame.sprite.Sprite):
             self.aceleration = 0.4
 
         if self.hitbox.colliderect(caindo.rect) == True:
-            print("eh uma cilada")
             self.life = 0
             diescreen = True
         if self.collision_enemies == True:
@@ -629,8 +626,8 @@ class Blocks(pygame.sprite.Sprite):
             self.y = randrange(0,300)
     def falling(self,speed):
         self.y += 70
-        #self.x -= addBg
-        self.rect = self.image.get_rect(x = self.x, y = self.y)
+        self.rect = self.image.get_rect(x = self.x - addBg, y = self.y)
+
 class Game():
     #classe para o menu o jogo
     #devera conter funções como, start, savegame, highscore, creditos e customizaçao (posivelmente)
@@ -782,7 +779,7 @@ ground0 = pygame.image.load("Images\\Plataforma\\Ice\\Chao gelo.png").convert()
 ground0 = pygame.transform.scale(ground0,(100,100)).convert()
 groundDEFAULT = Blocks(300,300,ground0)
 
-caindo = Blocks(4300,0,ground0)
+
 
 obstaculo0 = pygame.image.load("Images\\Plataforma\\Ice\\Platform Ice.png").convert_alpha()
 obstaculo0 = pygame.transform.scale(obstaculo0,(100,100)).convert_alpha()
@@ -828,6 +825,7 @@ while playLoop: ######LOOP DO RESTART DO JOGO
     restart = False
     char1.walkR = False
     char1.walkL = False
+    caindo = Blocks(4300,0,ground0)
     #trap1 = Blocks(3900,400+char1.size[1],groundDEFAULT.image,True)
     #floor.append(trap1)
 
