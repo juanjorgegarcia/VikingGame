@@ -751,7 +751,7 @@ slime11=pygame.transform.scale(Slime1,(100,100))
 # minidemon1=Enemy(1100,440,1100,0,0,0,minidemon11,True,False,"Minidemon")
 # enemies = pygame.sprite.Group(slime2,dragon1,minidemon1)
 #################################
-myfont = pygame.font.SysFont("monospace", 35) #Fonte para texto
+myfont = pygame.font.SysFont("monospace", 35,True) #Fonte para texto
 ############
 #CERVEJAAAAAA!!!!!!!!
 beerImages = Game.loadimages("Images\\beer\\sprite_{}.png",5,50,50,True)
@@ -886,8 +886,13 @@ while playLoop: ######LOOP DO RESTART DO JOGO
         #IMPRIME A VIDA DO PERSONAGEM
         for i in range(char1.life):
             screen.blit(Game.animateBeer(beerImages),(50+i*50,50))
-        # label = myfont.render("HEALTH:", 1, (255,255,0))
-        # screen.blit(label, (50, 50))
+        label1 = myfont.render("USE *WASD* TO MOVE", 1, (255,255,0))
+        label2 = myfont.render("PPRESS *J* TO ATTACK", 1, (255,255,0))
+        label3 = myfont.render("PRESS *SPACE* TO JUMP", 1, (255,255,0))
+        label4 = myfont.render("PRESS *M* TO RESTART THE SONG", 1, (255,255,0))
+        labelList = [label1,label2,label3,label4]
+        for i in range(len(labelList)):
+            screen.blit(labelList[i], (50-addBg, 150+i*50))
         for event in pygame.event.get(): #pegando as açoes do usuario
             if event.type == pygame.QUIT:
                 running=False #saindo do jogo fechando a janela
