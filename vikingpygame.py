@@ -417,6 +417,8 @@ class Enemy(pygame.sprite.Sprite):
         self.slimeRD=Game.loadflipimages(self.slimeLD)
         self.dragonL=Game.loadimages("Images\\Inimigos\\Flying demon\\sprite_{}.png",2,300,300,True)
         self.dragonR=Game.loadflipimages(self.dragonL)
+        self.dragonLD=Game.loadimages("Images\\Inimigos\\Flying demon\\Death\\sprite_{}.png",6,300,300,True)
+        self.dragonRD=Game.loadflipimages(self.dragonLD)
         self.minidemonL=Game.loadimages("Images\\Inimigos\\MIni Demon\\sprite_{}.png",4,150,150,True)
         self.minidemonR=Game.loadflipimages(self.minidemonL)
         self.minidemonLD=Game.loadimages("Images\\Inimigos\\MIni Demon\\Demon Death\\sprite_{}.png",5,150,150,True)
@@ -464,12 +466,29 @@ class Enemy(pygame.sprite.Sprite):
 
         if self.race=="Dragon":
 
-            if now - self.last_update>200:
+            if now - self.last_update>200 and self.death==False:
                 self.last_update=now
                 self.current_frame=(self.current_frame+1)%len(self.dragonL)
                 self.current_img=self.dragonL[self.current_frame]
+
             if self.death == True:
-                self.kill()
+                self.speed_x=0
+                self.speed_y=0
+                self.moveUP=False
+                if self.leftface==True:
+                    if now - self.last_update>190:
+                        self.last_update=now
+                        self.death_frame=(self.death_frame+1)%len(self.dragonLD)
+                        self.current_img=self.dragonLD[self.death_frame]
+                        if self.death_frame==0:
+                            self.kill()
+                if self.rightface==True:
+                    if now - self.last_update>190:
+                        self.last_update=now
+                        self.death_frame=(self.death_frame+1)%len(dragonRD)
+                        self.current_img=self.dragonRD[self.death_frame]
+                        if self.death_frame==0:
+                            self.kill()
 
         if self.race=="Minidemon":
             if self.leftface==True and self.rightface==False and self.death==False:
@@ -607,7 +626,7 @@ class Blocks(pygame.sprite.Sprite):
             self.x = 1280
             self.y = randrange(0,300)
     def falling(self,speed):
-        self.y += 40
+        self.y += 70
         #self.x -= addBg
         self.rect = self.image.get_rect(x = self.x, y = self.y)
 class Game():
@@ -666,6 +685,16 @@ class Game():
             current_beer_frame=(current_beer_frame+1)%len(beerImages)
             current_beer_image = beerImages[current_beer_frame]
         return current_beer_image
+
+    def animateFlag(beerImages):
+        global last_flag_update, current_flag_frame, current_flag_image
+        flagAnimationNOW = pygame.time.get_ticks()
+        if flagAnimationNOW - last_flag_update > 200:
+            last_flag_update = flagAnimationNOW
+            current_flag_frame=(current_flag_frame+1)%len(endBlockIMG)
+            current_flag_image = endBlockIMG[current_flag_frame]
+        return current_flag_image
+
     def goal(charHitbox,blockHitbox):
         if charHitbox.colliderect(blockHitbox) == True:
             return True
@@ -730,7 +759,7 @@ slime11=pygame.transform.scale(Slime1,(100,100))
 # minidemon1=Enemy(1100,440,1100,0,0,0,minidemon11,True,False,"Minidemon")
 # enemies = pygame.sprite.Group(slime2,dragon1,minidemon1)
 #################################
-myfont = pygame.font.SysFont("monospace", 35) #Fonte para texto
+myfont = pygame.font.SysFont("monospace", 35,True) #Fonte para texto
 ############
 #CERVEJAAAAAA!!!!!!!!
 beerImages = Game.loadimages("Images\\beer\\sprite_{}.png",5,50,50,True)
@@ -760,10 +789,9 @@ obstaculoDEFAULT = Blocks(300,300,obstaculo0)
 ########
 groundRange = arange(0,map_x,pygame.Surface.get_width(ground0))
 ###
-endBlockIMG = pygame.image.load("Images\\end_block.png").convert_alpha()#Bloco final do mapa
-endBlockIMG = pygame.transform.scale(endBlockIMG,(100,100)).convert_alpha()
+endBlockIMG = Game.loadimages("Images\\Flag\\sprite_{}.png",2,128,256,True)
 #####
-diedIMG = pygame.image.load("Images\\menu\\you_died.png").convert()#Bloco final do mapa
+diedIMG = pygame.image.load("Images\\menu\\Menu 1.jpg").convert()#Bloco final do mapa
 diedIMG = pygame.transform.scale(diedIMG, (screen_x, screen_y))
 diescreen = False
 #####
@@ -784,6 +812,10 @@ while playLoop: ######LOOP DO RESTART DO JOGO
     last_beer_update = 0
     current_beer_frame = 0
     current_beer_image = 0
+    #PARA ANIUMACAO DA BANDEIRA FINAL
+    last_flag_update = 0
+    current_flag_frame = 0
+    current_flag_image = 0
     #(self,x,y,limitx1,limitx2,limity1,limity2,sprite,movingx,movingy,race):
     slime2=Enemy(1100,530,1100,0,0,0,slime11,True,False,"Slime")
     minidemon1=Enemy(3200,250,3900,3300,0,0,minidemon11,True,False,"Minidemon")
@@ -858,19 +890,26 @@ while playLoop: ######LOOP DO RESTART DO JOGO
                 screen.blit(i.current_img,(i.x,i.y))
         for a in enemies:
             screen.blit(a.current_img,(a.x,a.y))
-        endBlock = Blocks(map_x-100-addBg,400,endBlockIMG)
-        screen.blit(endBlock.image,(endBlock.x,endBlock.y))
+
         screen.blit(caindo.image,(caindo.x -addBg,caindo.y))
         #screen.blit(trap1.image,(3900-addBg,200+(char1.size[1])))
         #screen.blit(trap1.image,(trap1.x-addBg,trap1.y))
+        endBlock = Blocks(map_x-100-addBg,500-128,Game.animateFlag(endBlockIMG))
+        screen.blit(Game.animateFlag(endBlockIMG),(endBlock.x,endBlock.y))
+        screen.blit(caindo.image,(caindo.x,caindo.y))
         screen.blit(char1.current_img,(char1.x,char1.y))
         for i in water_list:
             screen.blit(i.image,(i.x,i.y))
         #IMPRIME A VIDA DO PERSONAGEM
         for i in range(char1.life):
             screen.blit(Game.animateBeer(beerImages),(50+i*50,50))
-        # label = myfont.render("HEALTH:", 1, (255,255,0))
-        # screen.blit(label, (50, 50))
+        label1 = myfont.render("USE *WASD* TO MOVE", 1, (255,255,0))
+        label2 = myfont.render("PPRESS *J* TO ATTACK", 1, (255,255,0))
+        label3 = myfont.render("PRESS *SPACE* TO JUMP", 1, (255,255,0))
+        label4 = myfont.render("PRESS *M* TO RESTART THE SONG", 1, (255,255,0))
+        labelList = [label1,label2,label3,label4]
+        for i in range(len(labelList)):
+            screen.blit(labelList[i], (50-addBg, 150+i*50))
         for event in pygame.event.get(): #pegando as açoes do usuario
             if event.type == pygame.QUIT:
                 running=False #saindo do jogo fechando a janela
