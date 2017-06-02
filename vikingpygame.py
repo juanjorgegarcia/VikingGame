@@ -300,7 +300,7 @@ class Player(pygame.sprite.Sprite):
                         self.ignore = 0
                         break
                     else:
-                        #self.hurt = False
+                        self.hurt = False
                         if self.rightface == True and i.x > self.x:
                             i.death = True
                             if oi:
